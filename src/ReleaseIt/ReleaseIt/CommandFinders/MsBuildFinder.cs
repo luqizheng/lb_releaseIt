@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace ReleaseIt.CommandFinders
+{
+    public class MsBuildFinder : ICommandFinder
+    {
+        public string Name
+        {
+            get { return "MsBuild"; }
+        }
+
+        public string FindCmd()
+        {
+            var windir = Environment.ExpandEnvironmentVariables("%windir%");
+
+            var dirPath = string.Format("{1}{0}Microsoft.NET{0}Framework", Path.AltDirectorySeparatorChar, windir);
+
+            var dirs = new List<string>(Directory.GetDirectories(dirPath, "v*.*"));
+
+            dirs.Sort((a, b) => string.Compare(b, a, StringComparison.Ordinal));
+
+            return Path.Combine(dirs[0], "msbuild.exe");
+        }
+    }
+}

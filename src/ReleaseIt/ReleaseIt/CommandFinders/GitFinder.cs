@@ -1,0 +1,34 @@
+using System.Collections.Generic;
+using System.IO;
+
+namespace ReleaseIt.CommandFinders
+{
+    public class GitFinder : ICommandFinder
+    {
+        public string Name
+        {
+            get { return "Git"; }
+        }
+
+        public string FindCmd()
+        {
+            var list = new List<string>();
+            foreach (string driver in System.Environment.GetLogicalDrives())
+            {
+                list.Add(Path.Combine(driver, "Program Files", "Git", "bin", "Git.exe"));
+                if (System.Environment.Is64BitOperatingSystem)
+                {
+                    list.Add(Path.Combine(driver, "Program Files (x86)", "Git", "bin", "Git.exe"));
+                }
+            }
+
+            foreach (var path in list)
+            {
+                if (File.Exists(path))
+                    return path;
+            }
+            return "";
+        }
+
+    }
+}

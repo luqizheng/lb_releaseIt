@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,20 +43,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\GlobalConfiguration.cs" />
-    <Compile Include="Configuration\ICommandFinder.cs" />
-    <Compile Include="DotNetFramework.cs" />
-    <Compile Include="DotNetFrameworkManager.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="MsBuild.cs" />
-    <Compile Include="ParameterBuilder\CmdParameter.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandFactory.cs" />
+    <Compile Include="CommandFinders\GitFinder.cs" />
+    <Compile Include="CommandFinders\MsBuildFinder.cs" />
+    <Compile Include="CommandFinders\SvnFinder.cs" />
+    <Compile Include="Envrionment.cs" />
+    <Compile Include="MsBuildExtender.cs" />
+    <Compile Include="MsBuilds\LogLevel.cs" />
+    <Compile Include="MsBuilds\MsBuild.cs" />
+    <Compile Include="ParameterBuilder\ParameterWithValue.cs" />
+    <Compile Include="ParameterBuilder\ICmdParameter.cs" />
+    <Compile Include="ParameterBuilder\Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReleaseManager.cs" />
+    <Compile Include="CommandFinders\ICommandFinder.cs" />
+    <Compile Include="VersionControls\Git.cs" />
+    <Compile Include="VersionControls\Svn.cs" />
+    <Compile Include="VersionControls\VersionControl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configuration\ICommandFinder\" />
+    <Folder Include="Report\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

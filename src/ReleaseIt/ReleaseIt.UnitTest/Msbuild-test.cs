@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ReleaseIt.UnitTest
@@ -8,38 +7,32 @@ namespace ReleaseIt.UnitTest
     [TestClass]
     public class Msbuild_test
     {
-        public MsBuild GetMsBuild()
+        public string ProjectPath
         {
-            var manager = new DotNetFrameworkManager();
-            var version = manager.GetVersion().Last();
-            var msBuild = version.MsBuild;
-            return msBuild;
+            get
+            {
+                var debugFolder = new DirectoryInfo(Environment.CurrentDirectory);
+                var c = debugFolder.Parent.Parent.Parent;
+                var csproj = Path.Combine(c.FullName, "compileExample","web","web.csproj");
+                return csproj;
+            }
         }
 
         [TestMethod]
-        public void TestBuild()
+        public void TestWebBuild()
         {
+            var faoCommandFactory = new CommandFactory();
+            faoCommandFactory.MsBuildForWeb()
+                .ProjectPath(ProjectPath)
+                .Release()
+                .CopyTo("PublishFolder");
 
-            var msBuild = GetMsBuild();
-
-            Assert.IsTrue(msBuild.IsEffect);
-
-            var debugFolder = new DirectoryInfo(Environment.CurrentDirectory);
-            var c = debugFolder.Parent.Parent.Parent;
-
-            
-            var csproj = Path.Combine(c.FullName, "ReleaseIt\\ReleaseIt.csproj");
-            msBuild.LogLevel = LogLevel.quite;
-            msBuild.BuildTo(csproj);
-
+            faoCommandFactory.Invoke("");
         }
 
         [TestMethod]
         public void TestLogLevel()
         {
-            var msBuild = GetMsBuild();
-            msBuild.LogLevel = LogLevel.quite;
-
         }
     }
 }

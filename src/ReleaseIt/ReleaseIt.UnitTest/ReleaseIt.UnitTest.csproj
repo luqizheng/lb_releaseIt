@@ -51,7 +51,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Msbuild-test.cs" />
-    <Compile Include="otFrameworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
