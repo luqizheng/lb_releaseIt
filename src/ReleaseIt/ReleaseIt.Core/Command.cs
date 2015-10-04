@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using ReleaseIt.CommandFinders;
 using ReleaseIt.ParameterBuilder;
 
@@ -14,7 +15,7 @@ namespace ReleaseIt
         {
             Finder = finder;
         }
-
+        [JsonIgnore]
         public ICommandFinder Finder { get; set; }
 
 
@@ -48,21 +49,47 @@ namespace ReleaseIt
             var psi = new ProcessStartInfo(commandPath, string.Join(" ", args))
             {
                 UseShellExecute = false,
-                ErrorDialog = false,
-                WorkingDirectory = workingDirectory
+                WorkingDirectory = workingDirectory,
+                CreateNoWindow = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
             };
-            using (var writer = new StreamWriter("commandLog.txt", append: true))
+            Console.WriteLine(commandPath + " " + string.Join(" ", args));
+            using (var process = new Process())
             {
-                writer.WriteLine(commandPath + " " + string.Join(" ", args));
-            }
-            using (var process = Process.Start(psi))
-            {
-                process.WaitForExit(1000 * 60);
+
+                process.EnableRaisingEvents = true;
+                process.Exited += new EventHandler(p_Exited);
+                process.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
+                process.ErrorDataReceived += new DataReceivedEventHandler(p_ErrorDataReceived);
+                process.StartInfo = psi;
+                process.Start();
+                process.WaitForExit();
                 if (process.ExitCode != 0)
                     throw new Exception(string.Format(CultureInfo.InvariantCulture, "{0} returned a non-zero exit code",
                         Path.GetFileName(psi.FileName)));
             }
         }
+        void p_OutputDataReceived(Object sender, DataReceivedEventArgs e)
+        {
+            //这里是正常的输出
+            Console.WriteLine(e.Data);
+
+        }
+
+        void p_ErrorDataReceived(Object sender, DataReceivedEventArgs e)
+        {
+            //这里得到的是错误信息
+            Console.WriteLine(e.Data);
+
+        }
+
+        void p_Exited(Object sender, EventArgs e)
+        {
+            Console.WriteLine("finish");
+        }
+
     }
 
     public class ExceuteResult

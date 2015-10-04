@@ -2,29 +2,29 @@ using ReleaseIt.VersionControls;
 
 namespace ReleaseIt
 {
-    public class GitBuilder
+    public class VersionControlerBuilder
     {
-        private readonly Git _git;
+        private readonly VersionControl _git;
 
 
-        public GitBuilder(Git git)
+        public VersionControlerBuilder(VersionControl git)
         {
             _git = git;
         }
 
-        public GitBuilder Url(string url)
+        public VersionControlerBuilder Url(string url)
         {
             _git.Url = url;
             return this;
         }
 
-        public GitBuilder BrancheName(string branchName)
+        public VersionControlerBuilder BrancheName(string branchName)
         {
             _git.Branch = branchName;
             return this;
         }
 
-        public GitBuilder UserName(string userName, string password)
+        public VersionControlerBuilder UserName(string userName, string password)
         {
             _git.UserName = userName;
             _git.Password = password;
@@ -32,7 +32,7 @@ namespace ReleaseIt
         }
 
 
-        public GitBuilder WorkingCopy(string src)
+        public VersionControlerBuilder WorkingCopy(string src)
         {
             _git.WorkingCopy = src;
             return this;

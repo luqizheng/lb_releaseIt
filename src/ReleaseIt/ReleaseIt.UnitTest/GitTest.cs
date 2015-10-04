@@ -28,10 +28,12 @@ namespace ReleaseIt.UnitTest
         {
             var commandFactory = CommandFactory.Create();
             commandFactory.Git().Url("https://github.com/aspnet/Identity.git");
-            commandFactory.Invoke("test");
-
+            //commandFactory.Invoke("test");
+            commandFactory.Save("a.json");
             Assert.IsTrue(Directory.Exists("test"));
             Assert.IsTrue(Directory.Exists("test/Identity"));
+
+
 
         }
     }

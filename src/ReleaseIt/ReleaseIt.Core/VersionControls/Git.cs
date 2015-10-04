@@ -5,7 +5,7 @@ using ReleaseIt.ParameterBuilder;
 
 namespace ReleaseIt.VersionControls
 {
-    public class Git : Command
+    public class Git : VersionControl
     {
         private readonly ParameterWithValue<string> _branch = new ParameterWithValue<string>("branch")
         {
@@ -13,30 +13,16 @@ namespace ReleaseIt.VersionControls
             Prefix = "--"
         };
 
-        private readonly Parameter _workingCopy = new Parameter("", "");
-
         public Git()
             : base(new GitFinder())
         {
         }
 
-        public string WorkingCopy
-        {
-            get { return _workingCopy.Name; }
-            set { _workingCopy.Name = value; }
-        }
-
-        public string Url { get; set; }
-
-        public string Branch
+        public override string Branch
         {
             get { return _branch.Value; }
             set { _branch.Value = value; }
         }
-
-        public string UserName { get; set; }
-
-        public string Password { get; set; }
 
         protected override ICmdParameter[] BuildParameters(string executeFolder)
         {

@@ -49,7 +49,7 @@
     <Compile Include="CommandFinders\MsBuildFinder.cs" />
     <Compile Include="CommandFinders\SvnFinder.cs" />
     <Compile Include="Envrionment.cs" />
-    <Compile Include="GitBuilder.cs" />
+    <Compile Include="VersionControlerBuilder.cs" />
     <Compile Include="IoExtender.cs" />
     <Compile Include="MsBuildBuilder.cs" />
     <Compile Include="ConfigurationExtender.cs" />
@@ -61,7 +61,6 @@
     <Compile Include="ParameterException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommandFinders\ICommandFinder.cs" />
-    <Compile Include="SvnExtender.cs" />
     <Compile Include="VersionControls\Git.cs" />
     <Compile Include="VersionControls\Svn.cs" />
     <Compile Include="VersionControls\VersionControl.cs" />

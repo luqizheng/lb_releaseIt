@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters;
 using Newtonsoft.Json;
 
 namespace ReleaseIt
@@ -42,7 +44,12 @@ namespace ReleaseIt
         {
             using (var writer = new StreamWriter(file))
             {
-                var str = JsonConvert.SerializeObject(_commands);
+                var str = JsonConvert.SerializeObject(_commands, new JsonSerializerSettings()
+                {
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    Formatting = Formatting.Indented
+                });
                 writer.WriteLine(str);
             }
         }
@@ -56,8 +63,19 @@ namespace ReleaseIt
 
         public static CommandFactory CreateFrom(string file)
         {
-            var commands = JsonConvert.DeserializeObject<IList<Command>>(file);
-            return new CommandFactory(commands);
+            if (file == null) throw new ArgumentNullException("file");
+            if (!File.Exists(file))
+                throw new FileNotFoundException("File not find", file);
+            using (var reader = new StreamReader(file))
+            {
+                var json = reader.ReadToEnd();
+                var commands = JsonConvert.DeserializeObject<IList<Command>>(json, new JsonSerializerSettings()
+                {
+                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+                    TypeNameHandling = TypeNameHandling.Objects
+                });
+                return new CommandFactory(commands);
+            }
         }
 
         public static CommandFactory Create()

@@ -4,18 +4,15 @@ using ReleaseIt.ParameterBuilder;
 
 namespace ReleaseIt.VersionControls
 {
-    public class Svn : Command
+    public class Svn : VersionControl
     {
         public Svn()
             : base(new SvnFinder())
         {
         }
 
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Url { get; set; }
+        public override string Branch { get; set; }
 
-        public string WorkingFolder { get; set; }
 
         protected override ICmdParameter[] BuildParameters(string executeFolder)
         {
@@ -29,7 +26,7 @@ namespace ReleaseIt.VersionControls
                 {
                     HasSet = true
                 },
-                new Parameter("", Path.Combine(executeFolder, WorkingFolder)),
+                new Parameter("", Path.Combine(executeFolder, WorkingCopy)),
                 new ParameterWithValue<string>("username")
                 {
                     Prefix = "--",
@@ -49,7 +46,7 @@ namespace ReleaseIt.VersionControls
         {
             return new ExceuteResult
             {
-                ResultPath = Path.Combine(executeFolder, WorkingFolder)
+                ResultPath = Path.Combine(executeFolder, WorkingCopy)
             };
         }
     }

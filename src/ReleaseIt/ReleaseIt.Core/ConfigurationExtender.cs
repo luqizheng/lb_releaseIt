@@ -21,18 +21,18 @@ namespace ReleaseIt
             return new MsBuildBuilder(msbuid, true);
         }
 
-        public static SvnBuilder Svn(this CommandFactory factory)
+        public static VersionControlerBuilder Svn(this CommandFactory factory)
         {
             var d = new Svn();
             factory.Add(d);
-            return new SvnBuilder(d);
+            return new VersionControlerBuilder(d);
         }
 
-        public static GitBuilder Git(this CommandFactory factory)
+        public static VersionControlerBuilder Git(this CommandFactory factory)
         {
             var d = new Git();
             factory.Add(d);
-            return new GitBuilder(d);
+            return new VersionControlerBuilder(d);
         }
     }
 }
