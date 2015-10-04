@@ -13,7 +13,7 @@ namespace ReleaseIt.UnitTest
             {
                 var debugFolder = new DirectoryInfo(Environment.CurrentDirectory);
                 var c = debugFolder.Parent.Parent.Parent;
-                var csproj = Path.Combine(c.FullName, "compileExample","web","web.csproj");
+                var csproj = Path.Combine(c.FullName, "compileExample", "web", "web.csproj");
                 return csproj;
             }
         }
@@ -21,13 +21,18 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void TestWebBuild()
         {
+            var webFolder = Path.Combine(Environment.CurrentDirectory, "PublishFolder", "web");
+            Directory.Delete(webFolder, true);
             var faoCommandFactory = new CommandFactory();
             faoCommandFactory.MsBuildForWeb()
                 .ProjectPath(ProjectPath)
                 .Release()
-                .CopyTo("PublishFolder");
+                .CopyTo("PublishFolder/Web");
 
             faoCommandFactory.Invoke("");
+            var debugFolder = Path.Combine(webFolder, "Web.config");
+
+            Assert.IsTrue(File.Exists(debugFolder));
         }
 
         [TestMethod]

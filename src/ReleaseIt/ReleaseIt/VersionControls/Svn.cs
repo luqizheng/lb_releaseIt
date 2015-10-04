@@ -1,4 +1,5 @@
-﻿using ReleaseIt.CommandFinders;
+﻿using System.IO;
+using ReleaseIt.CommandFinders;
 using ReleaseIt.ParameterBuilder;
 
 namespace ReleaseIt.VersionControls
@@ -14,6 +15,8 @@ namespace ReleaseIt.VersionControls
         public string Password { get; set; }
         public string Url { get; set; }
 
+        public string WorkingFolder { get; set; }
+
         protected override ICmdParameter[] BuildParameters(string executeFolder)
         {
             return new ICmdParameter[]
@@ -22,6 +25,11 @@ namespace ReleaseIt.VersionControls
                 {
                     HasSet = true
                 },
+                new Parameter("", Url)
+                {
+                    HasSet = true
+                },
+                new Parameter("", Path.Combine(executeFolder, WorkingFolder)),
                 new ParameterWithValue<string>("username")
                 {
                     Prefix = "--",
@@ -41,7 +49,7 @@ namespace ReleaseIt.VersionControls
         {
             return new ExceuteResult
             {
-                ResultPath = executeFolder
+                ResultPath = Path.Combine(executeFolder, WorkingFolder)
             };
         }
     }

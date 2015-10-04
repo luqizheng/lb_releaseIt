@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -11,14 +10,12 @@ namespace ReleaseIt
 {
     public abstract class Command
     {
-        public ICommandFinder Finder { get; set; }
-
-
         protected Command(ICommandFinder finder)
         {
             Finder = finder;
-
         }
+
+        public ICommandFinder Finder { get; set; }
 
 
         protected abstract ICmdParameter[] BuildParameters(string executeFolder);
@@ -28,14 +25,15 @@ namespace ReleaseIt
 
         public ExceuteResult Invoke(string executeFolder)
         {
-            Invoke(BuildParameters(executeFolder)
-                .Select(item => item.Build()).Where(arg => !string.IsNullOrEmpty(arg)).ToArray());
+            var arguments = BuildParameters(executeFolder)
+                .Select(item => item.Build()).Where(arg => !string.IsNullOrEmpty(arg)).ToArray();
+            Invoke(executeFolder, arguments);
             return CreateResult(executeFolder);
         }
 
         private string GetExecuteCommandPath()
         {
-            var path = this.Finder.FindCmd();
+            var path = Finder.FindCmd();
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException("command file not found.", path);
@@ -43,16 +41,17 @@ namespace ReleaseIt
             return path;
         }
 
-        private void Invoke(string[] args)
+        protected virtual void Invoke(string workingDirectory, string[] args)
         {
             var commandPath = GetExecuteCommandPath();
 
             var psi = new ProcessStartInfo(commandPath, string.Join(" ", args))
             {
-                UseShellExecute = true,
-                ErrorDialog = true,
+                UseShellExecute = false,
+                ErrorDialog = false,
+                WorkingDirectory = workingDirectory
             };
-            using (var writer = new StreamWriter("commandLog.txt"))
+            using (var writer = new StreamWriter("commandLog.txt", append: true))
             {
                 writer.WriteLine(commandPath + " " + string.Join(" ", args));
             }
@@ -64,8 +63,6 @@ namespace ReleaseIt
                         Path.GetFileName(psi.FileName)));
             }
         }
-
-
     }
 
     public class ExceuteResult

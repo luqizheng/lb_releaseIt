@@ -25,14 +25,19 @@ namespace ReleaseIt
 
         public void Invoke(string folderExecuteFolder)
         {
+
             var executeFolder = Path.Combine(System.Environment.CurrentDirectory, folderExecuteFolder);
+            if (!Directory.Exists(executeFolder))
+            {
+                (new DirectoryInfo(executeFolder)).CreateEx();
+            }
 
             foreach (var cmd in _commands)
             {
                 cmd.Invoke(executeFolder);
             }
         }
-        
+
         public void Save(string file)
         {
             using (var writer = new StreamWriter(file))
@@ -53,6 +58,11 @@ namespace ReleaseIt
         {
             var commands = JsonConvert.DeserializeObject<IList<Command>>(file);
             return new CommandFactory(commands);
+        }
+
+        public static CommandFactory Create()
+        {
+            return new CommandFactory();
         }
     }
 }
