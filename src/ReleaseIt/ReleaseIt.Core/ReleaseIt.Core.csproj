@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ReleaseIt</RootNamespace>
-    <AssemblyName>ReleaseIt</AssemblyName>
+    <AssemblyName>ReleaseIt.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -48,7 +51,7 @@
     <Compile Include="CommandFinders\GitFinder.cs" />
     <Compile Include="CommandFinders\MsBuildFinder.cs" />
     <Compile Include="CommandFinders\SvnFinder.cs" />
-    <Compile Include="Envrionment.cs" />
+    <Compile Include="Publish\CopyTo.cs" />
     <Compile Include="VersionControlerBuilder.cs" />
     <Compile Include="IoExtender.cs" />
     <Compile Include="MsBuildBuilder.cs" />

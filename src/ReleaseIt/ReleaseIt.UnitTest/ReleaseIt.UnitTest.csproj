@@ -56,9 +56,9 @@
     <Compile Include="GitTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReleaseIt\ReleaseIt.csproj">
+    <ProjectReference Include="..\ReleaseIt.Core\ReleaseIt.Core.csproj">
       <Project>{0ACD5380-A98E-402E-A7DE-FAE7265B0CF2}</Project>
-      <Name>ReleaseIt</Name>
+      <Name>ReleaseIt.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

@@ -26,7 +26,6 @@ namespace ReleaseIt.VersionControls
 
         protected override ICmdParameter[] BuildParameters(string executeFolder)
         {
-
             if (IsClone(executeFolder))
             {
                 return CloneParameters(executeFolder);
@@ -84,15 +83,15 @@ namespace ReleaseIt.VersionControls
             if (WorkingCopy == "")
             {
                 var pos = Url.LastIndexOf("/");
-                var fileName = Url.Substring(pos+1);
+                var fileName = Url.Substring(pos + 1);
                 return fileName.Split('.')[0];
             }
             return WorkingCopy;
             ;
-
         }
+
         /// <summary>
-        /// 是否使用Clone 还是Pull
+        ///     是否使用Clone 还是Pull
         /// </summary>
         /// <param name="executeFolder"></param>
         /// <returns></returns>
@@ -101,10 +100,11 @@ namespace ReleaseIt.VersionControls
             var workingFolder = Path.Combine(executeFolder, GetWorkingCopyName());
             return !Directory.Exists(workingFolder);
         }
-        protected override void Invoke(string workingDirectory, string[] args)
+
+        protected override void Invoke(string workingDirectory, string[] args, CommandFactory commandFactory)
         {
-            var gitWorkingCopyPath = Path.Combine(workingDirectory, this.GetWorkingCopyName());
-            base.Invoke(!Directory.Exists(gitWorkingCopyPath) ? workingDirectory : gitWorkingCopyPath, args);
+            var gitWorkingCopyPath = Path.Combine(workingDirectory, GetWorkingCopyName());
+            base.Invoke(!Directory.Exists(gitWorkingCopyPath) ? workingDirectory : gitWorkingCopyPath, args, commandFactory);
         }
     }
 }

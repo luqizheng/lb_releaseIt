@@ -15,6 +15,7 @@ namespace ReleaseIt
         {
             Finder = finder;
         }
+
         [JsonIgnore]
         public ICommandFinder Finder { get; set; }
 
@@ -24,11 +25,11 @@ namespace ReleaseIt
         protected abstract ExceuteResult CreateResult(string executeFolder);
 
 
-        public ExceuteResult Invoke(string executeFolder)
+        public ExceuteResult Invoke(string executeFolder,CommandFactory commandFactory)
         {
             var arguments = BuildParameters(executeFolder)
                 .Select(item => item.Build()).Where(arg => !string.IsNullOrEmpty(arg)).ToArray();
-            Invoke(executeFolder, arguments);
+            Invoke(executeFolder, arguments,commandFactory);
             return CreateResult(executeFolder);
         }
 
@@ -42,7 +43,7 @@ namespace ReleaseIt
             return path;
         }
 
-        protected virtual void Invoke(string workingDirectory, string[] args)
+        protected virtual void Invoke(string workingDirectory, string[] args,CommandFactory commandFactory)
         {
             var commandPath = GetExecuteCommandPath();
 
@@ -53,16 +54,15 @@ namespace ReleaseIt
                 CreateNoWindow = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                RedirectStandardError = true
             };
             Console.WriteLine(commandPath + " " + string.Join(" ", args));
             using (var process = new Process())
             {
-
                 process.EnableRaisingEvents = true;
-                process.Exited += new EventHandler(p_Exited);
-                process.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
-                process.ErrorDataReceived += new DataReceivedEventHandler(p_ErrorDataReceived);
+                process.Exited += p_Exited;
+                process.OutputDataReceived += p_OutputDataReceived;
+                process.ErrorDataReceived += p_ErrorDataReceived;
                 process.StartInfo = psi;
                 process.Start();
                 process.WaitForExit();
@@ -71,25 +71,28 @@ namespace ReleaseIt
                         Path.GetFileName(psi.FileName)));
             }
         }
-        void p_OutputDataReceived(Object sender, DataReceivedEventArgs e)
+
+        private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             //这里是正常的输出
             Console.WriteLine(e.Data);
-
         }
 
-        void p_ErrorDataReceived(Object sender, DataReceivedEventArgs e)
+        private void p_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             //这里得到的是错误信息
             Console.WriteLine(e.Data);
-
         }
 
-        void p_Exited(Object sender, EventArgs e)
+        private void p_Exited(object sender, EventArgs e)
         {
             Console.WriteLine("finish");
         }
 
+        public override string ToString()
+        {
+            return Finder.Name;
+        }
     }
 
     public class ExceuteResult
