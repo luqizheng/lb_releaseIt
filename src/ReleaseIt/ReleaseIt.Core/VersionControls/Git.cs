@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using ReleaseIt.CommandFinders;
 using ReleaseIt.ParameterBuilder;
@@ -24,11 +25,12 @@ namespace ReleaseIt.VersionControls
             set { _branch.Value = value; }
         }
 
-        protected override ICmdParameter[] BuildParameters(string executeFolder)
+        protected override ICmdParameter[] BuildParameters(ExceuteResult executeResult)
         {
-            if (IsClone(executeFolder))
+            string outputDir;
+            if (IsClone(executeResult.ResultFolder, out outputDir))
             {
-                return CloneParameters(executeFolder);
+                return CloneParameters(outputDir);
             }
             return new ICmdParameter[]
             {
@@ -36,7 +38,7 @@ namespace ReleaseIt.VersionControls
             };
         }
 
-        private ICmdParameter[] CloneParameters(string executeFolder)
+        private ICmdParameter[] CloneParameters(string outputDir)
         {
             var result = new List<ICmdParameter>
             {
@@ -53,16 +55,15 @@ namespace ReleaseIt.VersionControls
                     Prefix = "--"
                 });
             }
-            result.Add(new Parameter("", GetWorkingCopyName()));
+            result.Add(new Parameter("", outputDir));
             return result.ToArray();
         }
 
-        protected override ExceuteResult CreateResult(string executeFolder)
+        protected override void UpdateExecuteResultInfo(ExceuteResult result)
         {
-            return new ExceuteResult
-            {
-                ResultPath = executeFolder
-            };
+            result.
+                ResultFolder = GetWorkingCopyName();
+
         }
 
         public string MakeUrl()
@@ -71,18 +72,23 @@ namespace ReleaseIt.VersionControls
             {
                 return Url;
             }
-            var pos = Url.IndexOf("://");
+            var pos = Url.IndexOf("://", StringComparison.Ordinal);
 
             var prefix = Url.Substring(0, pos + 3);
 
             return prefix + UserName + ":" + Password + "@" + Url.Substring(pos + 3);
         }
 
-        public string GetWorkingCopyName()
+#if DEBUG
+        public
+#else
+            private 
+#endif
+ string GetWorkingCopyName()
         {
             if (WorkingCopy == "")
             {
-                var pos = Url.LastIndexOf("/");
+                var pos = Url.LastIndexOf("/", StringComparison.Ordinal);
                 var fileName = Url.Substring(pos + 1);
                 return fileName.Split('.')[0];
             }
@@ -95,16 +101,20 @@ namespace ReleaseIt.VersionControls
         /// </summary>
         /// <param name="executeFolder"></param>
         /// <returns></returns>
-        private bool IsClone(string executeFolder)
+        private bool IsClone(string executeFolder, out string workingFolder)
         {
-            var workingFolder = Path.Combine(executeFolder, GetWorkingCopyName());
+            workingFolder = Path.GetFullPath(executeFolder + GetWorkingCopyName());
             return !Directory.Exists(workingFolder);
         }
 
-        protected override void Invoke(string workingDirectory, string[] args, CommandFactory commandFactory)
+        protected override void Invoke(ExceuteResult executeResult, string[] args, CommandSet commandSet)
         {
-            var gitWorkingCopyPath = Path.Combine(workingDirectory, GetWorkingCopyName());
-            base.Invoke(!Directory.Exists(gitWorkingCopyPath) ? workingDirectory : gitWorkingCopyPath, args, commandFactory);
+            string gitWorkingCopyPath = null;
+            executeResult.ResultFolder = IsClone(executeResult.ResultFolder, out gitWorkingCopyPath)
+                ? gitWorkingCopyPath
+                : executeResult.ResultFolder;
+
+            base.Invoke(executeResult, args, commandSet);
         }
     }
 }

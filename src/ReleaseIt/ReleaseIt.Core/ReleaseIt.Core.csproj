@@ -47,14 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
-    <Compile Include="CommandFactory.cs" />
+    <Compile Include="CommandSet.cs" />
     <Compile Include="CommandFinders\GitFinder.cs" />
     <Compile Include="CommandFinders\MsBuildFinder.cs" />
     <Compile Include="CommandFinders\SvnFinder.cs" />
-    <Compile Include="Publish\CopyTo.cs" />
-    <Compile Include="VersionControlerBuilder.cs" />
+    <Compile Include="ExceuteResult.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="Publish\XCopy.cs" />
+    <Compile Include="DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />
-    <Compile Include="MsBuildBuilder.cs" />
+    <Compile Include="MsBuilds\MsBuildCommandBuilder.cs" />
     <Compile Include="ConfigurationExtender.cs" />
     <Compile Include="MsBuilds\LogLevel.cs" />
     <Compile Include="MsBuilds\MsBuild.cs" />
@@ -64,11 +66,14 @@
     <Compile Include="ParameterException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommandFinders\ICommandFinder.cs" />
+    <Compile Include="Publish\XCopyBuilder.cs" />
+    <Compile Include="VersionControls\VersionControlerBuilder.cs" />
     <Compile Include="VersionControls\Git.cs" />
     <Compile Include="VersionControls\Svn.cs" />
     <Compile Include="VersionControls\VersionControl.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Ftp\" />
     <Folder Include="Report\" />
   </ItemGroup>
   <ItemGroup>

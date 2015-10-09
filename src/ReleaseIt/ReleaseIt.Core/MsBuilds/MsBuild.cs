@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ReleaseIt.CommandFinders;
@@ -9,9 +10,6 @@ namespace ReleaseIt.MsBuilds
 {
     public class MsBuild : Command
     {
-        private readonly ParameterWithValue<string> _configuration =
-            new ParameterWithValue<string>("/p");
-
         private readonly Parameter _logFile = new Parameter("filelogger");
 
 
@@ -22,7 +20,7 @@ namespace ReleaseIt.MsBuilds
             new ParameterWithValue<IList<ParameterWithValue<string>>>("/p",
                 d => { return string.Join(";", d.Select(a => a.Build())); });
 
-        private readonly ParameterWithValue<string> _traget =
+        private readonly ParameterWithValue<string> _target =
             new ParameterWithValue<string>("/t");
 
 
@@ -50,18 +48,44 @@ namespace ReleaseIt.MsBuilds
         /// </summary>
         public string[] Target
         {
-            get { return _traget.Value.Split(';'); }
-            set { _traget.Value = string.Join(";", value); }
+            get
+            {
+                if (_target.Value != null)
+                    return _target.Value.Split(';');
+                return new string[0];
+            }
+            set { _target.Value = string.Join(";", value); }
         }
 
-        /// <summary>
-        ///     /p:
-        ///     Release/Debug or soemthing you defined
-        /// </summary>
-        public string Configuration
+
+        public string[] Properties
         {
-            get { return _configuration.Value; }
-            set { _configuration.Value = value; }
+            get
+            {
+                var str = new List<string>(_properities.Value.Count);
+                str.AddRange(_properities.Value.Select(item => item.ToString()));
+                return str.ToArray();
+            }
+            set
+            {
+                _properities.Value.Clear();
+                foreach (var str in value)
+                {
+                    var ary = str.Split('=');
+                    if (ary.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("value", "It should be Key=Value");
+                    }
+                    var name = ary[0];
+                    var val = ary[1];
+                    var cmd = new ParameterWithValue<string>(name)
+                    {
+                        ValueSplitChar = "=",
+                        Value = val
+                    };
+                    _properities.Value.Add(cmd);
+                }
+            }
         }
 
         /// <summary>
@@ -72,49 +96,67 @@ namespace ReleaseIt.MsBuilds
         /// <summary>
         ///     /p 参数
         /// </summary>
-        public void AddProperty(string name, string vlaue)
+        public void AddProperty(string name, string val)
         {
             if (name == null) throw new ArgumentNullException("name");
-            if (vlaue == null) throw new ArgumentNullException("vlaue");
+            if (val == null) throw new ArgumentNullException("val");
             var cmd = new ParameterWithValue<string>(name)
             {
                 ValueSplitChar = "=",
-                Value = vlaue
+                Value = val
             };
             _properities.Value.Add(cmd);
         }
 
-        protected override ICmdParameter[] BuildParameters(string executeFolderName)
+        protected override ICmdParameter[] BuildParameters(ExceuteResult executeResult)
         {
-            var projectPath = Path.Combine(executeFolderName, ProjectPath);
+            var projectPath = IoExtender.GetPath(executeResult.StartFolder, ProjectPath);
             if (!File.Exists(projectPath))
             {
                 throw new FileNotFoundException("Can't find the project file.", projectPath);
             }
-            var outDir = (from prop in _properities.Value where prop.Name
-                              == "WebProjectOutputDir"  select prop).FirstOrDefault();
-            if (outDir != null)
+            var outDir = FindOutputDir();
+            outDir.Value = IoExtender.GetPath(executeResult.StartFolder, outDir.Value);
+
+            if (projectPath.Contains(" "))
             {
-                outDir.Value = Path.Combine(executeFolderName, outDir.Value);
+                projectPath = "\"" + projectPath + "\"";
             }
             var result = new ICmdParameter[]
             {
                 new Parameter("", projectPath),
                 _properities,
-                _traget,
-                _configuration,
+                _target,
                 _logFile,
                 _logLevel
             };
             return result;
         }
 
-        protected override ExceuteResult CreateResult(string executeFolder)
+
+        protected override void BeforeInvoke(ProcessStartInfo startInfo)
         {
-            return new ExceuteResult
-            {
-                ResultPath = executeFolder
-            };
+            var path = Path.GetFileNameWithoutExtension(ProjectPath);
+            startInfo.EnvironmentVariables["prjName"] = path;
+            base.BeforeInvoke(startInfo);
+        }
+
+        private ParameterWithValue<string> FindOutputDir()
+        {
+            return (from prop in _properities.Value
+                where prop.Name
+                      == "WebProjectOutputDir"
+                select prop).FirstOrDefault();
+        }
+
+        protected override void
+            UpdateExecuteResultInfo(ExceuteResult result)
+        {
+            result.ExecuteFile = IoExtender.GetPath(result.StartFolder, ProjectPath);
+
+            var outDir = FindOutputDir();
+            if (outDir != null)
+                result.ResultFolder = outDir.Value;
         }
     }
 }

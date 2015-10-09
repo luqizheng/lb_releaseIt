@@ -6,36 +6,38 @@ using Newtonsoft.Json;
 
 namespace ReleaseIt
 {
-    public class CommandFactory
+    public class CommandSet
     {
-        private readonly IList<Command> _commands;
+        private readonly IList<ICommand> _commands;
 
-        public CommandFactory(IList<Command> command)
+        public CommandSet(IList<ICommand> command)
         {
             _commands = command;
         }
-        public string SaveFile { get; set; }
-        public CommandFactory()
+
+        public CommandSet()
         {
-            _commands = new List<Command>();
+            _commands = new List<ICommand>();
         }
 
-        public IList<Command> Commands
+        public string File { get; private set; }
+
+        public IList<ICommand> Commands
         {
             get { return _commands; }
         }
 
-        public void Invoke(string folderExecuteFolder)
+        public void Invoke(string workingFolder)
         {
-            var executeFolder = Path.Combine(Environment.CurrentDirectory, folderExecuteFolder);
-            if (!Directory.Exists(executeFolder))
+            if (!Directory.Exists(workingFolder))
             {
-                (new DirectoryInfo(executeFolder)).CreateEx();
+                (new DirectoryInfo(workingFolder)).CreateEx();
             }
 
+            var executeResult = new ExceuteResult(workingFolder);
             foreach (var cmd in _commands)
             {
-                cmd.Invoke(executeFolder, this);
+                cmd.Invoke(executeResult, this);
             }
         }
 
@@ -51,40 +53,33 @@ namespace ReleaseIt
                 });
                 writer.WriteLine(str);
             }
-            this.SaveFile = file;
-        }
-
-        public CommandFactory Add(Command command)
-        {
-            _commands.Add(command);
-            return this;
+            File = file;
         }
 
 
-        public static CommandFactory CreateFrom(string file)
+        public static CommandSet CreateFrom(string file)
         {
             if (file == null) throw new ArgumentNullException("file");
-            if (!File.Exists(file))
+            if (!System.IO.File.Exists(file))
                 throw new FileNotFoundException("File not find", file);
             using (var reader = new StreamReader(file))
             {
                 var json = reader.ReadToEnd();
-                var commands = JsonConvert.DeserializeObject<IList<Command>>(json, new JsonSerializerSettings
+                var commands = JsonConvert.DeserializeObject<IList<ICommand>>(json, new JsonSerializerSettings
                 {
                     TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
                     TypeNameHandling = TypeNameHandling.Objects
                 });
-                return new CommandFactory(commands)
+                return new CommandSet(commands)
                 {
-                    SaveFile = file
+                    File = file
                 };
-
             }
         }
 
-        public static CommandFactory Create()
+        public static CommandSet Create()
         {
-            return new CommandFactory();
+            return new CommandSet();
         }
     }
 }

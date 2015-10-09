@@ -1,6 +1,4 @@
-using ReleaseIt.VersionControls;
-
-namespace ReleaseIt
+namespace ReleaseIt.VersionControls
 {
     public class VersionControlerBuilder
     {

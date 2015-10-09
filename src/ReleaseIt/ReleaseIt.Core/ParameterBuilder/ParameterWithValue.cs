@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace ReleaseIt.ParameterBuilder
 {
@@ -51,6 +49,5 @@ namespace ReleaseIt.ParameterBuilder
             }
             return "";
         }
-
     }
 }

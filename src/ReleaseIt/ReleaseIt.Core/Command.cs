@@ -9,7 +9,7 @@ using ReleaseIt.ParameterBuilder;
 
 namespace ReleaseIt
 {
-    public abstract class Command
+    public abstract class Command : ICommand
     {
         protected Command(ICommandFinder finder)
         {
@@ -20,43 +20,52 @@ namespace ReleaseIt
         public ICommandFinder Finder { get; set; }
 
 
-        protected abstract ICmdParameter[] BuildParameters(string executeFolder);
+        protected abstract ICmdParameter[] BuildParameters(ExceuteResult executeResult);
 
-        protected abstract ExceuteResult CreateResult(string executeFolder);
-
-
-        public ExceuteResult Invoke(string executeFolder,CommandFactory commandFactory)
+        protected virtual void UpdateExecuteResultInfo(ExceuteResult result)
         {
-            var arguments = BuildParameters(executeFolder)
+        }
+
+
+        public ExceuteResult Invoke(ExceuteResult executeResult, CommandSet commandSet)
+        {
+            var arguments = BuildParameters(executeResult)
                 .Select(item => item.Build()).Where(arg => !string.IsNullOrEmpty(arg)).ToArray();
-            Invoke(executeFolder, arguments,commandFactory);
-            return CreateResult(executeFolder);
+            Invoke(executeResult, arguments, commandSet);
+            UpdateExecuteResultInfo(executeResult);
+            return executeResult;
+            ;
         }
 
         private string GetExecuteCommandPath()
         {
             var path = Finder.FindCmd();
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("command file not found.", path);
-            }
+            //if (!File.Exists(path))
+            //{
+            //    throw new FileNotFoundException("command file not found.", path);
+            //}
             return path;
         }
 
-        protected virtual void Invoke(string workingDirectory, string[] args,CommandFactory commandFactory)
+        protected virtual void BeforeInvoke(ProcessStartInfo startInfo)
+        {
+            
+        }
+        protected virtual void Invoke(ExceuteResult executeResult, string[] args, CommandSet commandSet)
         {
             var commandPath = GetExecuteCommandPath();
 
             var psi = new ProcessStartInfo(commandPath, string.Join(" ", args))
             {
+
                 UseShellExecute = false,
-                WorkingDirectory = workingDirectory,
+                WorkingDirectory = executeResult.WorkDirectory,
                 CreateNoWindow = true,
-                RedirectStandardInput = true,
+                RedirectStandardInput = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = false,
             };
-            Console.WriteLine(commandPath + " " + string.Join(" ", args));
+            BeforeInvoke(psi);
             using (var process = new Process())
             {
                 process.EnableRaisingEvents = true;
@@ -64,10 +73,13 @@ namespace ReleaseIt
                 process.OutputDataReceived += p_OutputDataReceived;
                 process.ErrorDataReceived += p_ErrorDataReceived;
                 process.StartInfo = psi;
+               
                 process.Start();
+                process.BeginOutputReadLine();
                 process.WaitForExit();
                 if (process.ExitCode != 0)
-                    throw new Exception(string.Format(CultureInfo.InvariantCulture, "{0} returned a non-zero exit code",
+                    throw new Exception(string.Format(CultureInfo.InvariantCulture,
+                        "{0} returned a non-zero exit code",
                         Path.GetFileName(psi.FileName)));
             }
         }
@@ -86,17 +98,12 @@ namespace ReleaseIt
 
         private void p_Exited(object sender, EventArgs e)
         {
-            Console.WriteLine("finish");
+            Console.WriteLine("Command execute complete.");
         }
 
         public override string ToString()
         {
             return Finder.Name;
         }
-    }
-
-    public class ExceuteResult
-    {
-        public string ResultPath { get; set; }
     }
 }

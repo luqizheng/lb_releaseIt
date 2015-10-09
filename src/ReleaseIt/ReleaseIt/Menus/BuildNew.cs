@@ -1,14 +1,14 @@
-﻿using ReleaseIt.Settings;
+﻿using ReleaseIt.Menus.SetupMenu;
 
-namespace ReleaseIt
+namespace ReleaseIt.Menus
 {
-    public class BuildNew : Menus
+    public class BuildNew : MenusList
     {
         public BuildNew()
 
         {
-            Add(new VersionControlSetting());
-            Add(new MsBuildSetting());
+            Add(new VersionControlCommandMenu());
+            Add(new MsBuildCommandMenu());
         }
 
         public override string Key

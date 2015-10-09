@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace ReleaseIt
 {
     internal class Program
     {
-
-        private static Setting Current;
         private static void Main(string[] args)
         {
             Console.Clear();
@@ -16,60 +13,76 @@ namespace ReleaseIt
             Console.WriteLine();
             var fileName = "";
             var parameter = "";
-            foreach (var arg in args)
+            for (var index = 0; index < args.Length; index++)
             {
+                var arg = args[index];
                 if (arg.StartsWith("/"))
                 {
-                    if (arg != "/s")
+                    if (arg == "/s")
                     {
-                        ShowHelp();
+                        var nextFileIndex = ++index;
+                        if (args.Length > nextFileIndex)
+                            ShowSetting(args[nextFileIndex]);
+                        else
+                            Console.WriteLine("Please use /s filename to start ");
                         return;
                     }
-                }
-
-                if (parameter == "")
-                {
-                    parameter = arg;
-                }
-                if (fileName == "")
-                {
-                    fileName = arg;
+                    ShowHelp();
+                    return;
                 }
             }
-            if (parameter == "")
-            {
-                CommandFactory.CreateFrom(fileName).Invoke(Environment.CurrentDirectory);
-            }
-            else
-            {
-                ShowSetting(fileName);
-            }
+            var fileInfo = new FileInfo(args[0]);
+            CommandSet.CreateFrom(args[0]).Invoke(fileInfo.Directory.FullName);
         }
-
 
         private static void ShowSetting(string fileName)
         {
+            //CreateTemplate
 
-            CommandFactory commands =
-                File.Exists(fileName)
-                    ? CommandFactory.CreateFrom(fileName)
-                    : new CommandFactory();
+            var command = CommandSet.Create();
+            command.Svn().Url("http://svn.address.com/trunk").UserName("username", "password")
+                .WorkingCopy("workongfolder");
+            command.MsBuild(true).Release().ProjectPath("/mypathforcsproj").CopyTo("PublishPath");
 
-            Current = new Top();
+            command.CopyTo("publish");
+
+            command.Save(fileName);
+        }
+
+        /*
+        private static void ShowSetting_bak(string fileName)
+        {
+            var exists = File.Exists(fileName);
+            if (!exists)
+            {
+                Console.WriteLine(fileName + " is no exist. so will create a new one.");
+            }
+            var commands =
+                exists
+                    ? CommandSet.CreateFrom(fileName)
+                    : new CommandSet();
+
+            var directoryInfo = new FileInfo(fileName).Directory;
+            if (directoryInfo != null)
+                Current = new Top(!exists, (directoryInfo.FullName));
+            else
+            {
+                throw new ArgumentOutOfRangeException("fileName", fileName + "Not exist.");
+            }
             while (true)
             {
-                Current = Current.Execute(commands);
+                Current = Current.Do(commands, directoryInfo.FullName);
                 if (Current == null)
                     break;
             }
             Console.WriteLine();
-            Console.WriteLine(Setting.ExitSaveOrNot.Description);
-            var lastCmd = Console.ReadLine().ToLower().Trim();
-            if (lastCmd == "s")
+            Console.WriteLine(Menu.ExitSaveOrNot.Description);
+            var cmd = Console.ReadLine();
+            if (cmd == "y" || cmd == "y")
             {
                 commands.Save(fileName);
             }
-        }
+        }*/
 
         private static void ShowHelp()
         {

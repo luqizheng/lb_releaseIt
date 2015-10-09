@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
-using ReleaseIt.CommandFinders;
+﻿using ReleaseIt.CommandFinders;
 
 namespace ReleaseIt.VersionControls
 {
     public enum VersionControlType
     {
-        Git, Svn,
+        Git,
+        Svn
     }
-    public abstract class VersionControl:Command
+
+    public abstract class VersionControl : Command
     {
-        
+        protected VersionControl(ICommandFinder finder) : base(finder)
+        {
+        }
+
         public string WorkingCopy { get; set; }
 
         public string Url { get; set; }
@@ -26,11 +23,5 @@ namespace ReleaseIt.VersionControls
         public string UserName { get; set; }
 
         public string Password { get; set; }
-
-        protected VersionControl(ICommandFinder finder) : base(finder)
-        {
-        }
     }
-
-
 }

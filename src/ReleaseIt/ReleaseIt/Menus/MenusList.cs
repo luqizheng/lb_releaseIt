@@ -1,13 +1,13 @@
 using System;
 
-namespace ReleaseIt
+namespace ReleaseIt.Menus
 {
-    public abstract class Menus : Setting
+    public abstract class MenusList : Menu
     {
-        public override Setting Execute(CommandFactory commandFactory)
+        public override Menu Do(CommandSet commandSet, string resultPath)
         {
             Console.Clear();
-            foreach (var a in Commands.Values)
+            foreach (var a in Settings.Values)
             {
                 Console.WriteLine("[{0}] {1}", a.Key, a.Description);
             }
@@ -17,18 +17,24 @@ namespace ReleaseIt
                 var cmd = Console.ReadLine().ToLower();
                 if (cmd == "exit")
                 {
-                    return Setting.ExitSaveOrNot;
+                    return Menu.ExitSaveOrNot;
                 }
                 if (cmd == "parent")
                 {
                     return Parent;
                 }
-                if (Commands.ContainsKey(cmd))
+                if (Settings.ContainsKey(cmd))
                 {
-                    return Commands[cmd];
+                    return Settings[cmd];
                 }
                 Console.WriteLine("Not Recongiaze Cmd.");
             }
+        }
+
+
+        public MenusList(string workingFolder)
+            : base(workingFolder)
+        {
         }
     }
 }

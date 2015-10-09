@@ -9,8 +9,8 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void TestMethod1()
         {
-            var faoCommandFactory = new CommandFactory();
-            faoCommandFactory.MsBuildForWeb();
+            var faoCommandFactory = new CommandSet();
+            faoCommandFactory.MsBuild(true);
         }
     }
 }

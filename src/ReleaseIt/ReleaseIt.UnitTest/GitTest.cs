@@ -26,7 +26,7 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void TryToGet()
         {
-            var commandFactory = CommandFactory.Create();
+            var commandFactory = CommandSet.Create();
             commandFactory.Git().Url("https://github.com/aspnet/Identity.git");
             //commandFactory.Invoke("test");
             commandFactory.Save("a.json");

@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IoExtenderSettingTest.cs" />
     <Compile Include="Msbuild-test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SvnTest.cs" />

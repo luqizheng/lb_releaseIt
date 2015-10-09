@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ReleaseIt.UnitTest
 {
     [TestClass]
-    public class Msbuild_test
+    public class MsbuildTest
     {
         public string ProjectPath
         {
@@ -23,8 +23,8 @@ namespace ReleaseIt.UnitTest
         {
             var webFolder = Path.Combine(Environment.CurrentDirectory, "PublishFolder", "web");
             Directory.Delete(webFolder, true);
-            var faoCommandFactory = new CommandFactory();
-            faoCommandFactory.MsBuildForWeb()
+            var faoCommandFactory = new CommandSet();
+            faoCommandFactory.MsBuild(true)
                 .ProjectPath(ProjectPath)
                 .Release()
                 .CopyTo("PublishFolder/Web");
