@@ -1,6 +1,6 @@
 ﻿namespace ReleaseIt.ParameterBuilder
 {
-    public class Parameter : ICmdParameter
+    internal class Parameter : ICmdParameter
     {
         public Parameter(string name)
             : this("/", name)
@@ -14,7 +14,7 @@
         }
 
         public string Prefix { get; set; }
-        public virtual bool HasSet { get; set; }
+        
         public string Name { get; set; }
 
         public virtual string Build()

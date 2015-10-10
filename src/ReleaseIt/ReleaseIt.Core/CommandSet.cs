@@ -1,85 +1,101 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters;
-using Newtonsoft.Json;
+using ReleaseIt.Executor;
+using ReleaseIt.WindowCommand;
 
 namespace ReleaseIt
 {
+    public interface ICommand
+    {
+        string BuildArguments(ExecuteSetting executoSetting);
+        string GetCommand(ExecuteSetting executorSetting);
+    }
+
     public class CommandSet
     {
         private readonly IList<ICommand> _commands;
+        private readonly string _workDirectory;
+        private IExecutor _executor;
 
-        public CommandSet(IList<ICommand> command)
+        public CommandSet(string dirDirecotry)
+            : this(dirDirecotry, new List<ICommand>())
         {
-            _commands = command;
         }
 
-        public CommandSet()
+        public CommandSet(string workDirectory, IList<ICommand> commands)
         {
-            _commands = new List<ICommand>();
+            _workDirectory = workDirectory;
+            _commands = commands;
         }
 
-        public string File { get; private set; }
+        public ConfigurationSetting Setting { get; set; }
+
+        internal IExecutor Executor
+        {
+            get { return _executor ?? (_executor = new ProcessExecutor()); }
+            set { _executor = value; }
+        }
 
         public IList<ICommand> Commands
         {
             get { return _commands; }
         }
 
-        public void Invoke(string workingFolder)
+        public void Invoke()
         {
-            if (!Directory.Exists(workingFolder))
+            if (!Directory.Exists(_workDirectory))
             {
-                (new DirectoryInfo(workingFolder)).CreateEx();
+                (new DirectoryInfo(_workDirectory)).CreateEx();
             }
 
-            var executeResult = new ExceuteResult(workingFolder);
+            var executeResult = new ExecuteSetting(_workDirectory);
             foreach (var cmd in _commands)
             {
-                cmd.Invoke(executeResult, this);
+                Executor.Invoke(cmd, executeResult);
             }
         }
 
-        public void Save(string file)
+        public void Add(object setting)
         {
-            using (var writer = new StreamWriter(file))
-            {
-                var str = JsonConvert.SerializeObject(_commands, new JsonSerializerSettings
-                {
-                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
-                    TypeNameHandling = TypeNameHandling.Auto,
-                    Formatting = Formatting.Indented
-                });
-                writer.WriteLine(str);
-            }
-            File = file;
+            var command = Setting.Create(setting);
+            Commands.Add(command);
         }
 
+        //        });
+        //            Formatting = Formatting.Indented
+        //            TypeNameHandling = TypeNameHandling.Auto,
+        //            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+        //        {
+        //        var str = JsonConvert.SerializeObject(_commands, new JsonSerializerSettings
+        //    {
+        //    using (var writer = new StreamWriter(this.File))
+        //{
 
-        public static CommandSet CreateFrom(string file)
-        {
-            if (file == null) throw new ArgumentNullException("file");
-            if (!System.IO.File.Exists(file))
-                throw new FileNotFoundException("File not find", file);
-            using (var reader = new StreamReader(file))
-            {
-                var json = reader.ReadToEnd();
-                var commands = JsonConvert.DeserializeObject<IList<ICommand>>(json, new JsonSerializerSettings
-                {
-                    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
-                    TypeNameHandling = TypeNameHandling.Objects
-                });
-                return new CommandSet(commands)
-                {
-                    File = file
-                };
-            }
-        }
+        //public void Save()
+        //        writer.WriteLine(str);
+        //    }
 
-        public static CommandSet Create()
-        {
-            return new CommandSet();
-        }
+        //}
+
+
+        //public static CommandSet CreateFrom(string file)
+        //{
+        //    if (file == null) throw new ArgumentNullException("file");
+        //    if (!System.IO.File.Exists(file))
+        //        throw new FileNotFoundException("File not find", file);
+        //    using (var reader = new StreamReader(file))
+        //    {
+        //        var json = reader.ReadToEnd();
+        //        var commands = JsonConvert.DeserializeObject<IList<ICommand>>(json, new JsonSerializerSettings
+        //        {
+        //            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+        //            TypeNameHandling = TypeNameHandling.Objects
+        //        });
+        //        return new CommandSet(file)
+        //        {
+        //            File = file
+        //        };
+        //    }
+        //}
     }
 }

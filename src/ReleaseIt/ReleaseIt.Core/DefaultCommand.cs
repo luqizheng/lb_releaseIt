@@ -1,4 +1,4 @@
-﻿using ReleaseIt.CommandFinders;
+﻿using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt.Publish
 {

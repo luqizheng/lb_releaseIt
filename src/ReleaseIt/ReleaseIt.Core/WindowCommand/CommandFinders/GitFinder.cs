@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ReleaseIt.CommandFinders
+namespace ReleaseIt.WindowCommand.CommandFinders
 {
     public class GitFinder : ICommandFinder
     {

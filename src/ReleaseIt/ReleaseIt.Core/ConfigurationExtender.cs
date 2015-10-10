@@ -1,59 +1,29 @@
-﻿using ReleaseIt.MsBuilds;
-using ReleaseIt.Publish;
-using ReleaseIt.VersionControls;
+using ReleaseIt.WindowCommand;
+using ReleaseIt.WindowCommand.MsBuilds;
+using ReleaseIt.WindowCommand.Publish;
+using ReleaseIt.WindowCommand.VersionControls;
 
 namespace ReleaseIt
 {
     public static class ConfigurationExtender
     {
-        public static MsBuildCommandBuilder MsBuild(this CommandSet set, bool forWeb)
+        public static CommandSet ForWidnow(this CommandSet set)
         {
-            var msbuid = new MsBuild
+            var commandSettings = new ConfigurationSetting();
+            commandSettings.Regist(typeof (VersionControlSetting), setting =>
             {
-                BuildLogFile = true,
-                Target = new[]
-                {
-                    "ResolveReferences",
-                    "Compile" 
-                }
-            };
-            msbuid.AddProperty("_ResolveReferenceDependencies", "true");
-            set.Commands.Add(msbuid);
-            return new MsBuildCommandBuilder(msbuid, forWeb);
+                var vcSetting = (VersionControlSetting) setting;
+                if (vcSetting.VersionControlType == VersionControlType.Git)
+                    return new Git(vcSetting);
+                return new Svn(vcSetting);
+            });
+
+            commandSettings.Regist(typeof (BuildSetting), setting => new MsBuildCommand((BuildSetting) setting));
+            commandSettings.Regist(typeof (CopySetting), setting => new XCopy((CopySetting) setting));
+            set.Setting = commandSettings;
+            set.Executor = new ProcessExecutor();
+
+            return set;
         }
-
-        public static VersionControlerBuilder Svn(this CommandSet set)
-        {
-            var d = new Svn();
-            set.Commands.Add(d);
-            return new VersionControlerBuilder(d);
-        }
-
-        public static VersionControlerBuilder Git(this CommandSet set)
-        {
-            var d = new Git();
-            set.Commands.Add(d);
-            return new VersionControlerBuilder(d);
-        }
-
-        public static VersionControlerBuilder Git(this CommandSet set,string url)
-        {
-            var d = new Git();
-            set.Commands.Add(d);
-            return new VersionControlerBuilder(d);
-        }
-
-
-        public static XCopyBuilder CopyTo(this CommandSet set, string path)
-        {
-            var d = new XCopy()
-            {
-                TargetPath = path
-            };
-            set.Commands.Add(d);
-            return new XCopyBuilder(d);
-        }
-
-
     }
 }

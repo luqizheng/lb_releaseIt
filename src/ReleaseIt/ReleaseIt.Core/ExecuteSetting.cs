@@ -1,11 +1,13 @@
+using System;
+
 namespace ReleaseIt
 {
-    public class ExceuteResult
+    public class ExecuteSetting:ICloneable
     {
         private string _workDirectory;
         private string _resultFolder;
 
-        public ExceuteResult(string startFolder)
+        public ExecuteSetting(string startFolder)
         {
             this.StartFolder = startFolder;
         }
@@ -35,6 +37,18 @@ namespace ReleaseIt
         {
             get { return _workDirectory ?? StartFolder; }
             set { _workDirectory = value; }
+        }
+
+
+        public object Clone()
+        {
+            return new ExecuteSetting(this.StartFolder)
+            {
+                ExecuteFile = ExecuteFile,
+                WorkDirectory = WorkDirectory,
+                ResultFolder = ResultFolder,
+
+            };
         }
     }
 }

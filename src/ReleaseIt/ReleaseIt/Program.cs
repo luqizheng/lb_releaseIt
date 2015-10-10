@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters;
+using Newtonsoft.Json;
+using ReleaseIt.WindowCommand.Publish;
 
 namespace ReleaseIt
 {
@@ -32,23 +36,55 @@ namespace ReleaseIt
                 }
             }
             var fileInfo = new FileInfo(args[0]);
-            CommandSet.CreateFrom(args[0]).Invoke(fileInfo.Directory.FullName);
+            From(fileInfo.FullName).Invoke();
+
         }
 
         private static void ShowSetting(string fileName)
         {
             //CreateTemplate
 
-            var command = CommandSet.Create();
-            command.Svn().Url("http://svn.address.com/trunk").UserName("username", "password")
+            var command = new CommandSet(new FileInfo(fileName).Directory.FullName);
+            command.ForWidnow();
+
+            command.Svn().Url("http://svn.address.com/trunk").Auth
+                ("username", "password")
                 .WorkingCopy("workongfolder");
-            command.MsBuild(true).Release().ProjectPath("/mypathforcsproj").CopyTo("PublishPath");
+            command.Build(true).Release().ProjectPath("/mypathfor.csproj").CopyTo("publish/%projName%");
 
             command.CopyTo("publish");
 
-            command.Save(fileName);
+            Save(command, fileName);
         }
 
+        private static readonly JsonSerializerSettings setting = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            TypeNameHandling = TypeNameHandling.Auto,
+            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
+        };
+
+        private static void Save(CommandSet set, string filename)
+        {
+            var commands = set.Commands;
+            var str = JsonConvert.SerializeObject(commands, setting);
+            using (var writer = new StreamWriter(filename))
+            {
+                writer.Write(str);
+            }
+        }
+
+        private static CommandSet From(string filename)
+        {
+            using (var reader = new StreamReader(filename))
+            {
+                var str = reader.ReadToEnd();
+                reader.Close();
+                var command = new CommandSet(new FileInfo(filename).Directory.FullName,JsonConvert.DeserializeObject<IList<ICommand>>(str));
+                
+                return command;
+            }
+        }
         /*
         private static void ShowSetting_bak(string fileName)
         {

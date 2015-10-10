@@ -1,4 +1,4 @@
-﻿namespace ReleaseIt.MsBuilds
+﻿namespace ReleaseIt
 {
     public enum LogLevel
     {

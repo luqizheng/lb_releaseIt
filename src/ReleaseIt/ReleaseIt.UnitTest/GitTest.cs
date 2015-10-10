@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ReleaseIt.VersionControls;
+using ReleaseIt.WindowCommand.VersionControls;
 
 namespace ReleaseIt.UnitTest
 {

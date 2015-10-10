@@ -1,6 +1,6 @@
 namespace ReleaseIt.ParameterBuilder
 {
-    public interface ICmdParameter
+    internal interface ICmdParameter
     {
         string Build();
     }

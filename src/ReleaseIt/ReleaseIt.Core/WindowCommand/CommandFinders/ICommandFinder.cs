@@ -1,4 +1,4 @@
-namespace ReleaseIt.CommandFinders
+namespace ReleaseIt.WindowCommand.CommandFinders
 {
     public interface ICommandFinder
     {

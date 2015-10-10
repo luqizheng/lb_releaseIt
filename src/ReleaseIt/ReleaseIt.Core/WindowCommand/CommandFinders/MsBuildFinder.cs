@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace ReleaseIt.CommandFinders
+namespace ReleaseIt.WindowCommand.CommandFinders
 {
     public class MsBuildFinder : ICommandFinder
     {
         public string Name
         {
-            get { return "MsBuild"; }
+            get { return "BuildSetting"; }
         }
 
         public string FindCmd()

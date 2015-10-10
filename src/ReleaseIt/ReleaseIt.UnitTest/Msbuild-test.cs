@@ -29,7 +29,7 @@ namespace ReleaseIt.UnitTest
                 .Release()
                 .CopyTo("PublishFolder/Web");
 
-            faoCommandFactory.Invoke("");
+            faoCommandFactory.Invoke();
             var debugFolder = Path.Combine(webFolder, "Web.config");
 
             Assert.IsTrue(File.Exists(debugFolder));

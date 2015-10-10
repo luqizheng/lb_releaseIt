@@ -2,7 +2,7 @@
 
 namespace ReleaseIt.ParameterBuilder
 {
-    public class ParameterWithValue<T> : Parameter
+    internal class ParameterWithValue<T> : Parameter
     {
         private readonly Func<T, string> _convert;
 
@@ -14,6 +14,13 @@ namespace ReleaseIt.ParameterBuilder
             : this(name, T => Convert.ToString(T))
         {
         }
+
+        public ParameterWithValue(string name, T value)
+            : this(name, T => Convert.ToString(T))
+        {
+            Value = value;
+        }
+
 
         public ParameterWithValue(string name, Func<T, string> convert)
             : base(name)
@@ -34,7 +41,6 @@ namespace ReleaseIt.ParameterBuilder
                 if (!ReferenceEquals(_value, value))
                 {
                     _value = value;
-                    HasSet = true;
                 }
             }
         }
@@ -43,11 +49,7 @@ namespace ReleaseIt.ParameterBuilder
 
         public override string Build()
         {
-            if (HasSet)
-            {
-                return string.Format("{0}{2}{1}", _parameterName, _convert(Value), ValueSplitChar);
-            }
-            return "";
+            return string.Format("{0}{2}{1}", _parameterName, _convert(Value), ValueSplitChar);
         }
     }
 }
