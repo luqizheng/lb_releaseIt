@@ -16,7 +16,7 @@ namespace ReleaseIt.WindowCommand.CommandFinders
             var list = new List<string>();
             foreach (var driver in Environment.GetLogicalDrives())
             {
-                list.Add(Path.Combine(driver, "Program Files"+ "Git", "bin", "Git.exe"));
+                list.Add(Path.Combine(driver, "Program Files" + "Git", "bin", "Git.exe"));
                 if (Environment.Is64BitOperatingSystem)
                 {
                     list.Add(Path.Combine(driver, "Program Files (x86)", "Git", "bin", "Git.exe"));

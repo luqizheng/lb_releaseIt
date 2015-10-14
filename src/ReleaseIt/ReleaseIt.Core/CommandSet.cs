@@ -61,41 +61,6 @@ namespace ReleaseIt
             Commands.Add(command);
         }
 
-        //        });
-        //            Formatting = Formatting.Indented
-        //            TypeNameHandling = TypeNameHandling.Auto,
-        //            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
-        //        {
-        //        var str = JsonConvert.SerializeObject(_commands, new JsonSerializerSettings
-        //    {
-        //    using (var writer = new StreamWriter(this.File))
-        //{
-
-        //public void Save()
-        //        writer.WriteLine(str);
-        //    }
-
-        //}
-
-
-        //public static CommandSet CreateFrom(string file)
-        //{
-        //    if (file == null) throw new ArgumentNullException("file");
-        //    if (!System.IO.File.Exists(file))
-        //        throw new FileNotFoundException("File not find", file);
-        //    using (var reader = new StreamReader(file))
-        //    {
-        //        var json = reader.ReadToEnd();
-        //        var commands = JsonConvert.DeserializeObject<IList<ICommand>>(json, new JsonSerializerSettings
-        //        {
-        //            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
-        //            TypeNameHandling = TypeNameHandling.Objects
-        //        });
-        //        return new CommandSet(file)
-        //        {
-        //            File = file
-        //        };
-        //    }
-        //}
+     
     }
 }

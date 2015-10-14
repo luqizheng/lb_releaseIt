@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using Newtonsoft.Json;
 using ReleaseIt.WindowCommand.Publish;
 
@@ -9,14 +11,19 @@ namespace ReleaseIt
 {
     internal class Program
     {
+        private static readonly JsonSerializerSettings setting = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            TypeNameHandling = TypeNameHandling.Auto,
+            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
+        };
+
         private static void Main(string[] args)
         {
             Console.Clear();
             Console.WriteLine("LB_Release 1.0");
             Console.WriteLine();
             Console.WriteLine();
-            var fileName = "";
-            var parameter = "";
             for (var index = 0; index < args.Length; index++)
             {
                 var arg = args[index];
@@ -36,8 +43,9 @@ namespace ReleaseIt
                 }
             }
             var fileInfo = new FileInfo(args[0]);
-            From(fileInfo.FullName).Invoke();
-
+            var commandSet = new CommandSet(fileInfo.Directory.FullName);
+            From(fileInfo.FullName, commandSet);
+            commandSet.Invoke();
         }
 
         private static void ShowSetting(string fileName)
@@ -57,34 +65,33 @@ namespace ReleaseIt
             Save(command, fileName);
         }
 
-        private static readonly JsonSerializerSettings setting = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.Indented,
-            TypeNameHandling = TypeNameHandling.Auto,
-            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple,
-        };
-
         private static void Save(CommandSet set, string filename)
         {
-            var commands = set.Commands;
-            var str = JsonConvert.SerializeObject(commands, setting);
-            using (var writer = new StreamWriter(filename))
+            // var commands = set.Commands;
+            //var str = JsonConvert.SerializeObject(commands, setting);
+            using (var stream = new MemoryStream())
             {
-                writer.Write(str);
+                var ser = new DataContractJsonSerializer(typeof (CommandSet), set.Setting.GetRegistTypes());
+                ser.WriteObject(stream, set.Commands);
+
+                using (var writer = new StreamWriter(filename))
+                {
+                    writer.Write(Encoding.UTF8.GetString(stream.ToArray()));
+                }
             }
         }
 
-        private static CommandSet From(string filename)
+        private static void From(string filename, CommandSet set)
         {
-            using (var reader = new StreamReader(filename))
+            using (var reader = File.OpenRead(filename))
             {
-                var str = reader.ReadToEnd();
-                reader.Close();
-                var command = new CommandSet(new FileInfo(filename).Directory.FullName,JsonConvert.DeserializeObject<IList<ICommand>>(str));
-                
-                return command;
+                var ser = new DataContractJsonSerializer(typeof (CommandSet), set.Setting.GetRegistTypes());
+                var commands = (IList<ICommand>) ser.ReadObject(reader);
+                foreach (var command in commands)
+                    set.Commands.Add(command);
             }
         }
+
         /*
         private static void ShowSetting_bak(string fileName)
         {

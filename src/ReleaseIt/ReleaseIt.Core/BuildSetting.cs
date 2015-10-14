@@ -1,5 +1,8 @@
-﻿namespace ReleaseIt
+﻿using System.Runtime.Serialization;
+
+namespace ReleaseIt
 {
+      [DataContract]
     public class BuildSetting
     {
         public BuildSetting()
@@ -7,16 +10,17 @@
             //_properities.Value = new List<ParameterWithValue<string>>();
             BuildConfiguration = "Debug";
         }
-
+          [DataMember]
         public bool IsWeb { get; set; }
+          [DataMember]
         public bool BuildLogFile { get; set; }
-
+          [DataMember]
         public LogLevel LogLevel { get; set; }
-
+          [DataMember]
         public string OutputDirectory { get; set; }
-
+          [DataMember]
         public string ProjectPath { get; set; }
-
+          [DataMember]
         public string BuildConfiguration { get; set; }
     }
 
@@ -24,7 +28,7 @@
     {
         public static BuildSettingBuilder Build(this CommandSet set, bool isWeb)
         {
-            var buildSetting = new BuildSetting()
+            var buildSetting = new BuildSetting
             {
                 IsWeb = isWeb
             };
@@ -47,10 +51,13 @@
             return BuildConfiguration("Release");
         }
 
-
+        /// <summary>
+        ///     Build Configruation for Debug
+        /// </summary>
+        /// <returns></returns>
         public BuildSettingBuilder Debug()
         {
-           return BuildConfiguration("Debug");
+            return BuildConfiguration("Debug");
         }
 
         public BuildSettingBuilder BuildConfiguration(string setting)
@@ -68,7 +75,7 @@
 
         public BuildSettingBuilder CopyTo(string outputDir)
         {
-            this._setting.OutputDirectory = outputDir;
+            _setting.OutputDirectory = outputDir;
             return this;
         }
     }

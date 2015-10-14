@@ -1,7 +1,9 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace ReleaseIt
 {
+  
     public class ExecuteSetting:ICloneable
     {
         private string _workDirectory;

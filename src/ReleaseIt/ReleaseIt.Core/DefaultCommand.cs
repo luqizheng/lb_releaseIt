@@ -1,6 +1,6 @@
 ﻿using ReleaseIt.WindowCommand.CommandFinders;
 
-namespace ReleaseIt.Publish
+namespace ReleaseIt
 {
     public class DefaultCommand : ICommandFinder
     {

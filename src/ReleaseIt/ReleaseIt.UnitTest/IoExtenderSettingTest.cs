@@ -48,7 +48,7 @@ namespace ReleaseIt.UnitTest
 
             var myPath = new DirectoryInfo(dirPath);
 
-            IoExtender.CreateEx(myPath);
+            myPath.CreateEx();
         }
     }
 }

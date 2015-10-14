@@ -49,7 +49,7 @@ namespace ReleaseIt.ParameterBuilder
 
         public override string Build()
         {
-            return string.Format("{0}{2}{1}", _parameterName, _convert(Value), ValueSplitChar);
+            return string.Format("{3}{0}{2}{1}", _parameterName, _convert(Value), ValueSplitChar, Prefix);
         }
     }
 }

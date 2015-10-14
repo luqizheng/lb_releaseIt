@@ -1,4 +1,7 @@
-﻿namespace ReleaseIt
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace ReleaseIt
 {
     public enum VersionControlType
     {
@@ -9,20 +12,29 @@
 
     public class VersionControlSetting
     {
-        public VersionControlSetting()
-        {
-
-        }
-
+        private string _url;
+        [DataMember]
         public VersionControlType VersionControlType { set; get; }
+        [DataMember]
         public string WorkingCopy { get; set; }
-
-        public string Url { get; set; }
-
+        [DataMember]
+        public string Url
+        {
+            get { return _url; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("value", "Url should not be null.");
+                }
+                _url = value.Trim();
+            }
+        }
+        [DataMember]
         public string Branch { get; set; }
-
+        [DataMember]
         public string UserName { get; set; }
-
+        [DataMember]
         public string Password { get; set; }
     }
 
@@ -30,7 +42,7 @@
     {
         public static VCBuilder Svn(this CommandSet set)
         {
-            var result = new VersionControlSetting()
+            var result = new VersionControlSetting
             {
                 VersionControlType = VersionControlType.Svn
             };
@@ -40,7 +52,7 @@
 
         public static VCBuilder Git(this CommandSet set)
         {
-            var result = new VersionControlSetting()
+            var result = new VersionControlSetting
             {
                 VersionControlType = VersionControlType.Git
             };
@@ -60,22 +72,22 @@
 
         public VCBuilder Url(string url)
         {
-            this._setting.Url = url;;
+            _setting.Url = url;
+            ;
             return this;
         }
 
         public VCBuilder Auth(string username, string password)
         {
-            this._setting.UserName = username;
-            this._setting.Password = password;
+            _setting.UserName = username;
+            _setting.Password = password;
             return this;
         }
 
         public VCBuilder WorkingCopy(string workingCopy)
         {
-            this._setting.WorkingCopy = workingCopy;
+            _setting.WorkingCopy = workingCopy;
             return this;
         }
-
     }
 }

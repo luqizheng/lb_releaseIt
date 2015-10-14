@@ -26,10 +26,12 @@ namespace ReleaseIt.WindowCommand.MsBuilds
         public MsBuildCommand()
             : base(new MsBuildFinder())
         {
-            
+            _target.Value = new List<Parameter>();
+            _properities.Value = new List<ParameterWithValue<string>>();
         }
+
         public MsBuildCommand(BuildSetting msbuild)
-            : base(new MsBuildFinder())
+            : this()
         {
             Setting = msbuild;
         }

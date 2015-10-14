@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ReleaseIt.ParameterBuilder;
 using ReleaseIt.WindowCommand.CommandFinders;
@@ -7,8 +8,6 @@ namespace ReleaseIt.WindowCommand.VersionControls
 {
     public class Svn : Command
     {
-        
-
         public Svn(VersionControlSetting setting)
             : base(new SvnFinder())
         {
@@ -19,34 +18,47 @@ namespace ReleaseIt.WindowCommand.VersionControls
 
         private ICmdParameter[] BuildParameters(ExecuteSetting executeResult)
         {
-            var workingCopy = IoExtender.GetPath(executeResult.StartFolder, Setting.WorkingCopy);
+            var workingCopy = IoExtender.GetPath(executeResult.StartFolder, GetWorkingCopy());
 
             if (!Directory.Exists(workingCopy))
             {
-                return new ICmdParameter[]
+                var list = new List<ICmdParameter>
                 {
                     new Parameter("", "checkout"),
                     new Parameter("", Setting.Url),
-                    new Parameter("", workingCopy),
-                    new ParameterWithValue<string>("username")
+                    new Parameter("", workingCopy)
+                };
+                if (Setting.UserName != null)
+                {
+                    list.Add(new ParameterWithValue<string>("username")
                     {
                         Prefix = "--",
                         Value = Setting.UserName,
                         ValueSplitChar = " "
-                    },
-                    new ParameterWithValue<string>("password")
+                    });
+                    list.Add(new ParameterWithValue<string>("password")
                     {
                         Prefix = "--",
                         Value = Setting.Password,
                         ValueSplitChar = " "
-                    }
-                };
+                    });
+                }
+                return list.ToArray();
             }
             executeResult.WorkDirectory = workingCopy; //update需要改变workDirecotry.
             return new ICmdParameter[]
             {
                 new Parameter("", "update")
             };
+        }
+
+        private string GetWorkingCopy()
+        {
+            if (string.IsNullOrEmpty(Setting.WorkingCopy))
+            {
+                return Path.GetFileNameWithoutExtension(Setting.Url);
+            }
+            return Setting.WorkingCopy;
         }
 
 

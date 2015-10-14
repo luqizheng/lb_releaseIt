@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt
@@ -7,6 +8,7 @@ namespace ReleaseIt
     {
         protected Command(ICommandFinder finder)
         {
+            if (finder == null) throw new ArgumentNullException("finder");
             Finder = finder;
         }
 

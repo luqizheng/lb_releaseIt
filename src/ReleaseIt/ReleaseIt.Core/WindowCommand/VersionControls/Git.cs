@@ -9,7 +9,7 @@ namespace ReleaseIt.WindowCommand.VersionControls
 {
     public class Git : Command
     {
-
+        public const string FolderNameVariableName = "%gitName%";
 
         public Git(VersionControlSetting setting)
             : base(new GitFinder())
@@ -35,6 +35,10 @@ namespace ReleaseIt.WindowCommand.VersionControls
                     Prefix = "--"
                 });
             }
+            if (outputDir.Contains(" "))
+            {
+                outputDir = string.Format("\"{0}\"", outputDir);
+            }
             result.Add(new Parameter("", outputDir));
             return result.ToArray();
         }
@@ -59,11 +63,11 @@ namespace ReleaseIt.WindowCommand.VersionControls
 #endif
  string GetWorkingCopyName()
         {
-            if (Setting.WorkingCopy == "")
+            if (!string.IsNullOrEmpty(Setting.WorkingCopy) && Setting.WorkingCopy.Contains(FolderNameVariableName))
             {
-                //var pos = Setting.Url.LastIndexOf("/", StringComparison.Ordinal);
-                return Path.GetFileNameWithoutExtension(Setting.Url);
+                return Setting.WorkingCopy.Replace(FolderNameVariableName, Path.GetFileNameWithoutExtension(Setting.Url));
             }
+
             return Setting.WorkingCopy;
         }
 
@@ -74,7 +78,7 @@ namespace ReleaseIt.WindowCommand.VersionControls
         /// <returns></returns>
         private bool IsClone(string executeFolder, out string workingFolder)
         {
-            workingFolder = Path.GetFullPath(executeFolder + GetWorkingCopyName());
+            workingFolder = IoExtender.GetPath(executeFolder, GetWorkingCopyName());
             return !Directory.Exists(workingFolder);
         }
 

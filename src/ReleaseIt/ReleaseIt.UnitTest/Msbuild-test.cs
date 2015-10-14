@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ReleaseIt.WindowCommand.MsBuilds;
 
 namespace ReleaseIt.UnitTest
 {
     [TestClass]
     public class MsbuildTest
     {
-        public string ProjectPath
+        private string ProjectPath
         {
             get
             {
@@ -22,17 +23,24 @@ namespace ReleaseIt.UnitTest
         public void TestWebBuild()
         {
             var webFolder = Path.Combine(Environment.CurrentDirectory, "PublishFolder", "web");
-            Directory.Delete(webFolder, true);
-            var faoCommandFactory = new CommandSet();
-            faoCommandFactory.MsBuild(true)
-                .ProjectPath(ProjectPath)
-                .Release()
-                .CopyTo("PublishFolder/Web");
+            if (Directory.Exists(webFolder))
+            {
+                Directory.Delete(webFolder, true);
+            }
+            var setting = new BuildSetting
+            {
+                BuildConfiguration = "Release",
+                IsWeb = true,
+                ProjectPath = ProjectPath,
+                OutputDirectory = "PublishFolder/Web"
+            };
 
-            faoCommandFactory.Invoke();
-            var debugFolder = Path.Combine(webFolder, "Web.config");
-
-            Assert.IsTrue(File.Exists(debugFolder));
+            var s = new MsBuildCommand(setting);
+            var executeSetting = new ExecuteSetting("./");
+            var arguments = s.BuildArguments(executeSetting);
+            var expected =
+                ProjectPath+ @" /t:_CopyWebApplication;_WPPCopyWebApplication;TransformWebConfig /p:Configuration:Release;WebProjectOutputDir:PublishFolder/Web";
+            Assert.AreEqual(expected, arguments);
         }
 
         [TestMethod]

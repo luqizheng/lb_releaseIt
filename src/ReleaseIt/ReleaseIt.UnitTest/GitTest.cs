@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReleaseIt.WindowCommand.VersionControls;
 
@@ -12,29 +11,69 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void GitMakeUrl()
         {
-            var git = new Git()
+            var gitSetting = new VersionControlSetting
             {
                 Url = "https://github.com/aspnet/Identity.git",
                 UserName = "Test",
                 Password = "Pwd"
             };
-
+            var git = new Git(gitSetting);
             var s = git.MakeUrl();
-            Assert.AreEqual("https://" + git.UserName + ":" + git.Password + "@github.com/aspnet/Identity.git", s);
+            Assert.AreEqual(
+                "https://" + gitSetting.UserName + ":" + gitSetting.Password + "@github.com/aspnet/Identity.git", s);
         }
 
         [TestMethod]
-        public void TryToGet()
+        public void BuildArguments_clone()
         {
-            var commandFactory = CommandSet.Create();
-            commandFactory.Git().Url("https://github.com/aspnet/Identity.git");
-            //commandFactory.Invoke("test");
-            commandFactory.Save("a.json");
-            Assert.IsTrue(Directory.Exists("test"));
-            Assert.IsTrue(Directory.Exists("test/Identity"));
+            var gitSetting = new VersionControlSetting
+            {
+                Url = "https://github.com/aspnet/Identity.git",
+                UserName = "Test",
+                Password = "Pwd",
+                WorkingCopy = "%gitName%"
+            };
+            var git = new Git(gitSetting);
 
+            var executeSetting = new ExecuteSetting("./noexistFolder");
+            var arguments = git.BuildArguments(executeSetting);
+            var expect = @"clone https://Test:Pwd@github.com/aspnet/Identity.git ./noexistFolder\Identity";
+            Assert.AreEqual(expect, arguments);
+        }
 
+        [TestMethod]
+        public void BuildArguments_pull()
+        {
+            var gitSetting = new VersionControlSetting
+            {
+                Url = "https://github.com/aspnet/Identity.git",
+                UserName = "Test",
+                Password = "Pwd",
+                WorkingCopy = "../"
+            };
+            var git = new Git(gitSetting);
 
+            var executeSetting = new ExecuteSetting("./noexistFolder");
+            var arguments = git.BuildArguments(executeSetting);
+            var expect = @"pull";
+            Assert.AreEqual(expect, arguments);
+        }
+
+        [TestMethod]
+        public void BuildArguments_clone_without_pwd()
+        {
+            var gitSetting = new VersionControlSetting
+            {
+                Url = "https://github.com/aspnet/Identity.git",
+                WorkingCopy = "newcopy"
+            };
+            var git = new Git(gitSetting);
+
+            var executeSetting = new ExecuteSetting(Environment.CurrentDirectory);
+            var arguments = git.BuildArguments(executeSetting);
+            var expect = @"clone https://github.com/aspnet/Identity.git " +
+                         Path.Combine(Environment.CurrentDirectory, gitSetting.WorkingCopy);
+            Assert.AreEqual(expect, arguments);
         }
     }
 }
