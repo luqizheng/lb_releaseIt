@@ -5,7 +5,9 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
+using ReleaseIt.IniStore;
 using ReleaseIt.WindowCommand.Publish;
 
 namespace ReleaseIt
@@ -44,9 +46,8 @@ namespace ReleaseIt
                 }
             }
             var fileInfo = new FileInfo(args[0]);
-            var commandSet = new CommandSet(fileInfo.Directory.FullName);
+            var commandSet = From(fileInfo.FullName);
             commandSet.ForWidnow();
-            From(fileInfo.FullName, commandSet);
             commandSet.Invoke();
         }
 
@@ -63,36 +64,44 @@ namespace ReleaseIt
             command.Build(true).Release().ProjectPath("/mypathfor.csproj").CopyTo("publish/%projName%");
 
             command.CopyTo("publish");
+            SaveXml(command, fileName);
 
-            Save(command, fileName);
+            //Save(command, fileName);
         }
 
-        private static void Save(CommandSet set, string filename)
+        private static void SaveXml(CommandSet set, string fileName)
         {
-            // var commands = set.Commands;
-            //var str = JsonConvert.SerializeObject(commands, setting);
-            using (var stream = new MemoryStream())
-            {
-                var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>),
-                    set.Setting.GetRegistTypes());
-                ser.WriteObject(stream, set.Commands.Select(s => s.Setting));
-
-                using (var writer = new StreamWriter(filename))
-                {
-                    writer.Write(Encoding.UTF8.GetString(stream.ToArray()).Replace(",", ",\r\n"));
-                }
-            }
+            SettingManager manager = new SettingManager();
+            manager.Save(set, fileName);
         }
+        //private static void Save(CommandSet set, string filename)
+        //{
+        //    // var commands = set.Commands;
+        //    //var str = JsonConvert.SerializeObject(commands, setting);
+        //    using (var stream = new MemoryStream())
+        //    {
+        //        var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>),
+        //            set.Setting.GetRegistTypes());
+        //        ser.WriteObject(stream, set.Commands.Select(s => s.Setting));
 
-        private static void From(string filename, CommandSet set)
+        //        using (var writer = new StreamWriter(filename))
+        //        {
+        //            writer.Write(Encoding.UTF8.GetString(stream.ToArray()).Replace(",", ",\r\n"));
+        //        }
+        //    }
+        //}
+
+        private static CommandSet From(string filename)
         {
-            using (var reader = File.OpenRead(filename))
-            {
-                var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>), set.Setting.GetRegistTypes());
-                var commands = (IList<object>)ser.ReadObject(reader);
-                foreach (var command in commands)
-                    set.Add(command);
-            }
+            SettingManager manager = new SettingManager();
+            return manager.From(filename);
+            //using (var reader = File.OpenRead(filename))
+            //{
+            //    var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>), set.Setting.GetRegistTypes());
+            //    var commands = (IList<object>)ser.ReadObject(reader);
+            //    foreach (var command in commands)
+            //        set.Add(command);
+            //}
         }
 
 

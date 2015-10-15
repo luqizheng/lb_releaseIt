@@ -12,7 +12,11 @@ namespace ReleaseIt
             : this(dirDirecotry, new List<ICommand>())
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workDirectory"></param>
+        /// <param name="commands"></param>
         public CommandSet(string workDirectory, IList<ICommand> commands)
         {
             _workDirectory = workDirectory;
@@ -41,10 +45,11 @@ namespace ReleaseIt
             }
         }
 
-        public void Add(object setting)
+        public ICommand Add(Setting setting)
         {
             var command = Setting.Create(setting);
             Commands.Add(command);
+            return command;
         }
     }
 }

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace ReleaseIt
 {
-    
-    public class ConfigurationSetting
+    public class ConfigurationSetting : Setting
     {
         private readonly Dictionary<Type, Func<object, ICommand>> _builder =
             new Dictionary<Type, Func<object, ICommand>>();
+
         public ICommand Create(object setting)
         {
             var type = setting.GetType();

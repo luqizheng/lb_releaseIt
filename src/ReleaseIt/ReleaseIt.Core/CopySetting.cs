@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace ReleaseIt
 {
     [DataContract]
-    public class CopySetting
+    public class CopySetting : Setting
     {
         [DataMember]
         public string TargetPath { get; set; }

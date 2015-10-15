@@ -16,11 +16,16 @@ namespace ReleaseIt.WindowCommand.VersionControls
             Setting = setting;
         }
 
-
+        public override void Invoke(ExecuteSetting executeSetting)
+        {
+            base.Invoke(executeSetting);
+            executeSetting.WorkDirectory = null; //reset workDirectory
+        }
 
         private ICmdParameter[] BuildParameters(ExecuteSetting executeResult)
         {
             var workingCopy = IoExtender.GetPath(executeResult.StartFolder, GetWorkingCopy());
+            executeResult.ResultFolder = workingCopy;
 
             if (!Directory.Exists(workingCopy))
             {
@@ -32,18 +37,8 @@ namespace ReleaseIt.WindowCommand.VersionControls
                 };
                 if (Setting.UserName != null)
                 {
-                    list.Add(new ParameterWithValue<string>("username")
-                    {
-                        Prefix = "--",
-                        Value = Setting.UserName,
-                        ValueSplitChar = " "
-                    });
-                    list.Add(new ParameterWithValue<string>("password")
-                    {
-                        Prefix = "--",
-                        Value = Setting.Password,
-                        ValueSplitChar = " "
-                    });
+                    list.Add(CreateParameter("username", Setting.UserName));
+                    list.Add(CreateParameter("password", Setting.Password));
                 }
                 return list.ToArray();
             }
@@ -63,6 +58,15 @@ namespace ReleaseIt.WindowCommand.VersionControls
             return Setting.WorkingCopy;
         }
 
+        private ParameterWithValue<string> CreateParameter(string key, string val)
+        {
+            return new ParameterWithValue<string>(key)
+            {
+                Prefix = "--",
+                Value = val,
+                ValueSplitChar = " "
+            };
+        }
 
         public override string BuildArguments(ExecuteSetting executoSetting)
         {

@@ -6,7 +6,7 @@ using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt
 {
-    public abstract class ProcessCommand<T> : Command<T>
+    public abstract class ProcessCommand<T> : Command<T> where T : Setting
     {
         protected ProcessCommand(ICommandFinder finder)
         {

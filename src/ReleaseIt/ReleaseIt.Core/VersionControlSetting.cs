@@ -1,16 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace ReleaseIt
 {
-    public enum VersionControlType
-    {
-        Git,
-        Svn
-    }
-
-
-    public class VersionControlSetting
+    [Description("output")]
+    public class VersionControlSetting:Setting
     {
         private string _url;
         [DataMember]
@@ -36,29 +31,6 @@ namespace ReleaseIt
         public string UserName { get; set; }
         [DataMember]
         public string Password { get; set; }
-    }
-
-    public static class VcBuilderExtender
-    {
-        public static VCBuilder Svn(this CommandSet set)
-        {
-            var result = new VersionControlSetting
-            {
-                VersionControlType = VersionControlType.Svn
-            };
-            set.Add(result);
-            return new VCBuilder(result);
-        }
-
-        public static VCBuilder Git(this CommandSet set)
-        {
-            var result = new VersionControlSetting
-            {
-                VersionControlType = VersionControlType.Git
-            };
-            set.Add(result);
-            return new VCBuilder(result);
-        }
     }
 
     public class VCBuilder
@@ -90,4 +62,12 @@ namespace ReleaseIt
             return this;
         }
     }
+
+
+    public enum VersionControlType
+    {
+        Git,
+        Svn
+    }
+
 }

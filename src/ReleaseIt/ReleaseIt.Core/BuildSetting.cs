@@ -3,7 +3,7 @@
 namespace ReleaseIt
 {
       [DataContract]
-    public class BuildSetting
+    public class BuildSetting : Setting
     {
         public BuildSetting()
         {

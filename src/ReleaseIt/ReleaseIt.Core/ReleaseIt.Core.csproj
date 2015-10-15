@@ -48,11 +48,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="Commands\EmailSetting.cs" />
+    <Compile Include="IniStore\Ini.cs" />
+    <Compile Include="IniStore\SettingManager.cs" />
     <Compile Include="ProcessCommand.cs" />
     <Compile Include="CommandSet.cs" />
     <Compile Include="Commands\EmailCommand.cs" />
     <Compile Include="ConfigurationExtender.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="Setting.cs" />
+    <Compile Include="VcBuilderExtender.cs" />
     <Compile Include="WindowCommand\CommandFinders\GitFinder.cs" />
     <Compile Include="WindowCommand\CommandFinders\MsBuildFinder.cs" />
     <Compile Include="WindowCommand\CommandFinders\ProcessCommandFinder.cs" />
@@ -78,6 +83,7 @@
     <Compile Include="WindowCommand\VersionControls\Git.cs" />
     <Compile Include="WindowCommand\VersionControls\Svn.cs" />
     <Compile Include="VersionControlSetting.cs" />
+    <Compile Include="WindowCommand\VersionControls\SvnVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

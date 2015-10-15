@@ -8,6 +8,7 @@ namespace ReleaseIt.WindowCommand
     internal class ProcessExecutor
     {
         public void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)
+            where T : Setting
         {
             var commandPath = command.GetCommand(setting);
             var argus = command.BuildArguments(setting);
@@ -37,7 +38,7 @@ namespace ReleaseIt.WindowCommand
                         "{0} returned a non-zero exit code",
                         Path.GetFileName(psi.FileName)));
             }
-            setting.WorkDirectory = null; //reset workDirectory
+           
         }
 
         private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
