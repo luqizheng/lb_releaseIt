@@ -21,8 +21,6 @@ namespace ReleaseIt
             commandSettings.Regist(typeof (BuildSetting), setting => new MsBuildCommand((BuildSetting) setting));
             commandSettings.Regist(typeof (CopySetting), setting => new XCopy((CopySetting) setting));
             set.Setting = commandSettings;
-            set.Executor = new ProcessExecutor();
-
             return set;
         }
     }

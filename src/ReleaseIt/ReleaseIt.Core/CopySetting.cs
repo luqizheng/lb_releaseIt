@@ -12,8 +12,7 @@ namespace ReleaseIt
     {
         [DataMember]
         public string TargetPath { get; set; }
-        [DataMember]
-        public bool SaveLastCopyDate { get; set; }
+       
         [DataMember]
         public string UserName { get; set; }
         [DataMember]
@@ -24,7 +23,7 @@ namespace ReleaseIt
         [DataMember]
         public DateTime? LastCopyDate { get; set; }
         [DataMember]
-        public bool UserDateCompareCopy { get; set; }
+        public bool UseDateCompareCopy { get; set; }
 
     }
 }

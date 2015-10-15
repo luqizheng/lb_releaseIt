@@ -1,21 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using ReleaseIt.Executor;
-using ReleaseIt.WindowCommand;
 
 namespace ReleaseIt
 {
-    public interface ICommand
-    {
-        string BuildArguments(ExecuteSetting executoSetting);
-        string GetCommand(ExecuteSetting executorSetting);
-    }
-
     public class CommandSet
     {
         private readonly IList<ICommand> _commands;
         private readonly string _workDirectory;
-        private IExecutor _executor;
 
         public CommandSet(string dirDirecotry)
             : this(dirDirecotry, new List<ICommand>())
@@ -30,11 +21,6 @@ namespace ReleaseIt
 
         public ConfigurationSetting Setting { get; set; }
 
-        internal IExecutor Executor
-        {
-            get { return _executor ?? (_executor = new ProcessExecutor()); }
-            set { _executor = value; }
-        }
 
         public IList<ICommand> Commands
         {
@@ -51,7 +37,7 @@ namespace ReleaseIt
             var executeResult = new ExecuteSetting(_workDirectory);
             foreach (var cmd in _commands)
             {
-                Executor.Invoke(cmd, executeResult);
+                cmd.Finder.Executor.Invoke(cmd, executeResult);
             }
         }
 
@@ -60,7 +46,5 @@ namespace ReleaseIt
             var command = Setting.Create(setting);
             Commands.Add(command);
         }
-
-     
     }
 }

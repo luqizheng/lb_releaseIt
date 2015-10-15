@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -11,12 +12,12 @@ namespace ReleaseIt
 {
     internal class Program
     {
-        private static readonly JsonSerializerSettings setting = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            TypeNameHandling = TypeNameHandling.Auto,
-            TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
-        };
+        //private static readonly JsonSerializerSettings setting = new JsonSerializerSettings
+        //{
+        //    Formatting = Formatting.Indented,
+        //    TypeNameHandling = TypeNameHandling.Auto,
+        //    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
+        //};
 
         private static void Main(string[] args)
         {
@@ -44,6 +45,7 @@ namespace ReleaseIt
             }
             var fileInfo = new FileInfo(args[0]);
             var commandSet = new CommandSet(fileInfo.Directory.FullName);
+            commandSet.ForWidnow();
             From(fileInfo.FullName, commandSet);
             commandSet.Invoke();
         }
@@ -71,12 +73,13 @@ namespace ReleaseIt
             //var str = JsonConvert.SerializeObject(commands, setting);
             using (var stream = new MemoryStream())
             {
-                var ser = new DataContractJsonSerializer(typeof (CommandSet), set.Setting.GetRegistTypes());
-                ser.WriteObject(stream, set.Commands);
+                var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>),
+                    set.Setting.GetRegistTypes());
+                ser.WriteObject(stream, set.Commands.Select(s => s.Setting));
 
                 using (var writer = new StreamWriter(filename))
                 {
-                    writer.Write(Encoding.UTF8.GetString(stream.ToArray()));
+                    writer.Write(Encoding.UTF8.GetString(stream.ToArray()).Replace(",", ",\r\n"));
                 }
             }
         }
@@ -85,47 +88,13 @@ namespace ReleaseIt
         {
             using (var reader = File.OpenRead(filename))
             {
-                var ser = new DataContractJsonSerializer(typeof (CommandSet), set.Setting.GetRegistTypes());
-                var commands = (IList<ICommand>) ser.ReadObject(reader);
+                var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>), set.Setting.GetRegistTypes());
+                var commands = (IList<object>)ser.ReadObject(reader);
                 foreach (var command in commands)
-                    set.Commands.Add(command);
+                    set.Add(command);
             }
         }
 
-        /*
-        private static void ShowSetting_bak(string fileName)
-        {
-            var exists = File.Exists(fileName);
-            if (!exists)
-            {
-                Console.WriteLine(fileName + " is no exist. so will create a new one.");
-            }
-            var commands =
-                exists
-                    ? CommandSet.CreateFrom(fileName)
-                    : new CommandSet();
-
-            var directoryInfo = new FileInfo(fileName).Directory;
-            if (directoryInfo != null)
-                Current = new Top(!exists, (directoryInfo.FullName));
-            else
-            {
-                throw new ArgumentOutOfRangeException("fileName", fileName + "Not exist.");
-            }
-            while (true)
-            {
-                Current = Current.Do(commands, directoryInfo.FullName);
-                if (Current == null)
-                    break;
-            }
-            Console.WriteLine();
-            Console.WriteLine(Menu.ExitSaveOrNot.Description);
-            var cmd = Console.ReadLine();
-            if (cmd == "y" || cmd == "y")
-            {
-                commands.Save(fileName);
-            }
-        }*/
 
         private static void ShowHelp()
         {

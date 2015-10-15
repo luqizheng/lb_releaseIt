@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using ReleaseIt.ParameterBuilder;
 using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt.WindowCommand.VersionControls
 {
-    public class Git : Command
+    [DataContract]
+    public class Git : Command<VersionControlSetting>
     {
         public const string FolderNameVariableName = "%gitName%";
 
@@ -17,7 +19,7 @@ namespace ReleaseIt.WindowCommand.VersionControls
             Setting = setting;
         }
 
-        public VersionControlSetting Setting { get; set; }
+        public override VersionControlSetting Setting { get; protected set; }
 
         private ICmdParameter[] CloneParameters(string outputDir)
         {

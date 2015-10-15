@@ -38,6 +38,7 @@ namespace ReleaseIt.WindowCommand
                         "{0} returned a non-zero exit code",
                         Path.GetFileName(psi.FileName)));
             }
+            setting.WorkDirectory = null; //reset workDirectory
         }
 
         private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)

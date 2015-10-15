@@ -4,14 +4,14 @@ using System.IO;
 
 namespace ReleaseIt.WindowCommand.CommandFinders
 {
-    public class MsBuildFinder : ICommandFinder
+    public class MsBuildFinder : ProcessCommandFinder
     {
-        public string Name
+        public override string Name
         {
             get { return "BuildSetting"; }
         }
 
-        public string FindCmd()
+        public override string FindCmd()
         {
             var windir = Environment.ExpandEnvironmentVariables("%windir%");
 

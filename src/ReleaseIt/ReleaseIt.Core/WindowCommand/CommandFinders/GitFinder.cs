@@ -4,14 +4,14 @@ using System.IO;
 
 namespace ReleaseIt.WindowCommand.CommandFinders
 {
-    public class GitFinder : ICommandFinder
+    public class GitFinder : ProcessCommandFinder
     {
-        public string Name
+        public override string Name
         {
             get { return "Git"; }
         }
 
-        public string FindCmd()
+        public override string FindCmd()
         {
             var list = new List<string>();
             foreach (var driver in Environment.GetLogicalDrives())

@@ -49,10 +49,12 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="CommandSet.cs" />
+    <Compile Include="Commands\EmailCommand.cs" />
     <Compile Include="ConfigurationExtender.cs" />
-    <Compile Include="SettingStores\StoreSetting.cs" />
+    <Compile Include="ICommand.cs" />
     <Compile Include="WindowCommand\CommandFinders\GitFinder.cs" />
     <Compile Include="WindowCommand\CommandFinders\MsBuildFinder.cs" />
+    <Compile Include="WindowCommand\CommandFinders\ProcessCommandFinder.cs" />
     <Compile Include="WindowCommand\CommandFinders\SvnFinder.cs" />
     <Compile Include="ConfigurationSetting.cs" />
     <Compile Include="CopySetting.cs" />

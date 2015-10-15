@@ -4,14 +4,14 @@ using System.IO;
 
 namespace ReleaseIt.WindowCommand.CommandFinders
 {
-    public class SvnFinder : ICommandFinder
+    public class SvnFinder : ProcessCommandFinder
     {
-        public string Name
+        public override string Name
         {
             get { return "Svn"; }
         }
 
-        public string FindCmd()
+        public override string FindCmd()
         {
             var list = new List<string>();
             foreach (var driver in Environment.GetLogicalDrives())

@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using ReleaseIt.ParameterBuilder;
 using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt.WindowCommand.VersionControls
 {
-    public class Svn : Command
+    [DataContract]
+    public class Svn : Command<VersionControlSetting>
     {
         public Svn(VersionControlSetting setting)
             : base(new SvnFinder())
@@ -14,7 +16,7 @@ namespace ReleaseIt.WindowCommand.VersionControls
             Setting = setting;
         }
 
-        public VersionControlSetting Setting { get; set; }
+        public override VersionControlSetting Setting { get; protected set; }
 
         private ICmdParameter[] BuildParameters(ExecuteSetting executeResult)
         {

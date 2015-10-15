@@ -14,7 +14,7 @@
         }
 
         public string Prefix { get; set; }
-        
+
         public string Name { get; set; }
 
         public virtual string Build()
