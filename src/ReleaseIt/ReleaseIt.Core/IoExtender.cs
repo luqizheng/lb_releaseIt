@@ -92,5 +92,12 @@ namespace ReleaseIt
             return Path.Combine(workingDirectory, settingPath);
 
         }
+
+        public static string WrapperPath(string s)
+        {
+
+            return string.Format("\"{0}\"", s);
+
+        }
     }
 }

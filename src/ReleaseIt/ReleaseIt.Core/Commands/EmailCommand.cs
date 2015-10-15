@@ -41,7 +41,7 @@ namespace ReleaseIt.Commands
         public override void Invoke(ExecuteSetting executeSetting)
         {
             var client = new SmtpClient(Setting.Host, Setting.Port);
-            var mess = this.Setting.Create(executeSetting);
+            var mess = Setting.Create(executeSetting);
             client.Send(mess);
         }
     }

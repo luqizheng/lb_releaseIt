@@ -38,11 +38,15 @@ namespace ReleaseIt.WindowCommand.MsBuilds
             Setting = msbuild;
         }
 
- 
 
         public override string BuildArguments(ExecuteSetting executoSetting)
         {
             BuildEnviVariable(executoSetting);
+            var projectFile =
+                executoSetting.BuildByVariable(IoExtender.GetPath(executoSetting.StartFolder, Setting.ProjectPath));
+            executoSetting.ResultFolder = (new FileInfo(projectFile)).Directory.FullName;
+
+            projectFile = IoExtender.WrapperPath(projectFile);
 
 
             _properities.Value.Add(CreateProperty("Configuration", Setting.BuildConfiguration ?? "Debug"));
@@ -56,14 +60,13 @@ namespace ReleaseIt.WindowCommand.MsBuilds
             if (Setting.OutputDirectory != null)
             {
                 var outputdir = executoSetting.BuildByVariable(Setting.OutputDirectory);
+                outputdir = IoExtender.GetPath(executoSetting.StartFolder, outputdir);
+                executoSetting.ResultFolder = outputdir;
+                outputdir = IoExtender.WrapperPath(outputdir);
                 var outputParam = CreateProperty(Setting.IsWeb ? "WebProjectOutputDir" : "outDir", outputdir);
                 _properities.Value.Add(outputParam);
-                executoSetting.ResultFolder = outputParam.Value;
             }
 
-
-            var projectFile =
-                executoSetting.BuildByVariable(IoExtender.GetPath(executoSetting.StartFolder, Setting.ProjectPath));
             return string.Format("{0} {1} {2}", projectFile, _target.Build(), _properities.Build());
         }
 

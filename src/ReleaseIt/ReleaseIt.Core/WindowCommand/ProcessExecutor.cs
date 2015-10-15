@@ -20,7 +20,7 @@ namespace ReleaseIt.WindowCommand
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
-
+            Console.WriteLine(commandPath + " " + argus);
             using (var process = new Process())
             {
                 process.EnableRaisingEvents = true;

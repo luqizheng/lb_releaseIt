@@ -6,14 +6,14 @@ namespace ReleaseIt
 {
     public class ExecuteSetting : ICloneable
     {
-        private string _resultFolder;
-
         private readonly Dictionary<string, string> _variable = new Dictionary<string, string>();
+        private string _resultFolder;
         private string _workDirectory;
 
         public ExecuteSetting(string startFolder)
         {
             StartFolder = startFolder;
+            AddVariable("%start%", startFolder);
         }
 
         /// <summary>
@@ -21,8 +21,15 @@ namespace ReleaseIt
         /// </summary>
         public string ResultFolder
         {
-            get { return _resultFolder ?? StartFolder; }
-            set { _resultFolder = value; }
+            get
+            {
+                return _resultFolder ?? StartFolder;
+            }
+            set
+            {
+                _resultFolder = value;
+                AddVariable("%result%", _resultFolder);
+            }
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace ReleaseIt
                 WorkDirectory = WorkDirectory,
                 ResultFolder = ResultFolder
             };
-            foreach (var item in this._variable.Keys)
+            foreach (var item in _variable.Keys)
             {
                 result.AddVariable(item, _variable[item]);
             }
@@ -82,10 +89,7 @@ namespace ReleaseIt
                 var key = match.Value.ToLower();
                 return _variable.ContainsKey(key) ? _variable[key] : match.Value;
             }).Trim();
-            if (s.Contains(" "))
-            {
-                return string.Format("\"{0}\"", s);
-            }
+          
             return s;
         }
     }
