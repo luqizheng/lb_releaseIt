@@ -2,13 +2,12 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using ReleaseIt.Executor;
 
 namespace ReleaseIt.WindowCommand
 {
-    public class ProcessExecutor : IExecutor
+    internal class ProcessExecutor
     {
-        public void Invoke(ICommand command, ExecuteSetting setting)
+        public void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)
         {
             var commandPath = command.GetCommand(setting);
             var argus = command.BuildArguments(setting);
@@ -55,7 +54,7 @@ namespace ReleaseIt.WindowCommand
 
         private void p_Exited(object sender, EventArgs e)
         {
-            Console.WriteLine("Command execute complete.");
+            Console.WriteLine("ProcessCommand execute complete.");
         }
     }
 }

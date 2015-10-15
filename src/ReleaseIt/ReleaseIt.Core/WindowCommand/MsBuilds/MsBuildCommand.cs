@@ -9,7 +9,7 @@ using ReleaseIt.WindowCommand.CommandFinders;
 namespace ReleaseIt.WindowCommand.MsBuilds
 {
     [DataContract]
-    public class MsBuildCommand : Command<BuildSetting>
+    public class MsBuildCommand : ProcessCommand<BuildSetting>
     {
         private readonly Parameter _logFile = new Parameter("filelogger");
 
@@ -38,12 +38,11 @@ namespace ReleaseIt.WindowCommand.MsBuilds
             Setting = msbuild;
         }
 
-        public override BuildSetting Setting { get; protected set; }
+ 
 
         public override string BuildArguments(ExecuteSetting executoSetting)
         {
             BuildEnviVariable(executoSetting);
-
 
 
             _properities.Value.Add(CreateProperty("Configuration", Setting.BuildConfiguration ?? "Debug"));
@@ -52,7 +51,6 @@ namespace ReleaseIt.WindowCommand.MsBuilds
                 _target.Value.Add(new Parameter("", "_CopyWebApplication"));
                 _target.Value.Add(new Parameter("", "_WPPCopyWebApplication"));
                 _target.Value.Add(new Parameter("", "TransformWebConfig"));
-
             }
 
             if (Setting.OutputDirectory != null)

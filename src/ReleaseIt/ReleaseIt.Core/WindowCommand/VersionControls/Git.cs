@@ -9,7 +9,7 @@ using ReleaseIt.WindowCommand.CommandFinders;
 namespace ReleaseIt.WindowCommand.VersionControls
 {
     [DataContract]
-    public class Git : Command<VersionControlSetting>
+    public class Git : ProcessCommand<VersionControlSetting>
     {
         public const string FolderNameVariableName = "%gitName%";
 
@@ -19,7 +19,7 @@ namespace ReleaseIt.WindowCommand.VersionControls
             Setting = setting;
         }
 
-        public override VersionControlSetting Setting { get; protected set; }
+      
 
         private ICmdParameter[] CloneParameters(string outputDir)
         {

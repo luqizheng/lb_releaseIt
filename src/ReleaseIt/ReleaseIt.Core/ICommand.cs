@@ -6,8 +6,6 @@ namespace ReleaseIt
     {
         object Setting { get; }
 
-        ICommandFinder Finder { get; }
-        string BuildArguments(ExecuteSetting executoSetting);
-        string GetCommand(ExecuteSetting executorSetting);
+        void Invoke(ExecuteSetting executeSetting);
     }
 }

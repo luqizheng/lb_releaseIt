@@ -8,7 +8,7 @@ using ReleaseIt.WindowCommand.CommandFinders;
 namespace ReleaseIt.WindowCommand.VersionControls
 {
     [DataContract]
-    public class Svn : Command<VersionControlSetting>
+    public class Svn : ProcessCommand<VersionControlSetting>
     {
         public Svn(VersionControlSetting setting)
             : base(new SvnFinder())
@@ -16,7 +16,7 @@ namespace ReleaseIt.WindowCommand.VersionControls
             Setting = setting;
         }
 
-        public override VersionControlSetting Setting { get; protected set; }
+
 
         private ICmdParameter[] BuildParameters(ExecuteSetting executeResult)
         {

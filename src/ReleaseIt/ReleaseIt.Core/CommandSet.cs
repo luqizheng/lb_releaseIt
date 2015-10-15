@@ -37,7 +37,7 @@ namespace ReleaseIt
             var executeResult = new ExecuteSetting(_workDirectory);
             foreach (var cmd in _commands)
             {
-                cmd.Finder.Executor.Invoke(cmd, executeResult);
+                cmd.Invoke(executeResult);
             }
         }
 

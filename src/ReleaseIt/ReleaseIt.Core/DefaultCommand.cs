@@ -1,5 +1,4 @@
-﻿using ReleaseIt.Executor;
-using ReleaseIt.WindowCommand.CommandFinders;
+﻿using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt
 {
@@ -14,6 +13,7 @@ namespace ReleaseIt
             _commandLine = commandLine;
         }
 
+
         public string Name
         {
             get { return _name; }
@@ -23,7 +23,5 @@ namespace ReleaseIt
         {
             return _commandLine;
         }
-
-        public IExecutor Executor { get; set; }
     }
 }

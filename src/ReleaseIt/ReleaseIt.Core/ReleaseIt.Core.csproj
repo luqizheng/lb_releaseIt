@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="ProcessCommand.cs" />
     <Compile Include="CommandSet.cs" />
     <Compile Include="Commands\EmailCommand.cs" />
     <Compile Include="ConfigurationExtender.cs" />
@@ -59,9 +60,10 @@
     <Compile Include="ConfigurationSetting.cs" />
     <Compile Include="CopySetting.cs" />
     <Compile Include="ExecuteSetting.cs" />
-    <Compile Include="Executor\IExecutor.cs" />
     <Compile Include="WindowCommand\ProcessExecutor.cs" />
     <Compile Include="WindowCommand\MsBuilds\MsBuildCommand.cs" />
+    <Compile Include="WindowCommand\Publish\CopySettingBuilder.cs" />
+    <Compile Include="WindowCommand\Publish\CopyToBuilder.cs" />
     <Compile Include="WindowCommand\Publish\XCopy.cs" />
     <Compile Include="DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />
