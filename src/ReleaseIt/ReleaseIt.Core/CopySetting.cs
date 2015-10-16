@@ -22,7 +22,7 @@ namespace ReleaseIt
         ///     use /d to copy file.
         /// </summary>
         [DataMember]
-        public DateTime? LastCopyDate { get; set; }
+        public string LastCopyDate { get; set; }
 
         [DataMember]
         public bool UseDateCompareCopy { get; set; }

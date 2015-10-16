@@ -12,10 +12,10 @@ namespace ReleaseIt.IniStore
 
         static SettingManager()
         {
-            Creator.Add(typeof (BuildSetting).Name, () => new BuildSetting());
-            Creator.Add(typeof (VersionControlSetting).Name, () => new VersionControlSetting());
-            Creator.Add(typeof (CopySetting).Name, () => new CopySetting());
-            Creator.Add(typeof (EmailSetting).Name, () => new EmailSetting());
+            Creator.Add(typeof(BuildSetting).Name, () => new BuildSetting());
+            Creator.Add(typeof(VersionControlSetting).Name, () => new VersionControlSetting());
+            Creator.Add(typeof(CopySetting).Name, () => new CopySetting());
+            Creator.Add(typeof(EmailSetting).Name, () => new EmailSetting());
         }
 
         public void Save(CommandSet commandSet, string filename)
@@ -25,8 +25,11 @@ namespace ReleaseIt.IniStore
             foreach (var setting in commandSet.Commands.Select(s => s.Setting))
             {
                 var seciontName = setting.GetType().Name;
+                if (!String.IsNullOrEmpty(setting.Name))
+                {
+                    seciontName = seciontName + "_" + setting.Name;
+                }
                 var s = file.Section(seciontName);
-                s.Set("Name", setting.Name);
                 SetToSection(s, setting);
             }
 
@@ -38,45 +41,56 @@ namespace ReleaseIt.IniStore
             var file = new IniFile(filename);
             foreach (var section in file.Sections)
             {
-                var setting = Creator[section.Name]();
-                FullProperty(setting, section);
+                var sectionName = section.Name;
+
+                var ary = sectionName.Split('_');
+                sectionName = ary[0];
+                string name = ary.Length > 1 ? ary[1] : null;
+
+                var setting = Creator[sectionName]();
+                setting.Name = name;
+                FillProperities(setting, section);
                 commandSet.Add(setting);
             }
         }
 
-        private void FullProperty(Setting setting, IniSection section)
+        private void FillProperities(Setting setting, IniSection section)
         {
-            var keyMap = section.Properties.ToDictionary(s => s.Name, s => s.Value);
-            foreach (var item in setting.GetType().GetProperties())
+            var iniProperties = section.Properties.ToDictionary(s => s.Name, s => s.Value);
+
+            foreach (var propertyInfo in setting.GetType().GetProperties())
             {
-                if (keyMap.ContainsKey(item.Name))
+                if (propertyInfo.Name == "Name")
+                    continue;
+
+                if (iniProperties.ContainsKey(propertyInfo.Name))
                 {
-                    var strValue = keyMap[item.Name];
-                    if (item.PropertyType == typeof (string))
+                    var strValue = iniProperties[propertyInfo.Name];
+                    if (propertyInfo.PropertyType == typeof(string))
                     {
-                        item.SetValue(setting, strValue);
+                        propertyInfo.SetValue(setting, strValue);
                         continue;
                     }
 
-                    if (item.PropertyType.IsEnum)
+                    if (propertyInfo.PropertyType.IsEnum)
                     {
-                        item.SetValue(setting, Enum.Parse(item.PropertyType, strValue));
+                        propertyInfo.SetValue(setting, Enum.Parse(propertyInfo.PropertyType, strValue));
                         continue;
                     }
 
-                    if (item.PropertyType == typeof (int))
+                    if (propertyInfo.PropertyType == typeof(int))
                     {
-                        item.SetValue(setting, Convert.ToInt32(strValue));
+                        propertyInfo.SetValue(setting, Convert.ToInt32(strValue));
                         continue;
                     }
 
-                    if (item.PropertyType == typeof (bool))
+                    if (propertyInfo.PropertyType == typeof(bool))
                     {
-                        item.SetValue(setting, Convert.ToBoolean(strValue));
+                        propertyInfo.SetValue(setting, Convert.ToBoolean(strValue));
                         continue;
                     }
                     throw new ApplicationException(string.Format("Can't Convert {0} to type {1}", strValue,
-                        item.PropertyType.Name));
+                        propertyInfo.PropertyType.Name));
                 }
             }
         }

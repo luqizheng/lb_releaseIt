@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using ReleaseIt.IniStore;
 
 namespace ReleaseIt
 {
@@ -50,7 +52,7 @@ namespace ReleaseIt
                 (new DirectoryInfo(_setting.WorkDirectory)).CreateEx();
             }
 
-
+            bool settingChanged = false;
             foreach (var cmd in _commands)
             {
                 if (Skip.Count != 0 && Skip.Contains(cmd.Setting.Name))
@@ -62,8 +64,20 @@ namespace ReleaseIt
                     continue;
                 }
                 cmd.Invoke(_setting);
+
+                settingChanged = cmd.SettingChanged || settingChanged;
+            }
+
+            if (settingChanged)
+            {
+                if (OnCommandSettingChanged != null)
+                {
+                    OnCommandSettingChanged(this, EventArgs.Empty);
+                }
             }
         }
+
+        public event EventHandler OnCommandSettingChanged;
 
         public ICommand Add(Setting setting)
         {

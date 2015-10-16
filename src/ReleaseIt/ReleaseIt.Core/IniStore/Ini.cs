@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace ReleaseIt.IniStore
 {
-
     public class IniProperty
     {
         /// <summary>
@@ -84,7 +83,7 @@ namespace ReleaseIt.IniStore
             }
 
             if (!_properties.ContainsKey(name))
-                _properties.Add(name, new IniProperty { Name = name, Value = value, Comment = comment });
+                _properties.Add(name, new IniProperty {Name = name, Value = value, Comment = comment});
             else
             {
                 _properties[name].Value = value;
@@ -192,7 +191,7 @@ namespace ReleaseIt.IniStore
 
                 if (section != null)
                 {
-                    var keyValue = line.Split(new[] { "=" }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var keyValue = line.Split(new[] {"="}, 2, StringSplitOptions.RemoveEmptyEntries);
                     if (keyValue.Length != 2)
                         continue;
 

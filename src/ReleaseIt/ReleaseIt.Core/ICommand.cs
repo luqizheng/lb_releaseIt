@@ -8,5 +8,7 @@ namespace ReleaseIt
         Setting Setting { get; }
 
         void Invoke(ExecuteSetting executeSetting);
+
+        bool SettingChanged { get; set; }
     }
 }

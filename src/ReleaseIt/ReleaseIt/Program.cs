@@ -8,12 +8,7 @@ namespace ReleaseIt
 {
     internal class Program
     {
-        //private static readonly JsonSerializerSettings setting = new JsonSerializerSettings
-        //{
-        //    Formatting = Formatting.Indented,
-        //    TypeNameHandling = TypeNameHandling.Auto,
-        //    TypeNameAssemblyFormat = FormatterAssemblyStyle.Simple
-        //};
+        private static FileInfo fileInfo;
 
         private static void Main(string[] args)
         {
@@ -44,8 +39,9 @@ namespace ReleaseIt
                 Console.WriteLine("Please input setting file, or use /h to show help.");
                 return;
             }
-            var fileInfo = new FileInfo(args[0]);
-            var executeSetting = new ExecuteSetting(fileInfo.Directory.FullName);
+            fileInfo = new FileInfo(args[0]);
+            var executeSetting = new ExecuteSetting(Environment.CurrentDirectory);
+            Console.WriteLine("Current Directory:" + executeSetting.StartFolder);
             executeSetting.ForWidnow();
             var commandSet = new CommandSet(executeSetting);
             var factory = new ArgumentFactory();
@@ -59,7 +55,15 @@ namespace ReleaseIt
         {
             var manager = new SettingManager();
             manager.ReadSetting(commandSet, fullName.FullName);
+            commandSet.OnCommandSettingChanged += commandSet_OnCommandSettingChanged;
             commandSet.Invoke();
+
+        }
+
+        static void commandSet_OnCommandSettingChanged(object sender, EventArgs e)
+        {
+            var manager = new SettingManager();
+            manager.Save((CommandSet)sender, fileInfo.FullName);
         }
     }
 }
