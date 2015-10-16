@@ -38,7 +38,6 @@ namespace ReleaseIt.WindowCommand
                         "{0} returned a non-zero exit code",
                         Path.GetFileName(psi.FileName)));
             }
-           
         }
 
         private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)

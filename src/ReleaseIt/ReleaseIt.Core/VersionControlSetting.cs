@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace ReleaseIt
 {
     [Description("output")]
-    public class VersionControlSetting:Setting
+    public class VersionControlSetting : Setting
     {
         private string _url;
         [DataMember]
@@ -59,6 +59,12 @@ namespace ReleaseIt
         public VCBuilder WorkingCopy(string workingCopy)
         {
             _setting.WorkingCopy = workingCopy;
+            return this;
+        }
+
+        public VCBuilder Name(string commandName)
+        {
+            _setting.Name = commandName;
             return this;
         }
     }

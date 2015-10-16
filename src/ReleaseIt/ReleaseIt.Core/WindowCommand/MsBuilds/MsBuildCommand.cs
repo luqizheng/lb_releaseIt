@@ -42,37 +42,56 @@ namespace ReleaseIt.WindowCommand.MsBuilds
         public override string BuildArguments(ExecuteSetting executoSetting)
         {
             BuildEnviVariable(executoSetting);
-            var projectFile =
-                executoSetting.BuildByVariable(IoExtender.GetPath(executoSetting.StartFolder, Setting.ProjectPath));
-            executoSetting.ResultFolder = (new FileInfo(projectFile)).Directory.FullName;
-
+            var projectFile = executoSetting.GetVaribale("%prjPath%");
             projectFile = IoExtender.WrapperPath(projectFile);
-
 
             _properities.Value.Add(CreateProperty("Configuration", Setting.BuildConfiguration ?? "Debug"));
             if (Setting.IsWeb)
             {
-                _target.Value.Add(new Parameter("", "_CopyWebApplication"));
-                _target.Value.Add(new Parameter("", "_WPPCopyWebApplication"));
-                _target.Value.Add(new Parameter("", "TransformWebConfig"));
+                BuildForWeb();
             }
 
             if (Setting.OutputDirectory != null)
             {
-                var outputdir = executoSetting.BuildByVariable(Setting.OutputDirectory);
-                outputdir = IoExtender.GetPath(executoSetting.StartFolder, outputdir);
-                executoSetting.ResultFolder = outputdir;
-                outputdir = IoExtender.WrapperPath(outputdir);
-                var outputParam = CreateProperty(Setting.IsWeb ? "WebProjectOutputDir" : "outDir", outputdir);
-                _properities.Value.Add(outputParam);
+                BuildForOutDir(executoSetting);
             }
 
-            return string.Format("{0} {1} {2}", projectFile, _target.Build(), _properities.Build());
+            return string.Format("{0} {1} {2} {3}",
+                projectFile,
+                _target.Value.Count != 0 ? _target.Build() : "",
+                _properities.Build(),
+                Setting.BuildLogFile ? _logFile.Build() : ""
+                );
+        }
+
+        private void BuildForOutDir(ExecuteSetting executoSetting)
+        {
+            var outputdir = executoSetting.BuildByVariable(Setting.OutputDirectory);
+            outputdir = IoExtender.GetPath(executoSetting.StartFolder, outputdir);
+            executoSetting.ResultFolder = outputdir;
+            executoSetting.AddVariable("%outDir%", outputdir);
+            outputdir = IoExtender.WrapperPath(outputdir);
+            var outputParam = CreateProperty(Setting.IsWeb ? "WebProjectOutputDir" : "outDir", outputdir);
+            _properities.Value.Add(outputParam);
+        }
+
+        private void BuildForWeb()
+        {
+            _target.Value.Add(new Parameter("", "_CopyWebApplication"));
+            _target.Value.Add(new Parameter("", "_WPPCopyWebApplication"));
+            _target.Value.Add(new Parameter("", "TransformWebConfig"));
         }
 
         private void BuildEnviVariable(ExecuteSetting executoSetting)
         {
             executoSetting.AddVariable("%prjName%", Path.GetFileNameWithoutExtension(Setting.ProjectPath));
+
+            var projectFile =
+                executoSetting.BuildByVariable(IoExtender.GetPath(executoSetting.StartFolder, Setting.ProjectPath));
+            executoSetting.AddVariable("%prjPath%", projectFile);
+
+            executoSetting.ResultFolder = (new FileInfo(projectFile)).Directory.FullName;
+            executoSetting.AddVariable("%outDir%", executoSetting.ResultFolder);
         }
 
         private ParameterWithValue<string> CreateProperty(string key, string value)

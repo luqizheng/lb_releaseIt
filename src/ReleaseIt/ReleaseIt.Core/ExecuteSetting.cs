@@ -80,17 +80,36 @@ namespace ReleaseIt
             }
         }
 
+        public string GetVaribale(string name)
+        {
+            name = name.ToLower();
+            if (!_variable.ContainsKey(name))
+                throw new ArgumentOutOfRangeException("name", "Can't find variable which named " + name);
+            return _variable[name];
+        }
         public string BuildByVariable(string outputDirectory)
+        {
+            return BuildByVariable(outputDirectory, false);
+        }
+
+        public string BuildByVariable(string outputDirectory, bool forPathWrapper)
         {
             var Pattern = @"%([^%])*%";
             var rex = new Regex(Pattern, RegexOptions.IgnoreCase);
-            var s = rex.Replace(outputDirectory, match =>
+            var path = rex.Replace(outputDirectory, match =>
             {
                 var key = match.Value.ToLower();
-                return _variable.ContainsKey(key) ? _variable[key] : match.Value;
+                if (!_variable.ContainsKey(key))
+                {
+                    throw new ApplicationException("Can't not find variable " + key);
+                }
+                return _variable[key];
             }).Trim();
-          
-            return s;
+            if (forPathWrapper)
+            {
+                return IoExtender.WrapperPath(path);
+            }
+            return path;
         }
     }
 }

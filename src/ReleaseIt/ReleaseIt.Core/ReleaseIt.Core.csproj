@@ -68,7 +68,7 @@
     <Compile Include="WindowCommand\ProcessExecutor.cs" />
     <Compile Include="WindowCommand\MsBuilds\MsBuildCommand.cs" />
     <Compile Include="WindowCommand\Publish\CopySettingBuilder.cs" />
-    <Compile Include="WindowCommand\Publish\CopyToBuilder.cs" />
+    <Compile Include="CopyToBuilder.cs" />
     <Compile Include="WindowCommand\Publish\XCopy.cs" />
     <Compile Include="DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />

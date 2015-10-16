@@ -1,8 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace ReleaseIt
 {
-      [DataContract]
+    [DataContract]
+    [Description(@"Build Setting,it output variable 
+%outDir% and %result% is compiler directory.%prjName% is project name without extension and path.%prjPath% is project full path")]
     public class BuildSetting : Setting
     {
         public BuildSetting()
@@ -10,17 +13,23 @@ namespace ReleaseIt
             //_properities.Value = new List<ParameterWithValue<string>>();
             BuildConfiguration = "Debug";
         }
-          [DataMember]
+
+        [DataMember]
         public bool IsWeb { get; set; }
-          [DataMember]
+
+        [DataMember]
         public bool BuildLogFile { get; set; }
-          [DataMember]
+
+        [DataMember]
         public LogLevel LogLevel { get; set; }
-          [DataMember]
+
+        [DataMember]
         public string OutputDirectory { get; set; }
-          [DataMember]
+
+        [DataMember]
         public string ProjectPath { get; set; }
-          [DataMember]
+
+        [DataMember]
         public string BuildConfiguration { get; set; }
     }
 
@@ -77,6 +86,13 @@ namespace ReleaseIt
         {
             _setting.OutputDirectory = outputDir;
             return this;
+        }
+
+        public BuildSettingBuilder Name(string commandName)
+        {
+            _setting.Name = commandName;
+            return this;
+
         }
     }
 }

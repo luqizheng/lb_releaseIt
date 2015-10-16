@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
+using ReleaseIt.Arguments;
 using ReleaseIt.IniStore;
-using ReleaseIt.WindowCommand.Publish;
 
 namespace ReleaseIt
 {
@@ -27,88 +21,46 @@ namespace ReleaseIt
             Console.WriteLine("LB_Release 1.0");
             Console.WriteLine();
             Console.WriteLine();
-            for (var index = 0; index < args.Length; index++)
+            string file = null;
+            var list = new List<string>();
+            foreach (var arg in args)
             {
-                var arg = args[index];
                 if (arg.StartsWith("/"))
                 {
-                    if (arg == "/s")
-                    {
-                        var nextFileIndex = ++index;
-                        if (args.Length > nextFileIndex)
-                            ShowSetting(args[nextFileIndex]);
-                        else
-                            Console.WriteLine("Please use /s filename to start ");
-                        return;
-                    }
-                    ShowHelp();
-                    return;
+                    list.Add(arg.Substring(1));
+                    continue;
                 }
+                if (file == null)
+                {
+                    file = arg;
+                    continue;
+                }
+                Console.WriteLine("Error Argument " + file + " please use /h to show help.");
+                return;
             }
+
+            if (file == null)
+            {
+                Console.WriteLine("Please input setting file, or use /h to show help.");
+                return;
+            }
+
             var fileInfo = new FileInfo(args[0]);
-            var commandSet = From(fileInfo.FullName);
+            var commandSet = new CommandSet(fileInfo.Directory.FullName);
             commandSet.ForWidnow();
+
+            var factory = new ArgumentFactory();
+            var invoked = factory.Handle(list, commandSet, fileInfo.FullName);
+
+            if (invoked)
+                Run(commandSet, fileInfo);
+        }
+
+        private static void Run(CommandSet commandSet, FileInfo fullName)
+        {
+            var manager = new SettingManager();
+            manager.ReadSetting(commandSet, fullName.FullName);
             commandSet.Invoke();
-        }
-
-        private static void ShowSetting(string fileName)
-        {
-            //CreateTemplate
-
-            var command = new CommandSet(new FileInfo(fileName).Directory.FullName);
-            command.ForWidnow();
-
-            command.Svn().Url("http://svn.address.com/trunk").Auth
-                ("username", "password")
-                .WorkingCopy("workongfolder");
-            command.Build(true).Release().ProjectPath("/mypathfor.csproj").CopyTo("publish/%projName%");
-
-            command.CopyTo("publish");
-            SaveXml(command, fileName);
-
-            //Save(command, fileName);
-        }
-
-        private static void SaveXml(CommandSet set, string fileName)
-        {
-            SettingManager manager = new SettingManager();
-            manager.Save(set, fileName);
-        }
-        //private static void Save(CommandSet set, string filename)
-        //{
-        //    // var commands = set.Commands;
-        //    //var str = JsonConvert.SerializeObject(commands, setting);
-        //    using (var stream = new MemoryStream())
-        //    {
-        //        var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>),
-        //            set.Setting.GetRegistTypes());
-        //        ser.WriteObject(stream, set.Commands.Select(s => s.Setting));
-
-        //        using (var writer = new StreamWriter(filename))
-        //        {
-        //            writer.Write(Encoding.UTF8.GetString(stream.ToArray()).Replace(",", ",\r\n"));
-        //        }
-        //    }
-        //}
-
-        private static CommandSet From(string filename)
-        {
-            SettingManager manager = new SettingManager();
-            return manager.From(filename);
-            //using (var reader = File.OpenRead(filename))
-            //{
-            //    var ser = new DataContractJsonSerializer(typeof(IEnumerable<object>), set.Setting.GetRegistTypes());
-            //    var commands = (IList<object>)ser.ReadObject(reader);
-            //    foreach (var command in commands)
-            //        set.Add(command);
-            //}
-        }
-
-
-        private static void ShowHelp()
-        {
-            Console.WriteLine("releaseIt [fileName]  for run.");
-            Console.WriteLine("/s [fileName] to set config file.");
         }
     }
 }
