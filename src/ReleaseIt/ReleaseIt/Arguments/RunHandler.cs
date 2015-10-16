@@ -2,7 +2,6 @@ namespace ReleaseIt.Arguments
 {
     public class RunHandler : ArgumentHandler
     {
-
         public override string Key
         {
             get { return "r"; }
@@ -17,7 +16,6 @@ namespace ReleaseIt.Arguments
             var commandNames = f[1].Split(';');
             set.Run.AddRange(commandNames);
             return true;
-
         }
     }
 }

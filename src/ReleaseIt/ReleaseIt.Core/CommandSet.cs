@@ -6,28 +6,26 @@ namespace ReleaseIt
     public class CommandSet
     {
         private readonly IList<ICommand> _commands;
-        private readonly string _workDirectory;
 
         private List<string> _run;
+        private readonly ExecuteSetting _setting;
 
         private List<string> _skip;
 
-        public CommandSet(string dirDirecotry)
-            : this(dirDirecotry, new List<ICommand>())
+        public CommandSet(ExecuteSetting setting)
+            : this(setting, new List<ICommand>())
         {
         }
 
         /// <summary>
         /// </summary>
-        /// <param name="workDirectory"></param>
+        /// <param name="setting"></param>
         /// <param name="commands"></param>
-        public CommandSet(string workDirectory, IList<ICommand> commands)
+        public CommandSet(ExecuteSetting setting, IList<ICommand> commands)
         {
-            _workDirectory = workDirectory;
+            _setting = setting;
             _commands = commands;
         }
-
-        public ConfigurationSetting Setting { get; set; }
 
 
         public IList<ICommand> Commands
@@ -47,12 +45,12 @@ namespace ReleaseIt
 
         public void Invoke()
         {
-            if (!Directory.Exists(_workDirectory))
+            if (!Directory.Exists(_setting.WorkDirectory))
             {
-                (new DirectoryInfo(_workDirectory)).CreateEx();
+                (new DirectoryInfo(_setting.WorkDirectory)).CreateEx();
             }
 
-            var executeResult = new ExecuteSetting(_workDirectory);
+
             foreach (var cmd in _commands)
             {
                 if (Skip.Count != 0 && Skip.Contains(cmd.Setting.Name))
@@ -63,13 +61,13 @@ namespace ReleaseIt
                 {
                     continue;
                 }
-                cmd.Invoke(executeResult);
+                cmd.Invoke(_setting);
             }
         }
 
         public ICommand Add(Setting setting)
         {
-            var command = Setting.Create(setting);
+            var command = _setting.Setting.Create(setting);
             Commands.Add(command);
             return command;
         }

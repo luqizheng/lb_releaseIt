@@ -14,7 +14,7 @@ namespace ReleaseIt.Arguments
             Console.WriteLine("releaseIt [fileName]  for run.");
             Console.WriteLine("/t releaseIt setting.ini");
             Console.WriteLine();
-            
+
             Console.WriteLine("/s:nameOfCommand;nameOfCommand for skip command");
             Console.WriteLine("/r:nameOfCommand;nameOfCommand run following command.");
 

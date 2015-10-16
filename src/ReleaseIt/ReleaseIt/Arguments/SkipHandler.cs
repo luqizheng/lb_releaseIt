@@ -2,11 +2,6 @@
 {
     public class SkipHandler : ArgumentHandler
     {
-        public SkipHandler()
-        {
-           
-        }
-
         public override string Key
         {
             get { return "s"; }
@@ -21,7 +16,6 @@
             var commandNames = f[1].Split(';');
             set.Skip.AddRange(commandNames);
             return true;
-
         }
     }
 }

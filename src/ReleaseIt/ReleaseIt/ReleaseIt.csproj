@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arguments\ArgumentFactory.cs" />
     <Compile Include="Arguments\ArgumentHandler.cs" />
     <Compile Include="Arguments\RunHandler.cs" />
     <Compile Include="Arguments\SaveTemplateHandler.cs" />

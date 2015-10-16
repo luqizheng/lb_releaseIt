@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using ReleaseIt.WindowCommand;
 
 namespace ReleaseIt
 {
@@ -10,6 +11,7 @@ namespace ReleaseIt
         private string _resultFolder;
         private string _workDirectory;
 
+        public ConfigurationSetting Setting { get; set; }
         public ExecuteSetting(string startFolder)
         {
             StartFolder = startFolder;
@@ -21,10 +23,7 @@ namespace ReleaseIt
         /// </summary>
         public string ResultFolder
         {
-            get
-            {
-                return _resultFolder ?? StartFolder;
-            }
+            get { return _resultFolder ?? StartFolder; }
             set
             {
                 _resultFolder = value;
@@ -36,7 +35,7 @@ namespace ReleaseIt
         ///     最开始执行的位置.
         /// </summary>
         public string StartFolder { get; private set; }
-
+        
         /// <summary>
         ///     执行的是文件,那么这个就有值. 如Msbuild
         /// </summary>
@@ -87,6 +86,7 @@ namespace ReleaseIt
                 throw new ArgumentOutOfRangeException("name", "Can't find variable which named " + name);
             return _variable[name];
         }
+
         public string BuildByVariable(string outputDirectory)
         {
             return BuildByVariable(outputDirectory, false);

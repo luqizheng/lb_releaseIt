@@ -7,21 +7,22 @@ namespace ReleaseIt
 {
     public static class ConfigurationExtender
     {
-        public static CommandSet ForWidnow(this CommandSet set)
+        public static ExecuteSetting ForWidnow(this ExecuteSetting executSetting)
         {
             var commandSettings = new ConfigurationSetting();
-            commandSettings.Regist(typeof (VersionControlSetting), setting =>
+            commandSettings.Regist(typeof(VersionControlSetting), setting =>
             {
-                var vcSetting = (VersionControlSetting) setting;
+                var vcSetting = (VersionControlSetting)setting;
                 if (vcSetting.VersionControlType == VersionControlType.Git)
                     return new Git(vcSetting);
                 return new Svn(vcSetting);
             });
 
-            commandSettings.Regist(typeof (BuildSetting), setting => new MsBuildCommand((BuildSetting) setting));
-            commandSettings.Regist(typeof (CopySetting), setting => new XCopy((CopySetting) setting));
-            set.Setting = commandSettings;
-            return set;
+            commandSettings.IExecutor = new ProcessExecutor();
+            commandSettings.Regist(typeof(BuildSetting), setting => new MsBuildCommand((BuildSetting)setting));
+            commandSettings.Regist(typeof(CopySetting), setting => new XCopy((CopySetting)setting));
+            executSetting.Setting = commandSettings;
+            return executSetting;
         }
     }
 }

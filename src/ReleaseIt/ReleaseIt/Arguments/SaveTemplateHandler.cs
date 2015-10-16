@@ -1,38 +1,37 @@
 ﻿using System.IO;
+using ReleaseIt.IniStore;
 using ReleaseIt.WindowCommand.Publish;
 
 namespace ReleaseIt.Arguments
 {
     public class SaveTemplateHandler : ArgumentHandler
     {
-        public SaveTemplateHandler()
-        {
-           
-        }
-
         public override string Key
         {
             get { return "t"; }
         }
 
-        public override bool Handle(CommandSet set, string fileName, string argument)
+        public override bool Handle(CommandSet commandSet, string fileName, string argument)
         {
-            var command = new CommandSet(new FileInfo(fileName).Directory.FullName);
-            command.ForWidnow();
+           
+          
 
-            command.Svn()
+            commandSet.Svn()
                 .Url("http://svn.address.com/trunk")
                 .Auth("username", "password")
                 .WorkingCopy("workongfolder")
                 .Name("Svn_name_for_target");
 
-            command
+            commandSet
                 .Build(true).Release().ProjectPath("/mypathfor.csproj")
                 .CopyTo("publish/%prjName%")
                 .Name("BuildName")
                 ;
 
-            command.CopyTo("publish").Name("");
+            commandSet.CopyTo("publish").Name("");
+
+            var manager = new SettingManager();
+            manager.Save(commandSet, fileName);
             return false;
         }
     }

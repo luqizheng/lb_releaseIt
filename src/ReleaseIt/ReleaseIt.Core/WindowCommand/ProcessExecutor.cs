@@ -5,7 +5,13 @@ using System.IO;
 
 namespace ReleaseIt.WindowCommand
 {
-    internal class ProcessExecutor
+    public interface IExecutor
+    {
+        void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)
+               where T : Setting;
+    }
+
+    internal class ProcessExecutor : IExecutor
     {
         public void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)
             where T : Setting

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using ReleaseIt.Commands;
 
@@ -13,10 +12,10 @@ namespace ReleaseIt.IniStore
 
         static SettingManager()
         {
-            Creator.Add(typeof(BuildSetting).Name, () => new BuildSetting());
-            Creator.Add(typeof(VersionControlSetting).Name, () => new VersionControlSetting());
-            Creator.Add(typeof(CopySetting).Name, () => new CopySetting());
-            Creator.Add(typeof(EmailSetting).Name, () => new EmailSetting());
+            Creator.Add(typeof (BuildSetting).Name, () => new BuildSetting());
+            Creator.Add(typeof (VersionControlSetting).Name, () => new VersionControlSetting());
+            Creator.Add(typeof (CopySetting).Name, () => new CopySetting());
+            Creator.Add(typeof (EmailSetting).Name, () => new EmailSetting());
         }
 
         public void Save(CommandSet commandSet, string filename)
@@ -36,7 +35,6 @@ namespace ReleaseIt.IniStore
 
         public void ReadSetting(CommandSet commandSet, string filename)
         {
-
             var file = new IniFile(filename);
             foreach (var section in file.Sections)
             {
@@ -54,7 +52,7 @@ namespace ReleaseIt.IniStore
                 if (keyMap.ContainsKey(item.Name))
                 {
                     var strValue = keyMap[item.Name];
-                    if (item.PropertyType == typeof(string))
+                    if (item.PropertyType == typeof (string))
                     {
                         item.SetValue(setting, strValue);
                         continue;
@@ -66,18 +64,19 @@ namespace ReleaseIt.IniStore
                         continue;
                     }
 
-                    if (item.PropertyType == typeof(int))
+                    if (item.PropertyType == typeof (int))
                     {
                         item.SetValue(setting, Convert.ToInt32(strValue));
                         continue;
                     }
 
-                    if (item.PropertyType == typeof(bool))
+                    if (item.PropertyType == typeof (bool))
                     {
                         item.SetValue(setting, Convert.ToBoolean(strValue));
                         continue;
                     }
-                    throw new ApplicationException(string.Format("Can't Convert {0} to type {1}", strValue, item.PropertyType.Name));
+                    throw new ApplicationException(string.Format("Can't Convert {0} to type {1}", strValue,
+                        item.PropertyType.Name));
                 }
             }
         }

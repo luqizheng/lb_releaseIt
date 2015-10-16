@@ -44,11 +44,10 @@ namespace ReleaseIt
                 Console.WriteLine("Please input setting file, or use /h to show help.");
                 return;
             }
-
             var fileInfo = new FileInfo(args[0]);
-            var commandSet = new CommandSet(fileInfo.Directory.FullName);
-            commandSet.ForWidnow();
-
+            ExecuteSetting executeSetting = new ExecuteSetting(fileInfo.Directory.FullName);
+            executeSetting.ForWidnow();
+            var commandSet = new CommandSet(executeSetting);
             var factory = new ArgumentFactory();
             var invoked = factory.Handle(list, commandSet, fileInfo.FullName);
 

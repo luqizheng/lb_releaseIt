@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using ReleaseIt.WindowCommand;
 using ReleaseIt.WindowCommand.CommandFinders;
@@ -20,8 +19,8 @@ namespace ReleaseIt
 
         public override void Invoke(ExecuteSetting executeSetting)
         {
-            var executor = new ProcessExecutor();
-            executor.Invoke(this, executeSetting);
+
+            executeSetting.Setting.IExecutor.Invoke(this, executeSetting);
         }
 
 
