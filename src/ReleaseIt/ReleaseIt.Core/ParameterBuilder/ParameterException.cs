@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReleaseIt
+namespace ReleaseIt.ParameterBuilder
 {
     public class ParameterException : ApplicationException
     {

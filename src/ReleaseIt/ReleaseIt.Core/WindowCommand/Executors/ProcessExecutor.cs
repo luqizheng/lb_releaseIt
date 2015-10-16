@@ -3,14 +3,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
-namespace ReleaseIt.WindowCommand
+namespace ReleaseIt.WindowCommand.Executors
 {
-    public interface IExecutor
-    {
-        void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)
-               where T : Setting;
-    }
-
     internal class ProcessExecutor : IExecutor
     {
         public void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)

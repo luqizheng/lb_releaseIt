@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SettingBuilders\BuildSettingBuilder.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Commands\EmailSetting.cs" />
     <Compile Include="IniStore\Ini.cs" />
@@ -57,29 +58,29 @@
     <Compile Include="ConfigurationExtender.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Setting.cs" />
-    <Compile Include="VcBuilderExtender.cs" />
-    <Compile Include="WindowCommand\CommandFinders\GitFinder.cs" />
-    <Compile Include="WindowCommand\CommandFinders\MsBuildFinder.cs" />
-    <Compile Include="WindowCommand\CommandFinders\ProcessCommandFinder.cs" />
-    <Compile Include="WindowCommand\CommandFinders\SvnFinder.cs" />
+    <Compile Include="SettingBuilders\VcBuilder.cs" />
+    <Compile Include="SettingExtender.cs" />
+    <Compile Include="WindowCommand\VersionControls\GitFinder.cs" />
+    <Compile Include="WindowCommand\MsBuilds\MsBuildFinder.cs" />
+    <Compile Include="ProcessCommandFinder.cs" />
+    <Compile Include="WindowCommand\VersionControls\SvnFinder.cs" />
     <Compile Include="ConfigurationSetting.cs" />
     <Compile Include="CopySetting.cs" />
     <Compile Include="ExecuteSetting.cs" />
-    <Compile Include="WindowCommand\ProcessExecutor.cs" />
+    <Compile Include="Executors\IExecutor.cs" />
+    <Compile Include="WindowCommand\Executors\ProcessExecutor.cs" />
     <Compile Include="WindowCommand\MsBuilds\MsBuildCommand.cs" />
-    <Compile Include="WindowCommand\Publish\CopySettingBuilder.cs" />
-    <Compile Include="CopyToBuilder.cs" />
+    <Compile Include="SettingBuilders\CopySettingBuilder.cs" />
     <Compile Include="WindowCommand\Publish\XCopy.cs" />
     <Compile Include="DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />
-    <Compile Include="LogLevel.cs" />
     <Compile Include="BuildSetting.cs" />
     <Compile Include="ParameterBuilder\ParameterWithValue.cs" />
     <Compile Include="ParameterBuilder\ICmdParameter.cs" />
     <Compile Include="ParameterBuilder\Parameter.cs" />
-    <Compile Include="ParameterException.cs" />
+    <Compile Include="ParameterBuilder\ParameterException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WindowCommand\CommandFinders\ICommandFinder.cs" />
+    <Compile Include="ICommandFinder.cs" />
     <Compile Include="WindowCommand\VersionControls\Git.cs" />
     <Compile Include="WindowCommand\VersionControls\Svn.cs" />
     <Compile Include="VersionControlSetting.cs" />
@@ -88,6 +89,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

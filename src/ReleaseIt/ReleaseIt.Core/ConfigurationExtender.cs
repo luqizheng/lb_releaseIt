@@ -1,4 +1,5 @@
 using ReleaseIt.WindowCommand;
+using ReleaseIt.WindowCommand.Executors;
 using ReleaseIt.WindowCommand.MsBuilds;
 using ReleaseIt.WindowCommand.Publish;
 using ReleaseIt.WindowCommand.VersionControls;
@@ -18,7 +19,7 @@ namespace ReleaseIt
                 return new Svn(vcSetting);
             });
 
-            commandSettings.IExecutor = new ProcessExecutor();
+            commandSettings.Executor = new ProcessExecutor();
             commandSettings.Regist(typeof(BuildSetting), setting => new MsBuildCommand((BuildSetting)setting));
             commandSettings.Regist(typeof(CopySetting), setting => new XCopy((CopySetting)setting));
             executSetting.Setting = commandSettings;

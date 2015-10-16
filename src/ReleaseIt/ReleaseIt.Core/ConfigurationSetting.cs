@@ -10,7 +10,7 @@ namespace ReleaseIt
         private readonly Dictionary<Type, Func<object, ICommand>> _builder =
             new Dictionary<Type, Func<object, ICommand>>();
 
-        public IExecutor IExecutor { get; set; }
+        public IExecutor Executor { get; set; }
 
         public ICommand Create(object setting)
         {

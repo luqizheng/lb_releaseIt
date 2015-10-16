@@ -20,7 +20,7 @@ namespace ReleaseIt
         public override void Invoke(ExecuteSetting executeSetting)
         {
 
-            executeSetting.Setting.IExecutor.Invoke(this, executeSetting);
+            executeSetting.Setting.Executor.Invoke(this, executeSetting);
         }
 
 

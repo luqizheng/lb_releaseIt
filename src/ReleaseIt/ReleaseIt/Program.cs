@@ -45,7 +45,7 @@ namespace ReleaseIt
                 return;
             }
             var fileInfo = new FileInfo(args[0]);
-            ExecuteSetting executeSetting = new ExecuteSetting(fileInfo.Directory.FullName);
+            var executeSetting = new ExecuteSetting(fileInfo.Directory.FullName);
             executeSetting.ForWidnow();
             var commandSet = new CommandSet(executeSetting);
             var factory = new ArgumentFactory();
