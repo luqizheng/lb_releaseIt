@@ -1,8 +1,8 @@
+using ReleaseIt.Commands.Windows.Executors;
+using ReleaseIt.Commands.Windows.MsBuilds;
+using ReleaseIt.Commands.Windows.Publish;
+using ReleaseIt.Commands.Windows.VersionControls;
 using ReleaseIt.WindowCommand;
-using ReleaseIt.WindowCommand.Executors;
-using ReleaseIt.WindowCommand.MsBuilds;
-using ReleaseIt.WindowCommand.Publish;
-using ReleaseIt.WindowCommand.VersionControls;
 
 namespace ReleaseIt
 {

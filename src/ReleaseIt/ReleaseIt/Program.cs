@@ -8,7 +8,7 @@ namespace ReleaseIt
 {
     internal class Program
     {
-        private static FileInfo fileInfo;
+        private static FileInfo _fileInfo;
 
         private static void Main(string[] args)
         {
@@ -39,16 +39,16 @@ namespace ReleaseIt
                 Console.WriteLine("Please input setting file, or use /h to show help.");
                 return;
             }
-            fileInfo = new FileInfo(args[0]);
+            _fileInfo = new FileInfo(file);
             var executeSetting = new ExecuteSetting(Environment.CurrentDirectory);
             Console.WriteLine("Current Directory:" + executeSetting.StartFolder);
             executeSetting.ForWidnow();
             var commandSet = new CommandSet(executeSetting);
             var factory = new ArgumentFactory();
-            var invoked = factory.Handle(list, commandSet, fileInfo.FullName);
+            var invoked = factory.Handle(list, commandSet, _fileInfo.FullName);
 
             if (invoked)
-                Run(commandSet, fileInfo);
+                Run(commandSet, _fileInfo);
         }
 
         private static void Run(CommandSet commandSet, FileInfo fullName)
@@ -63,7 +63,7 @@ namespace ReleaseIt
         static void commandSet_OnCommandSettingChanged(object sender, EventArgs e)
         {
             var manager = new SettingManager();
-            manager.Save((CommandSet)sender, fileInfo.FullName);
+            manager.Save((CommandSet)sender, _fileInfo.FullName);
         }
     }
 }

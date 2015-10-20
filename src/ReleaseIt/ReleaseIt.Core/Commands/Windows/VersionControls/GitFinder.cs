@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ReleaseIt.WindowCommand.CommandFinders
+namespace ReleaseIt.Commands.Windows.VersionControls
 {
     public class GitFinder : ProcessCommandFinder
     {

@@ -12,10 +12,10 @@ namespace ReleaseIt.IniStore
 
         static SettingManager()
         {
-            Creator.Add(typeof(BuildSetting).Name, () => new BuildSetting());
-            Creator.Add(typeof(VersionControlSetting).Name, () => new VersionControlSetting());
-            Creator.Add(typeof(CopySetting).Name, () => new CopySetting());
-            Creator.Add(typeof(EmailSetting).Name, () => new EmailSetting());
+            Creator.Add(typeof (BuildSetting).Name, () => new BuildSetting());
+            Creator.Add(typeof (VersionControlSetting).Name, () => new VersionControlSetting());
+            Creator.Add(typeof (CopySetting).Name, () => new CopySetting());
+            Creator.Add(typeof (EmailSetting).Name, () => new EmailSetting());
         }
 
         public void Save(CommandSet commandSet, string filename)
@@ -25,7 +25,7 @@ namespace ReleaseIt.IniStore
             foreach (var setting in commandSet.Commands.Select(s => s.Setting))
             {
                 var seciontName = setting.GetType().Name;
-                if (!String.IsNullOrEmpty(setting.Name))
+                if (!string.IsNullOrEmpty(setting.Name))
                 {
                     seciontName = seciontName + "_" + setting.Name;
                 }
@@ -45,7 +45,7 @@ namespace ReleaseIt.IniStore
 
                 var ary = sectionName.Split('_');
                 sectionName = ary[0];
-                string name = ary.Length > 1 ? ary[1] : null;
+                var name = ary.Length > 1 ? string.Join("_", ary, 1, ary.Length - 2) : null;
 
                 var setting = Creator[sectionName]();
                 setting.Name = name;
@@ -66,7 +66,7 @@ namespace ReleaseIt.IniStore
                 if (iniProperties.ContainsKey(propertyInfo.Name))
                 {
                     var strValue = iniProperties[propertyInfo.Name];
-                    if (propertyInfo.PropertyType == typeof(string))
+                    if (propertyInfo.PropertyType == typeof (string))
                     {
                         propertyInfo.SetValue(setting, strValue);
                         continue;
@@ -78,13 +78,13 @@ namespace ReleaseIt.IniStore
                         continue;
                     }
 
-                    if (propertyInfo.PropertyType == typeof(int))
+                    if (propertyInfo.PropertyType == typeof (int))
                     {
                         propertyInfo.SetValue(setting, Convert.ToInt32(strValue));
                         continue;
                     }
 
-                    if (propertyInfo.PropertyType == typeof(bool))
+                    if (propertyInfo.PropertyType == typeof (bool))
                     {
                         propertyInfo.SetValue(setting, Convert.ToBoolean(strValue));
                         continue;

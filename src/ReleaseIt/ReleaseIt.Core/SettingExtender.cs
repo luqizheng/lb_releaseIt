@@ -1,5 +1,4 @@
 ﻿using ReleaseIt.SettingBuilders;
-using ReleaseIt.WindowCommand.Publish;
 
 namespace ReleaseIt
 {

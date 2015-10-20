@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace ReleaseIt.WindowCommand.CommandFinders
+namespace ReleaseIt.Commands.Windows.MsBuilds
 {
     public class MsBuildFinder : ProcessCommandFinder
     {

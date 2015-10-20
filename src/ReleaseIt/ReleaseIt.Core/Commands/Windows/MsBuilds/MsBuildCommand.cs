@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using ReleaseIt.ParameterBuilder;
 using ReleaseIt.WindowCommand.CommandFinders;
 
-namespace ReleaseIt.WindowCommand.MsBuilds
+namespace ReleaseIt.Commands.Windows.MsBuilds
 {
     [DataContract]
     public class MsBuildCommand : ProcessCommand<BuildSetting>
@@ -55,12 +55,13 @@ namespace ReleaseIt.WindowCommand.MsBuilds
             {
                 BuildForOutDir(executoSetting);
             }
-
-            return string.Format("{0} {1} {2} {3}",
+            _logLevel.Value = LogLevel.quite;
+            return string.Format("{0} {1} {2} {3} {4}",
                 projectFile,
                 _target.Value.Count != 0 ? _target.Build() : "",
                 _properities.Build(),
-                Setting.BuildLogFile ? _logFile.Build() : ""
+                Setting.BuildLogFile ? _logFile.Build() : "",
+                _logLevel.Build()
                 );
         }
 
@@ -80,6 +81,7 @@ namespace ReleaseIt.WindowCommand.MsBuilds
             _target.Value.Add(new Parameter("", "_CopyWebApplication"));
             _target.Value.Add(new Parameter("", "_WPPCopyWebApplication"));
             _target.Value.Add(new Parameter("", "TransformWebConfig"));
+            
         }
 
         private void BuildEnviVariable(ExecuteSetting executoSetting)

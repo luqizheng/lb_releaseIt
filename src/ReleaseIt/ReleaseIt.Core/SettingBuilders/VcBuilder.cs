@@ -12,18 +12,21 @@ namespace ReleaseIt.SettingBuilders
 
         public VCBuilder(VersionControlSetting setting)
         {
+            if (setting == null) throw new ArgumentNullException("setting");
             _setting = setting;
         }
 
         public VCBuilder Url(string url)
         {
+            if (url == null) throw new ArgumentNullException("url");
             _setting.Url = url;
-            ;
             return this;
         }
 
         public VCBuilder Auth(string username, string password)
         {
+            if (String.IsNullOrEmpty(username)) throw new ArgumentNullException("username");
+            if (String.IsNullOrEmpty(password)) throw new ArgumentNullException("password");
             _setting.UserName = username;
             _setting.Password = password;
             return this;

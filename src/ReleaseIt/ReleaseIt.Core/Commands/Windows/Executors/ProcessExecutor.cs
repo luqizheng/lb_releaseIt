@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using ReleaseIt.Executors;
 
-namespace ReleaseIt.WindowCommand.Executors
+namespace ReleaseIt.Commands.Windows.Executors
 {
     internal class ProcessExecutor : IExecutor
     {
@@ -26,8 +27,14 @@ namespace ReleaseIt.WindowCommand.Executors
             {
                 process.EnableRaisingEvents = true;
                 process.Exited += p_Exited;
-                process.OutputDataReceived += p_OutputDataReceived;
-                process.ErrorDataReceived += p_ErrorDataReceived;
+                process.OutputDataReceived += (sender, e) =>
+                {
+                    command.OnOutput(e.Data);
+                };
+                process.ErrorDataReceived += (sender, e) =>
+                {
+                    command.OnErrorOutput(e.Data);
+                };
                 process.StartInfo = psi;
 
                 process.Start();
@@ -40,21 +47,11 @@ namespace ReleaseIt.WindowCommand.Executors
             }
         }
 
-        private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            //这里是正常的输出
-            Console.WriteLine(e.Data);
-        }
 
-        private void p_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            //这里得到的是错误信息
-            Console.WriteLine(e.Data);
-        }
 
         private void p_Exited(object sender, EventArgs e)
         {
-            Console.WriteLine("ProcessCommand execute complete.");
+           
         }
     }
 }

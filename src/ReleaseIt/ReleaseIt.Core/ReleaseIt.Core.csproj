@@ -60,18 +60,18 @@
     <Compile Include="Setting.cs" />
     <Compile Include="SettingBuilders\VcBuilder.cs" />
     <Compile Include="SettingExtender.cs" />
-    <Compile Include="WindowCommand\VersionControls\GitFinder.cs" />
-    <Compile Include="WindowCommand\MsBuilds\MsBuildFinder.cs" />
+    <Compile Include="Commands\Windows\VersionControls\GitFinder.cs" />
+    <Compile Include="Commands\Windows\MsBuilds\MsBuildFinder.cs" />
     <Compile Include="ProcessCommandFinder.cs" />
-    <Compile Include="WindowCommand\VersionControls\SvnFinder.cs" />
+    <Compile Include="Commands\Windows\VersionControls\SvnFinder.cs" />
     <Compile Include="ConfigurationSetting.cs" />
     <Compile Include="CopySetting.cs" />
     <Compile Include="ExecuteSetting.cs" />
     <Compile Include="Executors\IExecutor.cs" />
-    <Compile Include="WindowCommand\Executors\ProcessExecutor.cs" />
-    <Compile Include="WindowCommand\MsBuilds\MsBuildCommand.cs" />
+    <Compile Include="Commands\Windows\Executors\ProcessExecutor.cs" />
+    <Compile Include="Commands\Windows\MsBuilds\MsBuildCommand.cs" />
     <Compile Include="SettingBuilders\CopySettingBuilder.cs" />
-    <Compile Include="WindowCommand\Publish\XCopy.cs" />
+    <Compile Include="Commands\Windows\Publish\XCopy.cs" />
     <Compile Include="DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />
     <Compile Include="BuildSetting.cs" />
@@ -81,10 +81,10 @@
     <Compile Include="ParameterBuilder\ParameterException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ICommandFinder.cs" />
-    <Compile Include="WindowCommand\VersionControls\Git.cs" />
-    <Compile Include="WindowCommand\VersionControls\Svn.cs" />
+    <Compile Include="Commands\Windows\VersionControls\Git.cs" />
+    <Compile Include="Commands\Windows\VersionControls\Svn.cs" />
     <Compile Include="VersionControlSetting.cs" />
-    <Compile Include="WindowCommand\VersionControls\SvnVersion.cs" />
+    <Compile Include="Commands\Windows\VersionControls\SvnVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using ReleaseIt.ParameterBuilder;
 using ReleaseIt.WindowCommand.CommandFinders;
 
-namespace ReleaseIt.WindowCommand.VersionControls
+namespace ReleaseIt.Commands.Windows.VersionControls
 {
     [DataContract]
     public class Git : ProcessCommand<VersionControlSetting>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ReleaseIt.WindowCommand.MsBuilds;
+using ReleaseIt.Commands.Windows.MsBuilds;
 
 namespace ReleaseIt.UnitTest
 {

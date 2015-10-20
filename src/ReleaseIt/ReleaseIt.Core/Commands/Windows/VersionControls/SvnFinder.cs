@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ReleaseIt.WindowCommand.VersionControls
+namespace ReleaseIt.Commands.Windows.VersionControls
 {
     public class SvnFinder : ProcessCommandFinder
     {

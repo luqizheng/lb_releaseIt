@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
-using ReleaseIt.WindowCommand.CommandFinders;
 
-namespace ReleaseIt.WindowCommand.VersionControls
+namespace ReleaseIt.Commands.Windows.VersionControls
 {
     public class SvnVersion : ProcessCommand<VersionControlSetting>
     {

@@ -2,7 +2,7 @@
 
 namespace ReleaseIt.Commands
 {
-    public class EmailSetting:Setting
+    public class EmailSetting : Setting
     {
         private string _form;
         public string Host { get; set; }

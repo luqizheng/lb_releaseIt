@@ -1,14 +1,15 @@
-using ReleaseIt.WindowCommand.CommandFinders;
-
 namespace ReleaseIt
 {
-
     public interface ICommand
     {
         Setting Setting { get; }
 
+        bool SettingChanged { get; set; }
+
         void Invoke(ExecuteSetting executeSetting);
 
-        bool SettingChanged { get; set; }
+        void OnOutput(string txt);
+
+        void OnErrorOutput(string txt);
     }
 }

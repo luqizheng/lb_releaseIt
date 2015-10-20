@@ -1,4 +1,4 @@
-namespace ReleaseIt.WindowCommand
+namespace ReleaseIt.Executors
 {
     public interface IExecutor
     {

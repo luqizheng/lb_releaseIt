@@ -28,9 +28,10 @@ namespace ReleaseIt.Arguments
         {
             foreach (var key in keies)
             {
-                if (_creator.ContainsKey(key.Substring(0, 1)))
+                var paramName = key.Substring(0, 1);
+                if (_creator.ContainsKey(paramName))
                 {
-                    var goOn = _creator[key].Handle(set, fileName, key);
+                    var goOn = _creator[paramName].Handle(set, fileName, key);
                     if (!goOn)
                     {
                         return false;
