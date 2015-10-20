@@ -1,10 +1,10 @@
-﻿namespace ReleaseIt.Arguments
+namespace ReleaseIt.Arguments
 {
-    public class SkipHandler : ArgumentHandler
+    public class InlucdeTags : ArgumentHandler
     {
         public override string Key
         {
-            get { return "s"; }
+            get { return "t"; }
         }
 
         public override bool Handle(CommandSet set, string fileName, string argument)
@@ -14,10 +14,8 @@
                 return true;
 
             var commandNames = f[1].Split(';');
-            set.Skip.AddRange(commandNames);
+            set.IncludeTags.AddRange(commandNames);
             return true;
         }
-
-
     }
 }

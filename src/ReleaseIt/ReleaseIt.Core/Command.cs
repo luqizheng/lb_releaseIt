@@ -14,9 +14,10 @@ namespace ReleaseIt
         {
             if (tags == null || this.Setting.Tags == null)
                 return false;
-            return (from beCheckedTag in tags 
-                    from tag in this.Setting.Tags 
-                    where tag == beCheckedTag select beCheckedTag).Any();
+            return (from beCheckedTag in tags
+                    from tag in this.Setting.Tags
+                    where tag.ToLower() == beCheckedTag.ToLower()
+                    select beCheckedTag).Any();
         }
 
         public string From

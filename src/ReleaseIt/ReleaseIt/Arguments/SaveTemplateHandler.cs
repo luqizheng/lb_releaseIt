@@ -6,7 +6,7 @@ namespace ReleaseIt.Arguments
     {
         public override string Key
         {
-            get { return "t"; }
+            get { return "c"; }
         }
 
         public override bool Handle(CommandSet commandSet, string fileName, string argument)

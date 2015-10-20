@@ -101,9 +101,9 @@ namespace ReleaseIt
                 {
                     continue;
                 }
-                if ((Include.Count == 0 && this.IncludeTags.Count == 0)
+                if ((Include.Count == 0 && IncludeTags.Count == 0)
                     || Include.Contains(cmd.Setting.Id)
-                    || cmd.IsMatch(this.IncludeTags))
+                    || cmd.IsMatch(IncludeTags))
                 {
                     result.Add(cmd);
                     LoopPrepend(cmd, result);
@@ -115,7 +115,8 @@ namespace ReleaseIt
         private void LoopPrepend(ICommand cmd, List<ICommand> result)
         {
             var backCount = 1;
-            while (cmd != null && cmd.Setting.From != null && cmd.Setting.From != DefaultExecuteSetting)
+            while (cmd != null && cmd.Setting.From != null && 
+                cmd.Setting.From != DefaultExecuteSetting)
             {
                 if (result.All(s => s.Setting.Id != cmd.Setting.From))
                 {

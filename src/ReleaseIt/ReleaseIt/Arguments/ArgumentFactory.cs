@@ -11,6 +11,7 @@ namespace ReleaseIt.Arguments
             Add(new SkipHandler());
             Add(new ShowHelpArgumentHandler());
             Add(new SaveTemplateHandler());
+            Add(new InlucdeTags());
         }
 
         private void Add(ArgumentHandler handler)

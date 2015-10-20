@@ -111,6 +111,8 @@ namespace ReleaseIt.IniStore
                 if (propInfo.PropertyType.IsArray)
                 {
                     var ary = (Array) propInfo.GetValue(s);
+                    if (ary == null)
+                        continue;
                     IList<string> aryJoin = (from object ele in ary select Convert.ToString(ele)).ToList();
 
                     section.Set(propInfo.Name, string.Join(",", aryJoin.ToArray()));

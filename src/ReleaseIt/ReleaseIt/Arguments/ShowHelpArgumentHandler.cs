@@ -18,7 +18,9 @@ namespace ReleaseIt.Arguments
             Console.WriteLine("/s:nameOfCommand;nameOfCommand for skip command");
             Console.WriteLine("/r:nameOfCommand;nameOfCommand run following command.");
 
-            Console.WriteLine("/t [fileName] to create a template setting file.");
+            Console.WriteLine("/t:tag1;tag2 for run");
+
+            Console.WriteLine("/c [fileName] to create a template setting file.");
             Console.WriteLine("e.g. releaseIt setting.ini /t");
 
             return false;
