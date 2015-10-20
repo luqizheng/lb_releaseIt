@@ -16,6 +16,8 @@ namespace ReleaseIt
         private List<string> _run;
         private List<string> _skip;
 
+        private List<string> _tags;
+
         public CommandSet(ExecuteSetting setting)
             : this(setting, new List<ICommand>())
         {
@@ -37,14 +39,25 @@ namespace ReleaseIt
             get { return _commands; }
         }
 
+        /// <summary>
+        ///     Skip command name
+        /// </summary>
         public List<string> Skip
         {
             get { return _skip ?? (_skip = new List<string>()); }
         }
 
-        public List<string> Run
+        /// <summary>
+        ///     Include command name
+        /// </summary>
+        public List<string> Include
         {
             get { return _run ?? (_run = new List<string>()); }
+        }
+
+        public List<string> IncludeTags
+        {
+            get { return _tags ?? (_tags = new List<string>()); }
         }
 
         public void Invoke()
@@ -88,7 +101,9 @@ namespace ReleaseIt
                 {
                     continue;
                 }
-                if (Run.Count == 0 || Run.Contains(cmd.Setting.Id))
+                if ((Include.Count == 0 && this.IncludeTags.Count == 0)
+                    || Include.Contains(cmd.Setting.Id)
+                    || cmd.IsMatch(this.IncludeTags))
                 {
                     result.Add(cmd);
                     LoopPrepend(cmd, result);

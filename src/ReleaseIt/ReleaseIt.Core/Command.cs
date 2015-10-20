@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ReleaseIt
@@ -9,14 +10,13 @@ namespace ReleaseIt
         public T Setting { get; protected set; }
 
 
-        public bool IsMatch(string[] tags)
+        public bool IsMatch(IEnumerable<string> tags)
         {
-            foreach (var tag in this.Setting.Tags)
-            {
-                if (this.Setting.Tags.Contains(tag))
-                    return true;
-            }
-            return false;
+            if (tags == null || this.Setting.Tags == null)
+                return false;
+            return (from beCheckedTag in tags 
+                    from tag in this.Setting.Tags 
+                    where tag == beCheckedTag select beCheckedTag).Any();
         }
 
         public string From
@@ -31,6 +31,7 @@ namespace ReleaseIt
             }
             set { Setting.From = value; }
         }
+
 
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {

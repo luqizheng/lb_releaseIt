@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ReleaseIt
 {
     public interface ICommand
@@ -6,7 +8,7 @@ namespace ReleaseIt
 
         bool SettingChanged { get; set; }
 
-        bool IsMatch(string[] tag);
+        bool IsMatch(IEnumerable<string> tag);
 
         ExecuteSetting Invoke(ExecuteSetting executeSetting);
 

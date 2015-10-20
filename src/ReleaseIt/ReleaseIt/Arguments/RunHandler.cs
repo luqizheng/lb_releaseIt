@@ -14,7 +14,7 @@ namespace ReleaseIt.Arguments
                 return true;
 
             var commandNames = f[1].Split(';');
-            set.Run.AddRange(commandNames);
+            set.Include.AddRange(commandNames);
             return true;
         }
     }
