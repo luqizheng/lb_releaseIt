@@ -6,10 +6,14 @@ namespace ReleaseIt
 
         bool SettingChanged { get; set; }
 
-        void Invoke(ExecuteSetting executeSetting);
+        bool IsMatch(string[] tag);
+
+        ExecuteSetting Invoke(ExecuteSetting executeSetting);
 
         void OnOutput(string txt);
 
         void OnErrorOutput(string txt);
+
+        string From { get; }
     }
 }

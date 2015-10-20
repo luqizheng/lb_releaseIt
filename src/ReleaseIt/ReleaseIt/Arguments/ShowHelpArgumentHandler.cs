@@ -19,7 +19,7 @@ namespace ReleaseIt.Arguments
             Console.WriteLine("/r:nameOfCommand;nameOfCommand run following command.");
 
             Console.WriteLine("/t [fileName] to create a template setting file.");
-            Console.WriteLine("/t e.g. releaseIt setting.ini /t");
+            Console.WriteLine("e.g. releaseIt setting.ini /t");
 
             return false;
         }

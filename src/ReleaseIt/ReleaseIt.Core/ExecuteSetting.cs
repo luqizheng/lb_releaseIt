@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using ReleaseIt.WindowCommand;
 
 namespace ReleaseIt
 {
@@ -11,12 +10,13 @@ namespace ReleaseIt
         private string _resultFolder;
         private string _workDirectory;
 
-        public ConfigurationSetting Setting { get; set; }
         public ExecuteSetting(string startFolder)
         {
             StartFolder = startFolder;
             AddVariable("%start%", startFolder);
         }
+
+        public ConfigurationSetting Setting { get; set; }
 
         /// <summary>
         ///     执行完毕后的位置
@@ -35,7 +35,7 @@ namespace ReleaseIt
         ///     最开始执行的位置.
         /// </summary>
         public string StartFolder { get; private set; }
-        
+
         /// <summary>
         ///     执行的是文件,那么这个就有值. 如Msbuild
         /// </summary>

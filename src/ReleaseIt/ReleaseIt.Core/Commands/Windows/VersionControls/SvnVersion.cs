@@ -10,9 +10,9 @@ namespace ReleaseIt.Commands.Windows.VersionControls
         {
         }
 
-        public override void Invoke(ExecuteSetting executeSetting)
+        protected override void InvokeByNewSetting(ExecuteSetting executeSetting)
         {
-            base.Invoke(executeSetting);
+            base.InvokeByNewSetting(executeSetting);
             using (var reader = new StreamReader("version.txt"))
             {
                 var s = Regex.Replace(reader.ReadToEnd(), "\\S", "");

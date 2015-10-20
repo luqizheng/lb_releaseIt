@@ -1,11 +1,47 @@
 ﻿using System;
+using System.Linq;
 
 namespace ReleaseIt
 {
     public abstract class Command<T> : ICommand where T : Setting
     {
+
         public T Setting { get; protected set; }
-        public abstract void Invoke(ExecuteSetting executeSetting);
+
+
+        public bool IsMatch(string[] tags)
+        {
+            foreach (var tag in this.Setting.Tags)
+            {
+                if (this.Setting.Tags.Contains(tag))
+                    return true;
+            }
+            return false;
+        }
+
+        public string From
+        {
+            get
+            {
+                if (Setting.From == null)
+                {
+                    return CommandSet.DefaultExecuteSetting;
+                }
+                return Setting.From;
+            }
+        }
+
+        public ExecuteSetting Invoke(ExecuteSetting executeSetting)
+        {
+            if (executeSetting == null) throw new ArgumentNullException("executeSetting");
+            var res = (ExecuteSetting)executeSetting.Clone();
+            InvokeByNewSetting(res);
+            return res;
+
+        }
+
+        protected abstract void InvokeByNewSetting(ExecuteSetting executeSetting);
+
         public bool SettingChanged { get; set; }
         public virtual void OnOutput(string txt)
         {

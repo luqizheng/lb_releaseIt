@@ -1,24 +1,16 @@
 namespace ReleaseIt.SettingBuilders
 {
-    public class CopySettingBuilder
+    public class CopySettingBuilder : SettingBuilderBase<CopySetting>
     {
-        private readonly CopySetting _setting;
-
         public CopySettingBuilder(CopySetting setting)
+            : base(setting)
         {
-            _setting = setting;
         }
 
         public CopySettingBuilder Auth(string username, string password)
         {
             _setting.UserName = username;
             _setting.Password = password;
-            return this;
-        }
-
-        public CopySettingBuilder Name(string commandName)
-        {
-            _setting.Name = commandName;
             return this;
         }
     }

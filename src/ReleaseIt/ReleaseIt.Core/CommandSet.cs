@@ -10,10 +10,10 @@ namespace ReleaseIt
         private readonly IList<ICommand> _commands;
 
         private List<string> _run;
-        private readonly ExecuteSetting _setting;
 
+        internal const string DefaultExecuteSetting = "default";
         private List<string> _skip;
-
+        private Dictionary<string, ExecuteSetting> _settings = new Dictionary<string, ExecuteSetting>();
         public CommandSet(ExecuteSetting setting)
             : this(setting, new List<ICommand>())
         {
@@ -25,7 +25,7 @@ namespace ReleaseIt
         /// <param name="commands"></param>
         public CommandSet(ExecuteSetting setting, IList<ICommand> commands)
         {
-            _setting = setting;
+            _settings.Add(DefaultExecuteSetting, setting);
             _commands = commands;
         }
 
@@ -47,9 +47,10 @@ namespace ReleaseIt
 
         public void Invoke()
         {
-            if (!Directory.Exists(_setting.WorkDirectory))
+            var setting = _settings[DefaultExecuteSetting];
+            if (!Directory.Exists(setting.WorkDirectory))
             {
-                (new DirectoryInfo(_setting.WorkDirectory)).CreateEx();
+                (new DirectoryInfo(setting.WorkDirectory)).CreateEx();
             }
 
             bool settingChanged = false;
@@ -63,7 +64,8 @@ namespace ReleaseIt
                 {
                     continue;
                 }
-                cmd.Invoke(_setting);
+
+                cmd.Invoke(_settings[cmd.From]);
 
                 settingChanged = cmd.SettingChanged || settingChanged;
             }
@@ -81,7 +83,7 @@ namespace ReleaseIt
 
         public ICommand Add(Setting setting)
         {
-            var command = _setting.Setting.Create(setting);
+            var command = _settings[DefaultExecuteSetting].Setting.Create(setting);
             Commands.Add(command);
             return command;
         }

@@ -5,7 +5,7 @@ namespace ReleaseIt.Commands
 {
     public class EmailCommand : Command<EmailSetting>
     {
-        public override void Invoke(ExecuteSetting executeSetting)
+        protected override void InvokeByNewSetting(ExecuteSetting executeSetting)
         {
             var client = new SmtpClient(Setting.Host, Setting.Port);
             if (!string.IsNullOrEmpty(Setting.UserName) && !string.IsNullOrEmpty(Setting.Password))

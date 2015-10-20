@@ -58,6 +58,7 @@
     <Compile Include="ConfigurationExtender.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Setting.cs" />
+    <Compile Include="SettingBuilders\SettingBuilderBase.cs" />
     <Compile Include="SettingBuilders\VcBuilder.cs" />
     <Compile Include="SettingExtender.cs" />
     <Compile Include="Commands\Windows\VersionControls\GitFinder.cs" />
@@ -68,7 +69,7 @@
     <Compile Include="CopySetting.cs" />
     <Compile Include="ExecuteSetting.cs" />
     <Compile Include="Executors\IExecutor.cs" />
-    <Compile Include="Commands\Windows\Executors\ProcessExecutor.cs" />
+    <Compile Include="Executors\Executors\ProcessExecutor.cs" />
     <Compile Include="Commands\Windows\MsBuilds\MsBuildCommand.cs" />
     <Compile Include="SettingBuilders\CopySettingBuilder.cs" />
     <Compile Include="Commands\Windows\Publish\XCopy.cs" />

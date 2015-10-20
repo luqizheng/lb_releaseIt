@@ -1,5 +1,4 @@
-﻿using System.IO;
-using ReleaseIt.IniStore;
+﻿using ReleaseIt.IniStore;
 
 namespace ReleaseIt.Arguments
 {
@@ -12,9 +11,6 @@ namespace ReleaseIt.Arguments
 
         public override bool Handle(CommandSet commandSet, string fileName, string argument)
         {
-           
-          
-
             commandSet.Svn()
                 .Url("http://svn.address.com/trunk")
                 .Auth("username", "password")

@@ -23,24 +23,24 @@ namespace ReleaseIt
         }
 
 
-        public static VCBuilder Svn(this CommandSet set)
+        public static VcBuilder Svn(this CommandSet set)
         {
             var result = new VersionControlSetting
             {
                 VersionControlType = VersionControlType.Svn
             };
             set.Add(result);
-            return new VCBuilder(result);
+            return new VcBuilder(result);
         }
 
-        public static VCBuilder Git(this CommandSet set)
+        public static VcBuilder Git(this CommandSet set)
         {
             var result = new VersionControlSetting
             {
                 VersionControlType = VersionControlType.Git
             };
             set.Add(result);
-            return new VCBuilder(result);
+            return new VcBuilder(result);
         }
     }
 }

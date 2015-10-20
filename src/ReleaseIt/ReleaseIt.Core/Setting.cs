@@ -2,10 +2,16 @@ using System.Runtime.Serialization;
 
 namespace ReleaseIt
 {
-    [DataContract]
+
     public class Setting
     {
-        [DataMember]
+        
         public string Name { get; set; }
+        /// <summary>
+        /// gets or sets Name of Command which executed. 
+        /// </summary>
+        public string[] Tags { get; set; }
+
+        public string From { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using ReleaseIt.WindowCommand;
 using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt
@@ -14,12 +13,11 @@ namespace ReleaseIt
         }
 
 
-        [JsonIgnore]
+     
         public ICommandFinder Finder { get; set; }
 
-        public override void Invoke(ExecuteSetting executeSetting)
+        protected override void InvokeByNewSetting(ExecuteSetting executeSetting)
         {
-
             executeSetting.Setting.Executor.Invoke(this, executeSetting);
         }
 

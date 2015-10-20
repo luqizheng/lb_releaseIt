@@ -2,9 +2,8 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using ReleaseIt.Executors;
 
-namespace ReleaseIt.Commands.Windows.Executors
+namespace ReleaseIt.Executors.Executors
 {
     internal class ProcessExecutor : IExecutor
     {
