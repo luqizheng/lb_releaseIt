@@ -6,12 +6,12 @@ namespace ReleaseIt
     public class Setting
     {
         
-        public string Name { get; set; }
-        /// <summary>
-        /// gets or sets Name of Command which executed. 
-        /// </summary>
+        public string Id { get; set; }
+      
         public string[] Tags { get; set; }
-
+        /// <summary>
+        /// gets or sets Id of Command which executed. 
+        /// </summary>
         public string From { get; set; }
     }
 }

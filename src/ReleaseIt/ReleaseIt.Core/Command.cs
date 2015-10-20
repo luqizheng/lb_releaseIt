@@ -29,6 +29,7 @@ namespace ReleaseIt
                 }
                 return Setting.From;
             }
+            set { Setting.From = value; }
         }
 
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)

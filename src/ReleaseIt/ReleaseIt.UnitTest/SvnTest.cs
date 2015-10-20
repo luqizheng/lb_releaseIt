@@ -7,22 +7,23 @@ namespace ReleaseIt.UnitTest
     public class SvnTest
     {
         [TestMethod]
-        public void TestCheckout()
+        public void svn_Checkout_Test()
         {
             var version = new VersionControlSetting
             {
                 Url = "http://www.svnchina.com/svn/release_it "
             };
 
-            Svn svn = new Svn(version);
+            var svn = new Svn(version);
             var actual = svn.BuildArguments(new ExecuteSetting("./"));
-            var expect = "checkout " + version.Url + " ./release_it ";
+            var expect = "checkout " + version.Url + " ./release_it";
+
 
             Assert.AreEqual(expect, actual);
-
         }
+
         [TestMethod]
-        public void TestCheckout_withAuth()
+        public void Svn_Checkout_withAuth()
         {
             var version = new VersionControlSetting
             {
@@ -31,12 +32,12 @@ namespace ReleaseIt.UnitTest
                 Password = "wd"
             };
 
-            Svn svn = new Svn(version);
+            var svn = new Svn(version);
             var actual = svn.BuildArguments(new ExecuteSetting("./"));
-            var expect = "checkout " + version.Url + " ./release_it --username " + version.UserName + " --password " + version.Password;
+            var expect = "checkout " + version.Url + " ./release_it --username " + version.UserName + " --password " +
+                         version.Password;
 
             Assert.AreEqual(expect, actual);
-
         }
     }
 }

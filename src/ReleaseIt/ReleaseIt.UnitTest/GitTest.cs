@@ -24,7 +24,7 @@ namespace ReleaseIt.UnitTest
         }
 
         [TestMethod]
-        public void BuildArguments_clone()
+        public void Git_Clone_BuildArguments()
         {
             var gitSetting = new VersionControlSetting
             {
@@ -42,7 +42,7 @@ namespace ReleaseIt.UnitTest
         }
 
         [TestMethod]
-        public void BuildArguments_pull()
+        public void Git_pull_BuildArguments()
         {
             var gitSetting = new VersionControlSetting
             {

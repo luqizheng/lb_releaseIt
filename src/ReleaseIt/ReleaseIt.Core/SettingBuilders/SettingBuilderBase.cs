@@ -11,7 +11,7 @@ namespace ReleaseIt.SettingBuilders
 
         public SettingBuilderBase<T> Name(string commandName)
         {
-            _setting.Name = commandName;
+            _setting.Id = commandName;
             return this;
         }
 

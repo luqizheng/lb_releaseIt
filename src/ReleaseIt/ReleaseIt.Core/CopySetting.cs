@@ -9,8 +9,7 @@ namespace ReleaseIt
         [DataMember]
         public string TargetPath { get; set; }
 
-        [DataMember]
-        public string From { get; set; }
+   
 
         [DataMember]
         public string UserName { get; set; }

@@ -15,7 +15,10 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
 
 
         private readonly ParameterWithValue<LogLevel> _logLevel =
-            new ParameterWithValue<LogLevel>("verbosity", s => Convert.ToString(s).Substring(0, 1));
+            new ParameterWithValue<LogLevel>("verbosity", s => Convert.ToString(s).Substring(0, 1))
+            {
+                Prefix = ""
+            };
 
 
         private readonly ParameterWithValue<IList<ParameterWithValue<string>>> _properities =

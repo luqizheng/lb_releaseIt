@@ -38,8 +38,7 @@ namespace ReleaseIt.UnitTest
             var s = new MsBuildCommand(setting);
             var executeSetting = new ExecuteSetting("./");
             var arguments = s.BuildArguments(executeSetting);
-            var expected =
-                ProjectPath+ @" /t:_CopyWebApplication;_WPPCopyWebApplication;TransformWebConfig /p:Configuration:Release;WebProjectOutputDir:PublishFolder/Web";
+            var expected = "\"" + ProjectPath + @""" /t:_CopyWebApplication;_WPPCopyWebApplication;TransformWebConfig /p:Configuration:Release;WebProjectOutputDir:""./PublishFolder/Web"" /verbosity:q";
             Assert.AreEqual(expected, arguments);
         }
 

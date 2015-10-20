@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using ReleaseIt.IniStore;
+using System.Linq;
 
 namespace ReleaseIt
 {
     public class CommandSet
     {
+        internal const string DefaultExecuteSetting = "default";
         private readonly IList<ICommand> _commands;
 
-        private List<string> _run;
+        private readonly Dictionary<string, ExecuteSetting> _executeSettings
+            = new Dictionary<string, ExecuteSetting>();
 
-        internal const string DefaultExecuteSetting = "default";
+        private List<string> _run;
         private List<string> _skip;
-        private Dictionary<string, ExecuteSetting> _settings = new Dictionary<string, ExecuteSetting>();
+
         public CommandSet(ExecuteSetting setting)
             : this(setting, new List<ICommand>())
         {
@@ -25,7 +27,7 @@ namespace ReleaseIt
         /// <param name="commands"></param>
         public CommandSet(ExecuteSetting setting, IList<ICommand> commands)
         {
-            _settings.Add(DefaultExecuteSetting, setting);
+            _executeSettings.Add(DefaultExecuteSetting, setting);
             _commands = commands;
         }
 
@@ -47,35 +49,71 @@ namespace ReleaseIt
 
         public void Invoke()
         {
-            var setting = _settings[DefaultExecuteSetting];
+            var setting = _executeSettings[DefaultExecuteSetting];
             if (!Directory.Exists(setting.WorkDirectory))
             {
                 (new DirectoryInfo(setting.WorkDirectory)).CreateEx();
             }
 
-            bool settingChanged = false;
-            foreach (var cmd in _commands)
+            var settingChanged = false;
+            var exeCmod = BuildExecuteQueue();
+
+            while (exeCmod.Count != 0)
             {
-                if (Skip.Count != 0 && Skip.Contains(cmd.Setting.Name))
-                {
-                    continue;
-                }
-                if (Run.Count != 0 && !Run.Contains(cmd.Setting.Name))
-                {
-                    continue;
-                }
-
-                cmd.Invoke(_settings[cmd.From]);
-
+                var cmd = exeCmod.Dequeue();
+                var resultSetting = cmd.Invoke(_executeSettings[cmd.Setting.From ?? DefaultExecuteSetting]);
+                _executeSettings.Add(cmd.Setting.Id, resultSetting);
                 settingChanged = cmd.SettingChanged || settingChanged;
             }
-
             if (settingChanged)
             {
-                if (OnCommandSettingChanged != null)
+                OnSettingChanged();
+            }
+        }
+
+        private void OnSettingChanged()
+        {
+            if (OnCommandSettingChanged != null)
+            {
+                OnCommandSettingChanged(this, EventArgs.Empty);
+            }
+        }
+
+        private Queue<ICommand> BuildExecuteQueue()
+        {
+            var result = new List<ICommand>();
+            foreach (var cmd in _commands)
+            {
+                if (Skip.Count != 0 && Skip.Contains(cmd.Setting.Id))
                 {
-                    OnCommandSettingChanged(this, EventArgs.Empty);
+                    continue;
                 }
+                if (Run.Count == 0 || Run.Contains(cmd.Setting.Id))
+                {
+                    result.Add(cmd);
+                    LoopPrepend(cmd, result);
+                }
+            }
+            return new Queue<ICommand>(result);
+        }
+
+        private void LoopPrepend(ICommand cmd, List<ICommand> result)
+        {
+            var backCount = 1;
+            while (cmd != null && cmd.Setting.From != null && cmd.Setting.From != DefaultExecuteSetting)
+            {
+                if (result.All(s => s.Setting.Id != cmd.Setting.From))
+                {
+                    var preCmd = _commands.FirstOrDefault(s => s.Setting.Id == cmd.Setting.From);
+                    if (preCmd != null)
+                    {
+                        result.Insert(result.Count - backCount, preCmd);
+                        backCount++;
+                        cmd = preCmd;
+                        continue;
+                    }
+                }
+                break;
             }
         }
 
@@ -83,7 +121,7 @@ namespace ReleaseIt
 
         public ICommand Add(Setting setting)
         {
-            var command = _settings[DefaultExecuteSetting].Setting.Create(setting);
+            var command = _executeSettings[DefaultExecuteSetting].Setting.Create(setting);
             Commands.Add(command);
             return command;
         }

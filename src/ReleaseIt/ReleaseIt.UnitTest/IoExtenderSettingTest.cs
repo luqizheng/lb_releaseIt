@@ -14,7 +14,7 @@ namespace ReleaseIt.UnitTest
 
             var path = IoExtender.GetPath(working, "../a");
 
-            var expectDir = Path.GetFullPath(working + "../a");
+            var expectDir = Path.GetFullPath(working + "/../a");
             Assert.AreEqual(expectDir, path);
         }
 

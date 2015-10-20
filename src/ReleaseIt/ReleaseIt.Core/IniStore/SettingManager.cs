@@ -25,9 +25,9 @@ namespace ReleaseIt.IniStore
             foreach (var setting in commandSet.Commands.Select(s => s.Setting))
             {
                 var seciontName = setting.GetType().Name;
-                if (!string.IsNullOrEmpty(setting.Name))
+                if (!string.IsNullOrEmpty(setting.Id))
                 {
-                    seciontName = seciontName + "_" + setting.Name;
+                    seciontName = seciontName + "_" + setting.Id;
                 }
                 var s = file.Section(seciontName);
                 SetToSection(s, setting);
@@ -48,7 +48,7 @@ namespace ReleaseIt.IniStore
                 var name = ary.Length > 1 ? string.Join("_", ary, 1, ary.Length - 2) : null;
 
                 var setting = Creator[sectionName]();
-                setting.Name = name;
+                setting.Id = name;
                 FillProperities(setting, section);
                 commandSet.Add(setting);
             }
@@ -60,7 +60,7 @@ namespace ReleaseIt.IniStore
 
             foreach (var propertyInfo in setting.GetType().GetProperties())
             {
-                if (propertyInfo.Name == "Name")
+                if (propertyInfo.Name == "Id")
                     continue;
 
                 if (iniProperties.ContainsKey(propertyInfo.Name))
@@ -89,6 +89,13 @@ namespace ReleaseIt.IniStore
                         propertyInfo.SetValue(setting, Convert.ToBoolean(strValue));
                         continue;
                     }
+
+                    if (propertyInfo.PropertyType.IsArray &&
+                        propertyInfo.PropertyType.GetElementType() == typeof (string))
+                    {
+                        var aryStrValue = strValue.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                        propertyInfo.SetValue(setting, Convert.ToString(aryStrValue));
+                    }
                     throw new ApplicationException(string.Format("Can't Convert {0} to type {1}", strValue,
                         propertyInfo.PropertyType.Name));
                 }
@@ -99,9 +106,16 @@ namespace ReleaseIt.IniStore
         {
             foreach (var propInfo in s.GetType().GetProperties())
             {
-                if (propInfo.Name == "Name")
+                if (propInfo.Name == "Id")
                     continue;
+                if (propInfo.PropertyType.IsArray)
+                {
+                    var ary = (Array) propInfo.GetValue(s);
+                    IList<string> aryJoin = (from object ele in ary select Convert.ToString(ele)).ToList();
 
+                    section.Set(propInfo.Name, string.Join(",", aryJoin.ToArray()));
+                    continue;
+                }
                 section.Set(propInfo.Name, Convert.ToString(propInfo.GetValue(s)));
             }
         }

@@ -14,6 +14,5 @@ namespace ReleaseIt
 
         void OnErrorOutput(string txt);
 
-        string From { get; }
     }
 }

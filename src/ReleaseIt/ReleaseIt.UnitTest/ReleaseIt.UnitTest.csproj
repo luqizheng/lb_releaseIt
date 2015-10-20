@@ -50,11 +50,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommandMock.cs" />
     <Compile Include="IoExtenderSettingTest.cs" />
     <Compile Include="Msbuild-test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingMock.cs" />
     <Compile Include="SvnTest.cs" />
     <Compile Include="GitTest.cs" />
+    <Compile Include="UnitTest_CommandSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReleaseIt.Core\ReleaseIt.Core.csproj">
@@ -62,6 +65,7 @@
       <Name>ReleaseIt.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
