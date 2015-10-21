@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace ReleaseIt
 {
     public abstract class Command<T> : ICommand where T : Setting
     {
-
         public T Setting { get; protected set; }
-
-
-        public bool IsMatch(IEnumerable<string> tags)
-        {
-            if (tags == null || this.Setting.Tags == null)
-                return false;
-            return (from beCheckedTag in tags
-                    from tag in this.Setting.Tags
-                    where tag.ToLower() == beCheckedTag.ToLower()
-                    select beCheckedTag).Any();
-        }
-
-        public string From
+        [Description("Dependcies.pre-condition of this step")]
+        public string Dependcies
         {
             get
             {
@@ -34,18 +23,27 @@ namespace ReleaseIt
         }
 
 
+        public bool IsMatch(IEnumerable<string> tags)
+        {
+            if (tags == null || Setting.Tags == null)
+                return false;
+            return (from beCheckedTag in tags
+                from tag in Setting.Tags
+                where tag.ToLower() == beCheckedTag.ToLower()
+                select beCheckedTag).Any();
+        }
+
+
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
-            var res = (ExecuteSetting)executeSetting.Clone();
-            InvokeByNewSetting(res);
+            var res = (ExecuteSetting) executeSetting.Clone();
+            InvokeByNewSetting(res, this.Setting);
             return res;
-
         }
 
-        protected abstract void InvokeByNewSetting(ExecuteSetting executeSetting);
-
         public bool SettingChanged { get; set; }
+
         public virtual void OnOutput(string txt)
         {
             Console.WriteLine(txt);
@@ -62,5 +60,7 @@ namespace ReleaseIt
         {
             get { return Setting; }
         }
+
+        protected abstract void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting);
     }
 }

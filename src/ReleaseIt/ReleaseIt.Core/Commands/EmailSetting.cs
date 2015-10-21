@@ -19,6 +19,9 @@ namespace ReleaseIt.Commands
             set { _form = value; }
         }
 
+        public bool Ssl { get; set; }
+
+
         public string ToAddr { get; set; }
 
         public MailMessage Create(ExecuteSetting executeSetting)

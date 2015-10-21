@@ -16,7 +16,7 @@ namespace ReleaseIt
      
         public ICommandFinder Finder { get; set; }
 
-        protected override void InvokeByNewSetting(ExecuteSetting executeSetting)
+        protected override void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting)
         {
             executeSetting.Setting.Executor.Invoke(this, executeSetting);
         }

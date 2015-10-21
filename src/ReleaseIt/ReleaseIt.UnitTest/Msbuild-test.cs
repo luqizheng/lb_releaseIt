@@ -19,14 +19,41 @@ namespace ReleaseIt.UnitTest
             }
         }
 
-        [TestMethod]
-        public void TestWebBuild()
+        [TestCleanup]
+        public void Clearup()
         {
             var webFolder = Path.Combine(Environment.CurrentDirectory, "PublishFolder", "web");
             if (Directory.Exists(webFolder))
             {
                 Directory.Delete(webFolder, true);
             }
+        }
+
+        [TestMethod]
+        public void WebBuild_Release()
+        {
+            var webFolder = Path.Combine(Environment.CurrentDirectory, "PublishFolder", "web");
+            var setting = new BuildSetting
+            {
+                BuildConfiguration = "Release",
+                IsWeb = true,
+                ProjectPath = ProjectPath,
+                BuildLogFile = false
+                //OutputDirectory = "PublishFolder/Web"
+            };
+
+            var msbuild = new MsBuildCommand(setting);
+            var executeSetting = new ExecuteSetting("./");
+            var arguments = msbuild.BuildArguments(executeSetting);
+
+            Assert.AreEqual(
+                @"""" + ProjectPath + @""" /p:Configuration=Release /t:_CopyWebApplication;_WPPCopyWebApplication;TransformWebConfig",
+                arguments);
+        }
+
+        [TestMethod]
+        public void TestWebBuild()
+        {
             var setting = new BuildSetting
             {
                 BuildConfiguration = "Release",
@@ -35,10 +62,11 @@ namespace ReleaseIt.UnitTest
                 OutputDirectory = "PublishFolder/Web"
             };
 
-            var s = new MsBuildCommand(setting);
+            var target = new MsBuildCommand(setting);
             var executeSetting = new ExecuteSetting("./");
-            var arguments = s.BuildArguments(executeSetting);
-            var expected = "\"" + ProjectPath + @""" /t:_CopyWebApplication;_WPPCopyWebApplication;TransformWebConfig /p:Configuration:Release;WebProjectOutputDir:""./PublishFolder/Web"" /verbosity:q";
+            var arguments = target.BuildArguments(executeSetting);
+            var expected = "\"" + ProjectPath +
+                           @""" /p:Configuration=Release;WebProjectOutputDir=""./PublishFolder/Web"" /t:_CopyWebApplication;_WPPCopyWebApplication;TransformWebConfig";
             Assert.AreEqual(expected, arguments);
         }
 

@@ -1,29 +1,30 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.ComponentModel;
 
 namespace ReleaseIt
 {
-    [DataContract]
+    [Description("copy setting. copy %result% to target path.")]
     public class CopySetting : Setting
     {
-        [DataMember]
+        private string _sourcePath;
         public string TargetPath { get; set; }
 
-   
+        public string SourcePath
+        {
+            get { return _sourcePath ?? "%result%"; }
+            set { _sourcePath = value; }
+        }
 
-        [DataMember]
         public string UserName { get; set; }
 
-        [DataMember]
+
         public string Password { get; set; }
 
         /// <summary>
         ///     use /d to copy file.
         /// </summary>
-        [DataMember]
         public string LastCopyDate { get; set; }
 
-        [DataMember]
+
         public bool UseDateCompareCopy { get; set; }
     }
 }

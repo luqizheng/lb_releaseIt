@@ -23,7 +23,7 @@ namespace ReleaseIt.IniStore
         {
             var file = new IniFile();
 
-            foreach (var setting in commandSet.Commands.Select(s => s.Setting))
+            foreach (var setting in commandSet.Settings)
             {
                 var seciontName = setting.GetType().Name;
                 if (!string.IsNullOrEmpty(setting.Id))
@@ -33,7 +33,7 @@ namespace ReleaseIt.IniStore
                 var s = file.Section(seciontName);
                 if (buildComment)
                 {
-                    var cus = setting.GetType().GetCustomAttributes(typeof(DescriptionAttribute));
+                    var cus = setting.GetType().GetCustomAttributes(typeof(DescriptionAttribute), true);
                     if (cus.Length > 0)
                     {
                         s.Comment = ((DescriptionAttribute)cus[0]).Description;
@@ -52,7 +52,7 @@ namespace ReleaseIt.IniStore
         /// <param name="filename"></param>
         public void Save(IniFile file, CommandSet commandSet, string filename)
         {
-            foreach (var setting in commandSet.Commands.Select(s => s.Setting))
+            foreach (var setting in commandSet.Settings)
             {
                 var seciontName = setting.GetType().Name;
                 if (!string.IsNullOrEmpty(setting.Id))

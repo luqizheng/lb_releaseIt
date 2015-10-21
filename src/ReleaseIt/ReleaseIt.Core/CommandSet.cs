@@ -10,6 +10,8 @@ namespace ReleaseIt
         internal const string DefaultExecuteSetting = "default";
         private readonly IList<ICommand> _commands;
 
+        private readonly IList<string> _commnadIds;
+
         private readonly Dictionary<string, ExecuteSetting> _executeSettings
             = new Dictionary<string, ExecuteSetting>();
 
@@ -31,12 +33,18 @@ namespace ReleaseIt
         {
             _executeSettings.Add(DefaultExecuteSetting, setting);
             _commands = commands;
+            _commnadIds = new List<string>();
         }
 
 
-        public IList<ICommand> Commands
+        private IList<ICommand> Commands
         {
             get { return _commands; }
+        }
+
+        public IEnumerable<Setting> Settings
+        {
+            get { return _commands.Select(s => s.Setting); }
         }
 
         /// <summary>
@@ -115,8 +123,8 @@ namespace ReleaseIt
         private void LoopPrepend(ICommand cmd, List<ICommand> result)
         {
             var backCount = 1;
-            while (cmd != null && cmd.Setting.Dependcies != null && 
-                cmd.Setting.Dependcies != DefaultExecuteSetting)
+            while (cmd != null && cmd.Setting.Dependcies != null &&
+                   cmd.Setting.Dependcies != DefaultExecuteSetting)
             {
                 if (result.All(s => s.Setting.Id != cmd.Setting.Dependcies))
                 {
@@ -137,9 +145,45 @@ namespace ReleaseIt
 
         public ICommand Add(Setting setting)
         {
+            if (_commnadIds.Contains(setting.Id))
+            {
+                throw new DuplicateIdException(setting.Id);
+            }
             var command = _executeSettings[DefaultExecuteSetting].Setting.Create(setting);
             Commands.Add(command);
+            _commnadIds.Add(setting.Id);
             return command;
+        }
+
+        public ICommand Insert(int index, ICommand command)
+        {
+            if (_commnadIds.Contains(command.Setting.Id))
+            {
+                throw new DuplicateIdException(command.Setting.Id);
+            }
+            Commands.Insert(index, command);
+            _commnadIds.Add(command.Setting.Id);
+            return command;
+        }
+
+        public ICommand Add(ICommand command)
+        {
+            if (_commnadIds.Contains(command.Setting.Id))
+            {
+                throw new DuplicateIdException(command.Setting.Id);
+            }
+            Commands.Add(command);
+            _commnadIds.Add(command.Setting.Id);
+            return command;
+        }
+    }
+
+    public class DuplicateIdException :
+        Exception
+    {
+        public DuplicateIdException(string id)
+            : base(string.Format("id={0} is exist in command set.", id))
+        {
         }
     }
 }

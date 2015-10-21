@@ -15,9 +15,9 @@ namespace ReleaseIt.Commands.Windows.VersionControls
             Setting = setting;
         }
 
-        protected override void InvokeByNewSetting(ExecuteSetting executeSetting)
+        protected override void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting)
         {
-            base.InvokeByNewSetting(executeSetting);
+            base.InvokeByNewSetting(executeSetting, setting);
             executeSetting.WorkDirectory = null; //reset workDirectory
         }
 
