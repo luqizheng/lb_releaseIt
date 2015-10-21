@@ -1,6 +1,6 @@
 namespace ReleaseIt.SettingBuilders
 {
-    public class BuildSettingBuilder : SettingBuilderBase<BuildSetting>
+    public class BuildSettingBuilder : SettingBuilderBase<BuildSetting, BuildSettingBuilder>
     {
         /// <summary>
         /// </summary>

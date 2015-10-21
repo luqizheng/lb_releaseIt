@@ -57,7 +57,8 @@ namespace ReleaseIt
             {
                 ExecuteFile = ExecuteFile,
                 WorkDirectory = WorkDirectory,
-                ResultFolder = ResultFolder
+                ResultFolder = ResultFolder,
+                Setting = Setting
             };
             foreach (var item in _variable.Keys)
             {

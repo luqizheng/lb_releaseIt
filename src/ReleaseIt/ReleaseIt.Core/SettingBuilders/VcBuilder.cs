@@ -2,7 +2,7 @@
 
 namespace ReleaseIt.SettingBuilders
 {
-    public class VcBuilder : SettingBuilderBase<VersionControlSetting>
+    public class VcBuilder : SettingBuilderBase<VersionControlSetting, VcBuilder>
     {
         public VcBuilder(VersionControlSetting setting)
             : base(setting)

@@ -1,6 +1,6 @@
 namespace ReleaseIt.SettingBuilders
 {
-    public class CopySettingBuilder : SettingBuilderBase<CopySetting>
+    public class CopySettingBuilder : SettingBuilderBase<CopySetting, CopySettingBuilder>
     {
         public CopySettingBuilder(CopySetting setting)
             : base(setting)

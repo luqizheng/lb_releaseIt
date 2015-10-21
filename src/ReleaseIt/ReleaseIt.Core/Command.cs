@@ -24,13 +24,13 @@ namespace ReleaseIt
         {
             get
             {
-                if (Setting.From == null)
+                if (Setting.Dependcies == null)
                 {
                     return CommandSet.DefaultExecuteSetting;
                 }
-                return Setting.From;
+                return Setting.Dependcies;
             }
-            set { Setting.From = value; }
+            set { Setting.Dependcies = value; }
         }
 
 

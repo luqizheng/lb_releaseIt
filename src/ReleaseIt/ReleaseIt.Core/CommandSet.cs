@@ -74,7 +74,7 @@ namespace ReleaseIt
             while (exeCmod.Count != 0)
             {
                 var cmd = exeCmod.Dequeue();
-                var resultSetting = cmd.Invoke(_executeSettings[cmd.Setting.From ?? DefaultExecuteSetting]);
+                var resultSetting = cmd.Invoke(_executeSettings[cmd.Setting.Dependcies ?? DefaultExecuteSetting]);
                 _executeSettings.Add(cmd.Setting.Id, resultSetting);
                 settingChanged = cmd.SettingChanged || settingChanged;
             }
@@ -115,12 +115,12 @@ namespace ReleaseIt
         private void LoopPrepend(ICommand cmd, List<ICommand> result)
         {
             var backCount = 1;
-            while (cmd != null && cmd.Setting.From != null && 
-                cmd.Setting.From != DefaultExecuteSetting)
+            while (cmd != null && cmd.Setting.Dependcies != null && 
+                cmd.Setting.Dependcies != DefaultExecuteSetting)
             {
-                if (result.All(s => s.Setting.Id != cmd.Setting.From))
+                if (result.All(s => s.Setting.Id != cmd.Setting.Dependcies))
                 {
-                    var preCmd = _commands.FirstOrDefault(s => s.Setting.Id == cmd.Setting.From);
+                    var preCmd = _commands.FirstOrDefault(s => s.Setting.Id == cmd.Setting.Dependcies);
                     if (preCmd != null)
                     {
                         result.Insert(result.Count - backCount, preCmd);

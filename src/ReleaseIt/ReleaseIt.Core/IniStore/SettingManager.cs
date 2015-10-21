@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using ReleaseIt.Commands;
 
@@ -12,13 +13,13 @@ namespace ReleaseIt.IniStore
 
         static SettingManager()
         {
-            Creator.Add(typeof (BuildSetting).Name, () => new BuildSetting());
-            Creator.Add(typeof (VersionControlSetting).Name, () => new VersionControlSetting());
-            Creator.Add(typeof (CopySetting).Name, () => new CopySetting());
-            Creator.Add(typeof (EmailSetting).Name, () => new EmailSetting());
+            Creator.Add(typeof(BuildSetting).Name, () => new BuildSetting());
+            Creator.Add(typeof(VersionControlSetting).Name, () => new VersionControlSetting());
+            Creator.Add(typeof(CopySetting).Name, () => new CopySetting());
+            Creator.Add(typeof(EmailSetting).Name, () => new EmailSetting());
         }
 
-        public void Save(CommandSet commandSet, string filename)
+        public void Save(CommandSet commandSet, string filename, bool buildComment = false)
         {
             var file = new IniFile();
 
@@ -30,13 +31,42 @@ namespace ReleaseIt.IniStore
                     seciontName = seciontName + "_" + setting.Id;
                 }
                 var s = file.Section(seciontName);
-                SetToSection(s, setting);
+                if (buildComment)
+                {
+                    var cus = setting.GetType().GetCustomAttributes(typeof(DescriptionAttribute));
+                    if (cus.Length > 0)
+                    {
+                        s.Comment = ((DescriptionAttribute)cus[0]).Description;
+                    }
+                }
+                SetToSection(s, setting, buildComment);
+            }
+
+            file.Save(filename);
+        }
+        /// <summary>
+        /// save to exist file.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="commandSet"></param>
+        /// <param name="filename"></param>
+        public void Save(IniFile file, CommandSet commandSet, string filename)
+        {
+            foreach (var setting in commandSet.Commands.Select(s => s.Setting))
+            {
+                var seciontName = setting.GetType().Name;
+                if (!string.IsNullOrEmpty(setting.Id))
+                {
+                    seciontName = seciontName + "_" + setting.Id;
+                }
+                var s = file.Section(seciontName);
+                SetToSection(s, setting, false);
             }
 
             file.Save(filename);
         }
 
-        public void ReadSetting(CommandSet commandSet, string filename)
+        public IniFile ReadSetting(CommandSet commandSet, string filename)
         {
             var file = new IniFile(filename);
             foreach (var section in file.Sections)
@@ -45,13 +75,14 @@ namespace ReleaseIt.IniStore
 
                 var ary = sectionName.Split('_');
                 sectionName = ary[0];
-                var name = ary.Length > 1 ? string.Join("_", ary, 1, ary.Length - 2) : null;
+                var name = ary.Length > 1 ? string.Join("_", ary, 1, ary.Length - 1) : null;
 
                 var setting = Creator[sectionName]();
                 setting.Id = name;
                 FillProperities(setting, section);
                 commandSet.Add(setting);
             }
+            return file;
         }
 
         private void FillProperities(Setting setting, IniSection section)
@@ -66,7 +97,7 @@ namespace ReleaseIt.IniStore
                 if (iniProperties.ContainsKey(propertyInfo.Name))
                 {
                     var strValue = iniProperties[propertyInfo.Name];
-                    if (propertyInfo.PropertyType == typeof (string))
+                    if (propertyInfo.PropertyType == typeof(string))
                     {
                         propertyInfo.SetValue(setting, strValue);
                         continue;
@@ -78,23 +109,24 @@ namespace ReleaseIt.IniStore
                         continue;
                     }
 
-                    if (propertyInfo.PropertyType == typeof (int))
+                    if (propertyInfo.PropertyType == typeof(int))
                     {
                         propertyInfo.SetValue(setting, Convert.ToInt32(strValue));
                         continue;
                     }
 
-                    if (propertyInfo.PropertyType == typeof (bool))
+                    if (propertyInfo.PropertyType == typeof(bool))
                     {
                         propertyInfo.SetValue(setting, Convert.ToBoolean(strValue));
                         continue;
                     }
 
                     if (propertyInfo.PropertyType.IsArray &&
-                        propertyInfo.PropertyType.GetElementType() == typeof (string))
+                        propertyInfo.PropertyType.GetElementType() == typeof(string))
                     {
-                        var aryStrValue = strValue.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
-                        propertyInfo.SetValue(setting, Convert.ToString(aryStrValue));
+                        var aryStrValue = strValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        propertyInfo.SetValue(setting, aryStrValue);
+                        continue;
                     }
                     throw new ApplicationException(string.Format("Can't Convert {0} to type {1}", strValue,
                         propertyInfo.PropertyType.Name));
@@ -102,7 +134,7 @@ namespace ReleaseIt.IniStore
             }
         }
 
-        private void SetToSection(IniSection section, Setting s)
+        private void SetToSection(IniSection section, Setting s, bool buildComment)
         {
             foreach (var propInfo in s.GetType().GetProperties())
             {
@@ -110,7 +142,7 @@ namespace ReleaseIt.IniStore
                     continue;
                 if (propInfo.PropertyType.IsArray)
                 {
-                    var ary = (Array) propInfo.GetValue(s);
+                    var ary = (Array)propInfo.GetValue(s);
                     if (ary == null)
                         continue;
                     IList<string> aryJoin = (from object ele in ary select Convert.ToString(ele)).ToList();
@@ -118,7 +150,16 @@ namespace ReleaseIt.IniStore
                     section.Set(propInfo.Name, string.Join(",", aryJoin.ToArray()));
                     continue;
                 }
-                section.Set(propInfo.Name, Convert.ToString(propInfo.GetValue(s)));
+                string comment = null;
+                if (buildComment)
+                {
+                    var descript = propInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                    if (descript.Length > 0)
+                    {
+                        comment = ((DescriptionAttribute)descript[0]).Description;
+                    }
+                }
+                section.Set(propInfo.Name, Convert.ToString(propInfo.GetValue(s)), comment);
             }
         }
     }

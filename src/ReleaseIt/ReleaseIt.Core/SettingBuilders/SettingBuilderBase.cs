@@ -1,6 +1,6 @@
 namespace ReleaseIt.SettingBuilders
 {
-    public class SettingBuilderBase<T> where T : Setting
+    public class SettingBuilderBase<T, T1> where T : Setting where T1 : class
     {
         protected readonly T _setting;
 
@@ -9,15 +9,15 @@ namespace ReleaseIt.SettingBuilders
             _setting = setting;
         }
 
-        public SettingBuilderBase<T> Name(string commandName)
-        {
-            _setting.Id = commandName;
-            return this;
-        }
-
-        public SettingBuilderBase<T> Tags(params string[] tag)
+        public T1 Tags(params string[] tag)
         {
             _setting.Tags = tag;
+            return this as T1;
+        }
+
+        public SettingBuilderBase<T, T1> Name(string commandName)
+        {
+            _setting.Id = commandName;
             return this;
         }
     }

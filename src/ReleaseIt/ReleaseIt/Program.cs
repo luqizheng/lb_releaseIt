@@ -51,10 +51,12 @@ namespace ReleaseIt
                 Run(commandSet, _fileInfo);
         }
 
+        public static IniFile ExistFile { get; private set; }
+
         private static void Run(CommandSet commandSet, FileInfo fullName)
         {
             var manager = new SettingManager();
-            manager.ReadSetting(commandSet, fullName.FullName);
+            ExistFile = manager.ReadSetting(commandSet, fullName.FullName);
             commandSet.OnCommandSettingChanged += commandSet_OnCommandSettingChanged;
             commandSet.Invoke();
 
@@ -63,7 +65,7 @@ namespace ReleaseIt
         static void commandSet_OnCommandSettingChanged(object sender, EventArgs e)
         {
             var manager = new SettingManager();
-            manager.Save((CommandSet)sender, _fileInfo.FullName);
+            manager.Save(ExistFile, (CommandSet)sender, _fileInfo.FullName);
         }
     }
 }

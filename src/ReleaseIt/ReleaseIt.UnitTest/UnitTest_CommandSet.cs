@@ -61,14 +61,14 @@ namespace ReleaseIt.UnitTest
                     Setting = new SettingMock
                     {
                         Id = "2",
-                        From="1"
+                        Dependcies="1"
                     }
                 },
                 new CommandMock(result)
                 {
                     Setting = new SettingMock
                     {
-                        From = "2",
+                        Dependcies = "2",
                         Id = "3"
                     }
                 }
