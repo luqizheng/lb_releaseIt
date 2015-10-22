@@ -8,7 +8,7 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
     {
         public override string Name
         {
-            get { return "BuildSetting"; }
+            get { return "CompileSetting"; }
         }
 
         public override string FindCmd()

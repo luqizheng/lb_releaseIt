@@ -6,40 +6,60 @@ namespace ReleaseIt
 {
     public class ExecuteSetting : ICloneable
     {
+        private const string VAR_RESULT = "%result%";
+        private const string VAR_Date = "%date%";
+        private const string VAR_TIME = "%time%";
         private readonly Dictionary<string, string> _variable = new Dictionary<string, string>();
-        private string _resultFolder;
+        private string _startFolder;
         private string _workDirectory;
+
+        private ExecuteSetting(ExecuteSetting parent)
+        {
+            Parent = parent;
+            Top = parent.Top ?? parent;
+        }
 
         public ExecuteSetting(string startFolder)
         {
-            StartFolder = startFolder;
-            AddVariable("%start%", startFolder);
+            if (startFolder == null) throw new ArgumentNullException("startFolder");
+            _startFolder = startFolder;
+            AddVariable(VAR_RESULT, startFolder);
+            AddVariable(VAR_Date, DateTime.Now.ToString("yyyy-MM-dd"));
+            AddVariable(VAR_TIME, DateTime.Now.ToString("HH:mm:ss"));
         }
 
+        internal ExecuteSetting Top { get; set; }
+        internal ExecuteSetting Parent { get; set; }
         public ConfigurationSetting Setting { get; set; }
 
         /// <summary>
-        ///     执行完毕后的位置
+        ///     after command execute %result%
         /// </summary>
         public string ResultFolder
         {
-            get { return _resultFolder ?? StartFolder; }
-            set
+            get
             {
-                _resultFolder = value;
-                AddVariable("%result%", _resultFolder);
+                if (_variable.ContainsKey(VAR_RESULT))
+                    return GetVaribale(VAR_RESULT);
+                return StartFolder;
             }
+            set { AddVariable(VAR_RESULT, value); }
         }
 
         /// <summary>
-        ///     最开始执行的位置.
+        ///     start folder
         /// </summary>
-        public string StartFolder { get; private set; }
+        public string StartFolder
+        {
+            get { return Top != null ? Top.StartFolder : _startFolder; }
+            private set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                _startFolder = value;
+            }
+        }
 
-        /// <summary>
-        ///     执行的是文件,那么这个就有值. 如Msbuild
-        /// </summary>
-        public string ExecuteFile { get; set; }
 
         /// <summary>
         ///     工作目录
@@ -50,12 +70,16 @@ namespace ReleaseIt
             set { _workDirectory = value; }
         }
 
+        /// <summary>
+        ///     Command is done or not.
+        /// </summary>
+        internal bool Done { get; set; }
+
 
         public object Clone()
         {
-            var result = new ExecuteSetting(StartFolder)
+            var result = new ExecuteSetting(this)
             {
-                ExecuteFile = ExecuteFile,
                 WorkDirectory = WorkDirectory,
                 ResultFolder = ResultFolder,
                 Setting = Setting

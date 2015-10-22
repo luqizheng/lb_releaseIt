@@ -58,7 +58,7 @@ namespace ReleaseIt.IniStore
         /// <summary>
         ///     Get a property value.
         /// </summary>
-        /// <param name="name">Name of the property.</param>
+        /// <param name="name">Id of the property.</param>
         /// <returns>Value of the property or null if it doesn't exist.</returns>
         public string Get(string name)
         {
@@ -71,7 +71,7 @@ namespace ReleaseIt.IniStore
         /// <summary>
         ///     Set a property value.
         /// </summary>
-        /// <param name="name">Name of the property.</param>
+        /// <param name="name">Id of the property.</param>
         /// <param name="value">Value of the property.</param>
         /// <param name="comment">A comment to display above the property.</param>
         public void Set(string name, string value, string comment = null)
@@ -220,7 +220,7 @@ namespace ReleaseIt.IniStore
         /// <summary>
         ///     Remove a section.
         /// </summary>
-        /// <param name="sectionName">Name of the section to remove.</param>
+        /// <param name="sectionName">Id of the section to remove.</param>
         public void RemoveSection(string sectionName)
         {
             if (_sections.ContainsKey(sectionName))

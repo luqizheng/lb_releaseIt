@@ -1,11 +1,11 @@
 namespace ReleaseIt.SettingBuilders
 {
-    public class BuildSettingBuilder : SettingBuilderBase<BuildSetting, BuildSettingBuilder>
+    public class CompileSettingBuilder : SettingBuilderBase<CompileSetting, CompileSettingBuilder>
     {
         /// <summary>
         /// </summary>
         /// <param name="setting"></param>
-        public BuildSettingBuilder(BuildSetting setting)
+        public CompileSettingBuilder(CompileSetting setting)
             : base(setting)
         {
         }
@@ -13,7 +13,7 @@ namespace ReleaseIt.SettingBuilders
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public BuildSettingBuilder Release()
+        public CompileSettingBuilder Release()
         {
             return BuildConfiguration("Release");
         }
@@ -22,7 +22,7 @@ namespace ReleaseIt.SettingBuilders
         ///     Build Configruation for Debug
         /// </summary>
         /// <returns></returns>
-        public BuildSettingBuilder Debug()
+        public CompileSettingBuilder Debug()
         {
             return BuildConfiguration("Debug");
         }
@@ -31,7 +31,7 @@ namespace ReleaseIt.SettingBuilders
         /// </summary>
         /// <param name="setting"></param>
         /// <returns></returns>
-        public BuildSettingBuilder BuildConfiguration(string setting)
+        public CompileSettingBuilder BuildConfiguration(string setting)
         {
             _setting.BuildConfiguration = setting;
             return this;
@@ -41,7 +41,7 @@ namespace ReleaseIt.SettingBuilders
         /// </summary>
         /// <param name="projPath"></param>
         /// <returns></returns>
-        public BuildSettingBuilder ProjectPath(string projPath)
+        public CompileSettingBuilder ProjectPath(string projPath)
         {
             _setting.ProjectPath = projPath;
             return this;
@@ -51,7 +51,7 @@ namespace ReleaseIt.SettingBuilders
         /// </summary>
         /// <param name="outputDir"></param>
         /// <returns></returns>
-        public BuildSettingBuilder CopyTo(string outputDir)
+        public CompileSettingBuilder CopyTo(string outputDir)
         {
             _setting.OutputDirectory = outputDir;
             return this;

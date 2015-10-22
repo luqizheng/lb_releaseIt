@@ -10,9 +10,9 @@ namespace ReleaseIt.Commands.Windows.VersionControls
     public class Svn : ProcessCommand<VersionControlSetting>
     {
         public Svn(VersionControlSetting setting)
-            : base(new SvnFinder())
+            : base(new SvnFinder(),setting)
         {
-            Setting = setting;
+          
         }
 
         protected override void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting)

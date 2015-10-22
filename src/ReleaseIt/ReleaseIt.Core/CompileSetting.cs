@@ -5,9 +5,9 @@ namespace ReleaseIt
     [Description(@"Build Setting,it output variable 
 %outDir% and %result% is compiler directory.%prjName% is project name without extension and path.%prjPath% is project full path"
         )]
-    public class BuildSetting : Setting
+    public class CompileSetting : Setting
     {
-        public BuildSetting()
+        public CompileSetting()
         {
             //_properities.Value = new List<ParameterWithValue<string>>();
             BuildConfiguration = "Debug";

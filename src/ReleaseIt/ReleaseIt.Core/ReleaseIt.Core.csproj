@@ -47,9 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SettingBuilders\BuildSettingBuilder.cs" />
+    <Compile Include="MultiExecute\CommandExecuteTree.cs" />
+    <Compile Include="SettingBuilders\CompileSettingBuilder.cs" />
     <Compile Include="Command.cs" />
-    <Compile Include="Commands\EmailSetting.cs" />
+    <Compile Include="Commands\SmtpEmailSetting.cs" />
     <Compile Include="IniStore\Ini.cs" />
     <Compile Include="IniStore\SettingManager.cs" />
     <Compile Include="ProcessCommand.cs" />
@@ -72,10 +73,10 @@
     <Compile Include="Executors\Executors\ProcessExecutor.cs" />
     <Compile Include="Commands\Windows\MsBuilds\MsBuildCommand.cs" />
     <Compile Include="SettingBuilders\CopySettingBuilder.cs" />
-    <Compile Include="Commands\Windows\Publish\XCopy.cs" />
+    <Compile Include="Commands\Windows\Publish\XCopyCommand.cs" />
     <Compile Include="DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />
-    <Compile Include="BuildSetting.cs" />
+    <Compile Include="CompileSetting.cs" />
     <Compile Include="ParameterBuilder\ParameterWithValue.cs" />
     <Compile Include="ParameterBuilder\ICmdParameter.cs" />
     <Compile Include="ParameterBuilder\Parameter.cs" />

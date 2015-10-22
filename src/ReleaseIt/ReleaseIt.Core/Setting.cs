@@ -5,7 +5,7 @@ namespace ReleaseIt
 
     public class Setting
     {
-        private string _dependcies;
+        private string _dependency;
         private string _id;
 
         public string Id
@@ -23,12 +23,14 @@ namespace ReleaseIt
         /// <summary>
         /// gets or sets Id of Command which executed. 
         /// </summary>
-        public string Dependcies
+        public string Dependency
         {
-            get { return _dependcies; }
+            get { return _dependency; }
             set {
-                _dependcies = value != null ? value.ToLower() : null;
+                _dependency = value != null ? value.ToLower() : null;
             }
         }
+
+        public string Next { get; set; }
     }
 }

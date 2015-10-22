@@ -7,22 +7,18 @@ namespace ReleaseIt
 {
     public abstract class Command<T> : ICommand where T : Setting
     {
-        public T Setting { get; protected set; }
-        [Description("Dependcies.pre-condition of this step")]
-        public string Dependcies
+        protected Command(T setting)
         {
-            get
-            {
-                if (Setting.Dependcies == null)
-                {
-                    return CommandSet.DefaultExecuteSetting;
-                }
-                return Setting.Dependcies;
-            }
-            set { Setting.Dependcies = value; }
+            Setting = setting;
         }
 
-
+        /// <summary>
+        /// </summary>
+        public T Setting { get; private set; }
+        /// <summary>
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
         public bool IsMatch(IEnumerable<string> tags)
         {
             if (tags == null || Setting.Tags == null)
@@ -33,34 +29,50 @@ namespace ReleaseIt
                 select beCheckedTag).Any();
         }
 
-
+        /// <summary>
+        /// </summary>
+        /// <param name="executeSetting"></param>
+        /// <returns></returns>
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
             var res = (ExecuteSetting) executeSetting.Clone();
-            InvokeByNewSetting(res, this.Setting);
+            InvokeByNewSetting(res, Setting);
             return res;
         }
 
+        /// <summary>
+        /// </summary>
         public bool SettingChanged { get; set; }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="txt"></param>
         public virtual void OnOutput(string txt)
         {
             Console.WriteLine(txt);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="txt"></param>
         public virtual void OnErrorOutput(string txt)
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(txt);
         }
 
-
+        /// <summary>
+        /// </summary>
         Setting ICommand.Setting
         {
             get { return Setting; }
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="executeSetting"></param>
+        /// <param name="setting"></param>
         protected abstract void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting);
     }
 }

@@ -7,6 +7,67 @@ namespace ReleaseIt.UnitTest
     public class UnitTestCommandSet
     {
         [TestMethod]
+        public void From_complex_un_sortId_and_dependy()
+        {
+            var actual = new List<string>();
+            var commands = new List<ICommand>
+            {
+                new CommandMock(actual)
+                {
+                    Setting = new SettingMock
+                    {
+                        Id = "1"
+                    }
+                },
+                new CommandMock(actual)
+                {
+                    Setting = new SettingMock
+                    {
+                        Id = "2",
+                    }
+                },
+                new CommandMock(actual)
+                {
+                    Setting = new SettingMock
+                    {
+                        Id = "1-1",
+                        Dependency="1"
+                    }
+                },
+                 new CommandMock(actual)
+                {
+                    Setting = new SettingMock
+                    {
+                        Id = "3"
+                    }
+                },
+                new CommandMock(actual)
+                {
+                    Setting = new SettingMock
+                    {
+                        Id = "1-1-1",
+                        Dependency="1-1"
+                    }
+                },
+                new CommandMock(actual)
+                {
+                    Setting = new SettingMock
+                    {
+                        Id = "1-2",
+                        Dependency="1"
+                    }
+                }
+            };
+            var st = new CommandSet(new ExecuteSetting("./"), commands);
+            st.Skip.Add("1");
+            st.Invoke();
+
+            Assert.AreEqual(2, actual.Count);
+
+            Assert.AreEqual("2", actual[0]);
+            Assert.AreEqual("3", actual[1]);
+        }
+        [TestMethod]
         public void From_Skip_step()
         {
             var actual = new List<string>();
@@ -61,14 +122,14 @@ namespace ReleaseIt.UnitTest
                     Setting = new SettingMock
                     {
                         Id = "2",
-                        Dependcies="1"
+                        Dependency="1"
                     }
                 },
                 new CommandMock(result)
                 {
                     Setting = new SettingMock
                     {
-                        Dependcies = "2",
+                        Dependency = "2",
                         Id = "3"
                     }
                 }

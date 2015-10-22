@@ -14,9 +14,9 @@ namespace ReleaseIt.Commands.Windows.VersionControls
         public const string FolderNameVariableName = "%gitName%";
 
         public Git(VersionControlSetting setting)
-            : base(new GitFinder())
+            : base(new GitFinder(),setting)
         {
-            Setting = setting;
+            
         }
 
       

@@ -26,18 +26,13 @@ namespace ReleaseIt.Executors.Executors
             {
                 process.EnableRaisingEvents = true;
                 process.Exited += p_Exited;
-                process.OutputDataReceived += (sender, e) =>
-                {
-                    command.OnOutput(e.Data);
-                };
-                process.ErrorDataReceived += (sender, e) =>
-                {
-                    command.OnErrorOutput(e.Data);
-                };
+                process.OutputDataReceived += (sender, e) => { command.OnOutput(e.Data); };
+                process.ErrorDataReceived += (sender, e) => { command.OnErrorOutput(e.Data); };
                 process.StartInfo = psi;
 
                 process.Start();
                 process.BeginOutputReadLine();
+                process.Exited += (a, b) => { setting.Done = true; };
                 process.WaitForExit();
                 if (process.ExitCode != 0)
                     throw new Exception(string.Format(CultureInfo.InvariantCulture,
@@ -47,10 +42,8 @@ namespace ReleaseIt.Executors.Executors
         }
 
 
-
         private void p_Exited(object sender, EventArgs e)
         {
-           
         }
     }
 }

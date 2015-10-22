@@ -13,10 +13,10 @@ namespace ReleaseIt.IniStore
 
         static SettingManager()
         {
-            Creator.Add(typeof(BuildSetting).Name, () => new BuildSetting());
+            Creator.Add(typeof(CompileSetting).Name, () => new CompileSetting());
             Creator.Add(typeof(VersionControlSetting).Name, () => new VersionControlSetting());
             Creator.Add(typeof(CopySetting).Name, () => new CopySetting());
-            Creator.Add(typeof(EmailSetting).Name, () => new EmailSetting());
+            Creator.Add(typeof(SmtpEmailSetting).Name, () => new SmtpEmailSetting());
         }
 
         public void Save(CommandSet commandSet, string filename, bool buildComment = false)

@@ -1,8 +1,9 @@
 ﻿using System.Net.Mail;
+using ReleaseIt.SettingBuilders;
 
 namespace ReleaseIt.Commands
 {
-    public class EmailSetting : Setting
+    public class SmtpEmailSetting : Setting
     {
         private string _form;
         public string Host { get; set; }
@@ -13,24 +14,24 @@ namespace ReleaseIt.Commands
         public string Content { get; set; }
         public string Subject { get; set; }
 
-        public string FromAddr
+        public string From
         {
             get { return _form ?? UserName; }
             set { _form = value; }
         }
 
-        public bool Ssl { get; set; }
+        public bool EnableSsl { get; set; }
 
 
-        public string ToAddr { get; set; }
+        public string To { get; set; }
 
         public MailMessage Create(ExecuteSetting executeSetting)
         {
             var message = new MailMessage();
             message.Subject = executeSetting.BuildByVariable(Subject);
             message.Body = executeSetting.BuildByVariable(Content);
-            message.From = new MailAddress(FromAddr);
-            foreach (var toItem in ToAddr.Split(';'))
+            message.From = new MailAddress(From);
+            foreach (var toItem in To.Split(';'))
             {
                 message.To.Add(new MailAddress(toItem));
             }
@@ -38,4 +39,6 @@ namespace ReleaseIt.Commands
             return message;
         }
     }
+
+   
 }

@@ -11,24 +11,27 @@ namespace ReleaseIt.Arguments
 
         public override bool Handle(CommandSet commandSet, string fileName, string argument)
         {
-            commandSet.Svn()
+            commandSet.Svn("svn_sample")
                 .Url("http://svn.address.com/trunk")
                 .Auth("username", "password")
+                .Tags("tag1","tab2")
                 .WorkingCopy("workongfolder")
-                .Name("Svn_name_for_target").Tags("tag1", "tag2");
+                .Tags("tag1", "tag2");
 
             commandSet
-                .Build(true)
+                .Build(true, "compileSample")
+                .Tags("tag2", "tab3")
                 .Release()
                 .ProjectPath("/mypathfor.csproj")
-                .CopyTo("publish/%prjName%")
-                .Name("BuildName")
-                ;
+                .CopyTo("publish/%prjName%");
 
             commandSet
-                .CopyTo("publishFolder_or_network_path")
+                .CopyTo("publishFolder_or_network_path", "copySample")
                 .Auth("networkPath_username", "networkPath_password")
-                .Name("copy_command_name");
+                
+                .Tags("tag4", "tab5")
+                ;
+
 
 
             var manager = new SettingManager();

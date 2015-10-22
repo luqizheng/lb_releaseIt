@@ -14,8 +14,12 @@ namespace ReleaseIt.SettingBuilders
             _setting.Tags = tag;
             return this as T1;
         }
-
-        public SettingBuilderBase<T, T1> Name(string commandName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        public SettingBuilderBase<T, T1> Id(string commandName)
         {
             _setting.Id = commandName;
             return this;

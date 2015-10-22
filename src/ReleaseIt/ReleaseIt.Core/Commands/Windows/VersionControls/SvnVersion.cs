@@ -5,8 +5,8 @@ namespace ReleaseIt.Commands.Windows.VersionControls
 {
     public class SvnVersion : ProcessCommand<VersionControlSetting>
     {
-        public SvnVersion()
-            : base(new SvnFinder())
+        public SvnVersion(VersionControlSetting setting)
+            : base(new SvnFinder(), setting)
         {
         }
 

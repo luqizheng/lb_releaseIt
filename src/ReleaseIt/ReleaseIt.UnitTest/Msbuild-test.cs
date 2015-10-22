@@ -33,7 +33,7 @@ namespace ReleaseIt.UnitTest
         public void WebBuild_Release()
         {
             var webFolder = Path.Combine(Environment.CurrentDirectory, "PublishFolder", "web");
-            var setting = new BuildSetting
+            var setting = new CompileSetting
             {
                 BuildConfiguration = "Release",
                 IsWeb = true,
@@ -54,7 +54,7 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void TestWebBuild()
         {
-            var setting = new BuildSetting
+            var setting = new CompileSetting
             {
                 BuildConfiguration = "Release",
                 IsWeb = true,

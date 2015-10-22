@@ -25,19 +25,22 @@ namespace ReleaseIt
         {
         }
 
+
         /// <summary>
         /// </summary>
         /// <param name="setting"></param>
         /// <param name="commands"></param>
         public CommandSet(ExecuteSetting setting, IList<ICommand> commands)
         {
+            if (setting == null) throw new ArgumentNullException("setting");
+            if (commands == null) throw new ArgumentNullException("commands");
             _executeSettings.Add(DefaultExecuteSetting, setting);
             _commands = commands;
             _commnadIds = new List<string>();
         }
 
 
-        private IList<ICommand> Commands
+        internal IList<ICommand> Commands
         {
             get { return _commands; }
         }
@@ -45,6 +48,11 @@ namespace ReleaseIt
         public IEnumerable<Setting> Settings
         {
             get { return _commands.Select(s => s.Setting); }
+        }
+
+        internal Dictionary<string, ExecuteSetting> ExecuteSettings
+        {
+            get { return _executeSettings; }
         }
 
         /// <summary>
@@ -77,12 +85,12 @@ namespace ReleaseIt
             }
 
             var settingChanged = false;
-            var exeCmod = BuildExecuteQueue();
+            var exeCmod = BuildExecutePlan();
 
             while (exeCmod.Count != 0)
             {
                 var cmd = exeCmod.Dequeue();
-                var resultSetting = cmd.Invoke(_executeSettings[cmd.Setting.Dependcies ?? DefaultExecuteSetting]);
+                var resultSetting = cmd.Invoke(_executeSettings[cmd.Setting.Dependency ?? DefaultExecuteSetting]);
                 _executeSettings.Add(cmd.Setting.Id, resultSetting);
                 settingChanged = cmd.SettingChanged || settingChanged;
             }
@@ -92,6 +100,7 @@ namespace ReleaseIt
             }
         }
 
+
         private void OnSettingChanged()
         {
             if (OnCommandSettingChanged != null)
@@ -100,7 +109,8 @@ namespace ReleaseIt
             }
         }
 
-        private Queue<ICommand> BuildExecuteQueue()
+
+        private Queue<ICommand> BuildExecutePlan()
         {
             var result = new List<ICommand>();
             foreach (var cmd in _commands)
@@ -123,12 +133,12 @@ namespace ReleaseIt
         private void LoopPrepend(ICommand cmd, List<ICommand> result)
         {
             var backCount = 1;
-            while (cmd != null && cmd.Setting.Dependcies != null &&
-                   cmd.Setting.Dependcies != DefaultExecuteSetting)
+            while (cmd != null && cmd.Setting.Dependency != null &&
+                   cmd.Setting.Dependency != DefaultExecuteSetting)
             {
-                if (result.All(s => s.Setting.Id != cmd.Setting.Dependcies))
+                if (result.All(s => s.Setting.Id != cmd.Setting.Dependency))
                 {
-                    var preCmd = _commands.FirstOrDefault(s => s.Setting.Id == cmd.Setting.Dependcies);
+                    var preCmd = _commands.FirstOrDefault(s => s.Setting.Id == cmd.Setting.Dependency);
                     if (preCmd != null)
                     {
                         result.Insert(result.Count - backCount, preCmd);
@@ -143,6 +153,7 @@ namespace ReleaseIt
 
         public event EventHandler OnCommandSettingChanged;
 
+        [Obsolete("please use add command")]
         public ICommand Add(Setting setting)
         {
             if (_commnadIds.Contains(setting.Id))

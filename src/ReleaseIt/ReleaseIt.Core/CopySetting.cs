@@ -7,7 +7,7 @@ namespace ReleaseIt
     {
         private string _sourcePath;
         public string TargetPath { get; set; }
-
+        [Description(@"Copy source path. default is %result%")]
         public string SourcePath
         {
             get { return _sourcePath ?? "%result%"; }

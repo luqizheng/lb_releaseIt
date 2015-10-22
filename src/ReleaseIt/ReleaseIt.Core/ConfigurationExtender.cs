@@ -20,8 +20,8 @@ namespace ReleaseIt
             });
 
             commandSettings.Executor = new ProcessExecutor();
-            commandSettings.Regist(typeof(BuildSetting), setting => new MsBuildCommand((BuildSetting)setting));
-            commandSettings.Regist(typeof(CopySetting), setting => new XCopy((CopySetting)setting));
+            commandSettings.Regist(typeof(CompileSetting), setting => new MsBuildCommand((CompileSetting)setting));
+            commandSettings.Regist(typeof(CopySetting), setting => new XCopyCommand((CopySetting)setting));
             executSetting.Setting = commandSettings;
             return executSetting;
         }

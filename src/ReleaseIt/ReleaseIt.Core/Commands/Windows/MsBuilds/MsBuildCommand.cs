@@ -8,17 +8,11 @@ using ReleaseIt.ParameterBuilder;
 namespace ReleaseIt.Commands.Windows.MsBuilds
 {
     [DataContract]
-    public class MsBuildCommand : ProcessCommand<BuildSetting>
+    public class MsBuildCommand : ProcessCommand<CompileSetting>
     {
-        public MsBuildCommand()
-            : base(new MsBuildFinder())
+        public MsBuildCommand(CompileSetting msbuild)
+            : base(new MsBuildFinder(), msbuild)
         {
-        }
-
-        public MsBuildCommand(BuildSetting msbuild)
-            : this()
-        {
-            Setting = msbuild;
         }
 
 

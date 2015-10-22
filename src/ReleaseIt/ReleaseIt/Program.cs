@@ -55,10 +55,12 @@ namespace ReleaseIt
 
         private static void Run(CommandSet commandSet, FileInfo fullName)
         {
+
             var manager = new SettingManager();
             ExistFile = manager.ReadSetting(commandSet, fullName.FullName);
             commandSet.OnCommandSettingChanged += commandSet_OnCommandSettingChanged;
             commandSet.Invoke();
+
 
         }
 

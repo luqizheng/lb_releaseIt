@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ReleaseIt
 {
@@ -15,6 +16,9 @@ namespace ReleaseIt
         void OnOutput(string txt);
 
         void OnErrorOutput(string txt);
+
+        
+        
 
     }
 }

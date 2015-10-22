@@ -3,11 +3,15 @@ using System.Net.Mail;
 
 namespace ReleaseIt.Commands
 {
-    public class EmailCommand : Command<EmailSetting>
+    public class EmailCommand : Command<SmtpEmailSetting>
     {
+        public EmailCommand(SmtpEmailSetting setting) : base(setting)
+        {
+        }
+
         protected override void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting)
         {
-            var client = new SmtpClient(Setting.Host, Setting.Port) {EnableSsl = this.Setting.Ssl};
+            var client = new SmtpClient(Setting.Host, Setting.Port) {EnableSsl = this.Setting.EnableSsl};
             if (!string.IsNullOrEmpty(Setting.UserName) && !string.IsNullOrEmpty(Setting.Password))
             {
                 client.Credentials = new NetworkCredential(Setting.UserName, Setting.Password);
