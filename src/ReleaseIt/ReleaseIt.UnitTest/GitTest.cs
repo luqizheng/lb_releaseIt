@@ -11,13 +11,13 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void GitMakeUrl()
         {
-            var gitSetting = new VersionControlSetting
+            var gitSetting = new GitSetting()
             {
                 Url = "https://github.com/aspnet/Identity.git",
                 UserName = "Test",
                 Password = "Pwd"
             };
-            var git = new Git(gitSetting);
+            var git = new GitCommand(gitSetting);
             var s = git.MakeUrl();
             Assert.AreEqual(
                 "https://" + gitSetting.UserName + ":" + gitSetting.Password + "@github.com/aspnet/Identity.git", s);
@@ -26,14 +26,14 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void Git_Clone_BuildArguments()
         {
-            var gitSetting = new VersionControlSetting
+            var gitSetting = new GitSetting
             {
                 Url = "https://github.com/aspnet/Identity.git",
                 UserName = "Test",
                 Password = "Pwd",
                 WorkingCopy = "%gitName%"
             };
-            var git = new Git(gitSetting);
+            var git = new GitCommand(gitSetting);
 
             var executeSetting = new ExecuteSetting("./noexistFolder");
             var arguments = git.BuildArguments(executeSetting);
@@ -44,14 +44,14 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void Git_pull_BuildArguments()
         {
-            var gitSetting = new VersionControlSetting
+            var gitSetting = new GitSetting
             {
                 Url = "https://github.com/aspnet/Identity.git",
                 UserName = "Test",
                 Password = "Pwd",
                 WorkingCopy = "../"
             };
-            var git = new Git(gitSetting);
+            var git = new GitCommand(gitSetting);
 
             var executeSetting = new ExecuteSetting("./noexistFolder");
             var arguments = git.BuildArguments(executeSetting);
@@ -62,12 +62,12 @@ namespace ReleaseIt.UnitTest
         [TestMethod]
         public void BuildArguments_clone_without_pwd()
         {
-            var gitSetting = new VersionControlSetting
+            var gitSetting = new GitSetting
             {
                 Url = "https://github.com/aspnet/Identity.git",
                 WorkingCopy = "newcopy"
             };
-            var git = new Git(gitSetting);
+            var git = new GitCommand(gitSetting);
 
             var executeSetting = new ExecuteSetting(Environment.CurrentDirectory);
             var arguments = git.BuildArguments(executeSetting);

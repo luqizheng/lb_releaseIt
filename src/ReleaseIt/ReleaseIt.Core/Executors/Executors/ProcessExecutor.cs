@@ -22,7 +22,7 @@ namespace ReleaseIt.Executors.Executors
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
-            setting.Setting.Logger.WriteLine(commandPath + " " + argus);
+            setting.Setting.ProcessLogger.WriteLine(commandPath + " " + argus);
             using (var process = new Process())
             {
                 process.EnableRaisingEvents = true;

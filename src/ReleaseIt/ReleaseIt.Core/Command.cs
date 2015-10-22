@@ -36,10 +36,10 @@ namespace ReleaseIt
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
-            executeSetting.Setting.Logger.WriteLine("Executing id="+this.Setting.Id);
+            executeSetting.Setting.ProcessLogger.WriteLine("Executing id="+this.Setting.Id);
             var res = (ExecuteSetting) executeSetting.Clone();
             InvokeByNewSetting(res, Setting);
-            executeSetting.Setting.Logger.WriteLine("Executed id=" + this.Setting.Id);
+            executeSetting.Setting.ProcessLogger.WriteLine("Executed id=" + this.Setting.Id);
             return res;
         }
 

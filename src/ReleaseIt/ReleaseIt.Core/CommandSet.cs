@@ -149,18 +149,7 @@ namespace ReleaseIt
 
         public event EventHandler OnCommandSettingChanged;
 
-        [Obsolete("please use add command")]
-        public ICommand Add(Setting setting)
-        {
-            if (_commnadIds.Contains(setting.Id))
-            {
-                throw new DuplicateIdException(setting.Id);
-            }
-            var command = _executeSettings[DefaultExecuteSetting].Setting.Create(setting);
-            Commands.Add(command);
-            _commnadIds.Add(setting.Id);
-            return command;
-        }
+       
 
         public ICommand Insert(int index, ICommand command)
         {

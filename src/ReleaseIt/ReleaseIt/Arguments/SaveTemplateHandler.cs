@@ -16,10 +16,12 @@ namespace ReleaseIt.Arguments
                 .Auth("username", "password")
                 .Tags("tag1","tab2")
                 .WorkingCopy("workongfolder")
-                .Tags("tag1", "tag2");
+                .Tags("tag1", "tag2")
+                ;
 
             commandSet
                 .Build(true, "compileSample")
+                .Dependency("svn_sample")
                 .Tags("tag2", "tab3")
                 .Release()
                 .ProjectPath("/mypathfor.csproj")
@@ -28,7 +30,7 @@ namespace ReleaseIt.Arguments
             commandSet
                 .CopyTo("publishFolder_or_network_path", "copySample")
                 .Auth("networkPath_username", "networkPath_password")
-                
+                 .Dependency("compileSample")
                 .Tags("tag4", "tab5")
                 ;
 

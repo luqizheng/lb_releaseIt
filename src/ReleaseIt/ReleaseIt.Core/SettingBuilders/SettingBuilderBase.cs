@@ -19,10 +19,16 @@ namespace ReleaseIt.SettingBuilders
         /// </summary>
         /// <param name="commandName"></param>
         /// <returns></returns>
-        public SettingBuilderBase<T, T1> Id(string commandName)
+        public T1 Id(string commandName)
         {
             _setting.Id = commandName;
-            return this;
+            return this as T1;
+        }
+
+        public T1 Dependency(string dependency)
+        {
+            _setting.Dependency = dependency;
+            return this as T1;
         }
     }
 }

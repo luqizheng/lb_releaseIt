@@ -8,7 +8,7 @@ namespace ReleaseIt.Commands.Windows.VersionControls
     {
         public override string Name
         {
-            get { return "Svn"; }
+            get { return "SvnCommand"; }
         }
 
         public override string FindCmd()

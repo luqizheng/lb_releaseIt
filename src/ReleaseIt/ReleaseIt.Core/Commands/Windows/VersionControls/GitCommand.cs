@@ -4,22 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using ReleaseIt.ParameterBuilder;
-using ReleaseIt.WindowCommand.CommandFinders;
 
 namespace ReleaseIt.Commands.Windows.VersionControls
 {
     [DataContract]
-    public class Git : ProcessCommand<VersionControlSetting>
+    public class GitCommand : ProcessCommand<VersionControlSetting>
     {
         public const string FolderNameVariableName = "%gitName%";
 
-        public Git(VersionControlSetting setting)
-            : base(new GitFinder(),setting)
+        public GitCommand(VersionControlSetting setting)
+            : base(new GitFinder(), setting)
         {
-            
         }
 
-      
 
         private ICmdParameter[] CloneParameters(string outputDir)
         {
@@ -63,7 +60,7 @@ namespace ReleaseIt.Commands.Windows.VersionControls
 #else
             private 
 #endif
- string GetWorkingCopyName()
+            string GetWorkingCopyName()
         {
             if (!string.IsNullOrEmpty(Setting.WorkingCopy) && Setting.WorkingCopy.Contains(FolderNameVariableName))
             {

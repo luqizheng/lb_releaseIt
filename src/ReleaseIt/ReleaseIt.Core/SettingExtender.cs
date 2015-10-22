@@ -31,23 +31,23 @@ namespace ReleaseIt
 
         public static VcBuilder Svn(this CommandSet set, string id)
         {
-            var result = new VersionControlSetting
+            var result = new SvnSetting()
             {
-                VersionControlType = VersionControlType.Svn,
+              
                 Id = id,
             };
-            set.Add(new Svn(result));
+            set.Add(new SvnCommand(result));
             return new VcBuilder(result);
         }
 
         public static VcBuilder Git(this CommandSet set, string id)
         {
-            var setting = new VersionControlSetting
+            var setting = new GitSetting()
             {
-                VersionControlType = VersionControlType.Git,
+               
                 Id = id,
             };
-            set.Add(new Git(setting));
+            set.Add(new GitCommand(setting));
             return new VcBuilder(setting);
         }
 

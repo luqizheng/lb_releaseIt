@@ -7,9 +7,9 @@ using ReleaseIt.ParameterBuilder;
 namespace ReleaseIt.Commands.Windows.VersionControls
 {
     [DataContract]
-    public class Svn : ProcessCommand<VersionControlSetting>
+    public class SvnCommand : ProcessCommand<VersionControlSetting>
     {
-        public Svn(VersionControlSetting setting)
+        public SvnCommand(VersionControlSetting setting)
             : base(new SvnFinder(),setting)
         {
           

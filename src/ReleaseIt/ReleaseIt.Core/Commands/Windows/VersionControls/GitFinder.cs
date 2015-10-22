@@ -8,7 +8,7 @@ namespace ReleaseIt.Commands.Windows.VersionControls
     {
         public override string Name
         {
-            get { return "Git"; }
+            get { return "GitCommand"; }
         }
 
         public override string FindCmd()
@@ -16,10 +16,10 @@ namespace ReleaseIt.Commands.Windows.VersionControls
             var list = new List<string>();
             foreach (var driver in Environment.GetLogicalDrives())
             {
-                list.Add(Path.Combine(driver, "Program Files" + "Git", "bin", "Git.exe"));
+                list.Add(Path.Combine(driver, "Program Files" + "GitCommand", "bin", "GitCommand.exe"));
                 if (Environment.Is64BitOperatingSystem)
                 {
-                    list.Add(Path.Combine(driver, "Program Files (x86)", "Git", "bin", "Git.exe"));
+                    list.Add(Path.Combine(driver, "Program Files (x86)", "GitCommand", "bin", "GitCommand.exe"));
                 }
             }
 

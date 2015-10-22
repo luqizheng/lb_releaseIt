@@ -2,50 +2,58 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using ReleaseIt.Commands;
 
 namespace ReleaseIt.IniStore
 {
     public class SettingManager
     {
-        private static readonly Dictionary<string, Func<Setting>>
-            Creator = new Dictionary<string, Func<Setting>>();
-
-        static SettingManager()
-        {
-            Creator.Add(typeof(CompileSetting).Name, () => new CompileSetting());
-            Creator.Add(typeof(VersionControlSetting).Name, () => new VersionControlSetting());
-            Creator.Add(typeof(CopySetting).Name, () => new CopySetting());
-            Creator.Add(typeof(SmtpEmailSetting).Name, () => new SmtpEmailSetting());
-        }
+        private const string FileHeaderComment =
+            "[<CommandType>_<CommandId>], e.g.[Copy_copyTo32],CommandType support : \r\n#{0} \r\n\r\n";
 
         public void Save(CommandSet commandSet, string filename, bool buildComment = false)
         {
             var file = new IniFile();
+            var isFirst = true;
 
             foreach (var setting in commandSet.Settings)
             {
-                var seciontName = setting.GetType().Name;
+                var seciontName = SectionSettingMap.GetSectionName(setting.GetType());
                 if (!string.IsNullOrEmpty(setting.Id))
                 {
                     seciontName = seciontName + "_" + setting.Id;
                 }
-                var s = file.Section(seciontName);
+                var section = file.Section(seciontName);
                 if (buildComment)
                 {
+                    if (isFirst)
+                    {
+                        section.Comment = BuildFileHeaderDescription();
+                        isFirst = false;
+                    }
+
                     var cus = setting.GetType().GetCustomAttributes(typeof(DescriptionAttribute), true);
                     if (cus.Length > 0)
                     {
-                        s.Comment = ((DescriptionAttribute)cus[0]).Description;
+                        section.Comment += ((DescriptionAttribute)cus[0]).Description.Replace("\r\n", "\r\n#");
                     }
                 }
-                SetToSection(s, setting, buildComment);
+                SetToSection(section, setting, buildComment);
             }
 
             file.Save(filename);
         }
+
+        private string BuildFileHeaderDescription()
+        {
+            var array = SectionSettingMap.CommandTypes();
+            var commandTypes = string.Join(",", array);
+            var result = string.Format(FileHeaderComment, commandTypes);
+            result += "The first Section without Dependency is the First Command";
+            return result;
+        }
+
         /// <summary>
-        /// save to exist file.
+        ///     save to exist file.
         /// </summary>
         /// <param name="file"></param>
         /// <param name="commandSet"></param>
@@ -54,7 +62,7 @@ namespace ReleaseIt.IniStore
         {
             foreach (var setting in commandSet.Settings)
             {
-                var seciontName = setting.GetType().Name;
+                var seciontName = SectionSettingMap.GetSectionName(setting.GetType());
                 if (!string.IsNullOrEmpty(setting.Id))
                 {
                     seciontName = seciontName + "_" + setting.Id;
@@ -77,10 +85,11 @@ namespace ReleaseIt.IniStore
                 sectionName = ary[0];
                 var name = ary.Length > 1 ? string.Join("_", ary, 1, ary.Length - 1) : null;
 
-                var setting = Creator[sectionName]();
+                var setting = SectionSettingMap.Create(sectionName);
                 setting.Id = name;
                 FillProperities(setting, section);
-                commandSet.Add(setting);
+                var command = CommandSettingMap.Create(setting);
+                commandSet.Add(command);
             }
             return file;
         }
@@ -156,7 +165,7 @@ namespace ReleaseIt.IniStore
                     var descript = propInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
                     if (descript.Length > 0)
                     {
-                        comment = ((DescriptionAttribute)descript[0]).Description;
+                        comment = ((DescriptionAttribute)descript[0]).Description.Replace("\r\n", "#\r\n");
                     }
                 }
                 section.Set(propInfo.Name, Convert.ToString(propInfo.GetValue(s)), comment);

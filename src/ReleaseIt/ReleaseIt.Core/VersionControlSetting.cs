@@ -1,17 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace ReleaseIt
 {
+    public class GitSetting : VersionControlSetting
+    {
+    }
+
+    public class SvnSetting : VersionControlSetting
+    {
+    }
+
     [Description("output")]
-    public class VersionControlSetting : Setting
+    public abstract class VersionControlSetting : Setting
     {
         private string _url;
-
-        [DataMember]
-        public VersionControlType VersionControlType { set; get; }
 
         [DataMember]
         public string WorkingCopy { get; set; }
@@ -40,10 +44,4 @@ namespace ReleaseIt
         public string Password { get; set; }
     }
 
-
-    public enum VersionControlType
-    {
-        Git,
-        Svn
-    }
 }

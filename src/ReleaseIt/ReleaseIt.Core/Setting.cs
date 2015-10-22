@@ -11,10 +11,7 @@ namespace ReleaseIt
 
         public string Id
         {
-            get
-            {
-                return _id ?? (_id = Guid.NewGuid().ToString("N"));
-            }
+            get { return _id; }
             set
             {
                 _id = value != null ? value.ToLower() : null;
@@ -36,6 +33,6 @@ namespace ReleaseIt
             }
         }
 
-        public string Next { get; set; }
+       
     }
 }

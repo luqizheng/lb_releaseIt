@@ -57,6 +57,7 @@
     <Compile Include="SettingMock.cs" />
     <Compile Include="SvnTest.cs" />
     <Compile Include="GitTest.cs" />
+    <Compile Include="IniWriterUnitTest.cs" />
     <Compile Include="UnitTest_CommandSet.cs" />
   </ItemGroup>
   <ItemGroup>

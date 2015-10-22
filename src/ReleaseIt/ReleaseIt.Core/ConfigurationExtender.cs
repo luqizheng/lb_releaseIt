@@ -1,8 +1,9 @@
+using ReleaseIt.Commands;
 using ReleaseIt.Commands.Windows.MsBuilds;
 using ReleaseIt.Commands.Windows.Publish;
 using ReleaseIt.Commands.Windows.VersionControls;
 using ReleaseIt.Executors.Executors;
-using ReleaseIt.WindowCommand;
+using ReleaseIt.IniStore;
 
 namespace ReleaseIt
 {
@@ -10,20 +11,29 @@ namespace ReleaseIt
     {
         public static ExecuteSetting ForWidnow(this ExecuteSetting executSetting)
         {
-            var commandSettings = new ConfigurationSetting();
-            commandSettings.Regist(typeof(VersionControlSetting), setting =>
+            CommonRegist();
+            CommandSettingMap.Regist(typeof (GitSetting), setting =>
             {
-                var vcSetting = (VersionControlSetting)setting;
-                if (vcSetting.VersionControlType == VersionControlType.Git)
-                    return new Git(vcSetting);
-                return new Svn(vcSetting);
+                var vcSetting = (GitSetting) setting;
+                return new GitCommand(vcSetting);
             });
 
-            commandSettings.Executor = new ProcessExecutor();
-            commandSettings.Regist(typeof(CompileSetting), setting => new MsBuildCommand((CompileSetting)setting));
-            commandSettings.Regist(typeof(CopySetting), setting => new XCopyCommand((CopySetting)setting));
+            CommandSettingMap.Regist(typeof (SvnSetting), setting =>
+            {
+                var vcSetting = (SvnSetting) setting;
+                return new SvnCommand(vcSetting);
+            });
+            CommandSettingMap.Regist(typeof (CompileSetting), setting => new MsBuildCommand((CompileSetting) setting));
+            CommandSettingMap.Regist(typeof (CopySetting), setting => new XCopyCommand((CopySetting) setting));
+
+            var commandSettings = new ConfigurationSetting {Executor = new ProcessExecutor()};
             executSetting.Setting = commandSettings;
             return executSetting;
+        }
+
+        private static void CommonRegist()
+        {
+            CommandSettingMap.Regist(typeof (SmtpEmailSetting), setting => new EmailCommand((SmtpEmailSetting) setting));
         }
     }
 }
