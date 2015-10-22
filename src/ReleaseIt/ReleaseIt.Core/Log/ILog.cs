@@ -2,7 +2,9 @@
 {
     public interface ILog
     {
-        void WriteLine(string str);
-        void Write(string str);
+        void Info(string str);
+        void Error(string str);
+
+
     }
 }

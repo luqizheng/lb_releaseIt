@@ -22,13 +22,13 @@ namespace ReleaseIt.Executors.Executors
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
-            setting.Setting.ProcessLogger.WriteLine(commandPath + " " + argus);
+            setting.Setting.ProcessLogger.Info(commandPath + " " + argus);
             using (var process = new Process())
             {
                 process.EnableRaisingEvents = true;
                 process.Exited += p_Exited;
-                process.OutputDataReceived += (sender, e) => { command.OnOutput(e.Data); };
-                process.ErrorDataReceived += (sender, e) => { command.OnErrorOutput(e.Data); };
+                process.OutputDataReceived += (sender, e) => { command.OnOutput(e.Data, setting); };
+                process.ErrorDataReceived += (sender, e) => { command.OnErrorOutput(e.Data, setting); };
                 process.StartInfo = psi;
 
                 process.Start();

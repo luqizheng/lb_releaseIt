@@ -41,7 +41,6 @@ namespace ReleaseIt
             }
             _fileInfo = new FileInfo(file);
             var executeSetting = new ExecuteSetting(Environment.CurrentDirectory);
-            Console.WriteLine("Current Directory:" + executeSetting.StartFolder);
             executeSetting.ForWidnow();
             var commandSet = new CommandSet(executeSetting);
             var factory = new ArgumentFactory();

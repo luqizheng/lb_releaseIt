@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace ReleaseIt
@@ -15,6 +14,7 @@ namespace ReleaseIt
         /// <summary>
         /// </summary>
         public T Setting { get; private set; }
+
         /// <summary>
         /// </summary>
         /// <param name="tags"></param>
@@ -24,9 +24,9 @@ namespace ReleaseIt
             if (tags == null || Setting.Tags == null)
                 return false;
             return (from beCheckedTag in tags
-                from tag in Setting.Tags
-                where tag.ToLower() == beCheckedTag.ToLower()
-                select beCheckedTag).Any();
+                    from tag in Setting.Tags
+                    where tag.ToLower() == beCheckedTag.ToLower()
+                    select beCheckedTag).Any();
         }
 
         /// <summary>
@@ -36,10 +36,11 @@ namespace ReleaseIt
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
-            executeSetting.Setting.ProcessLogger.WriteLine("Executing id="+this.Setting.Id);
-            var res = (ExecuteSetting) executeSetting.Clone();
+            var now = DateTime.Now;
+            executeSetting.Setting.CommandLogger.Info("Start to run <" + Setting.Id + ">");
+            var res = (ExecuteSetting)executeSetting.Clone();
             InvokeByNewSetting(res, Setting);
-            executeSetting.Setting.ProcessLogger.WriteLine("Executed id=" + this.Setting.Id);
+            executeSetting.Setting.CommandLogger.Info("Complete to run <" + Setting.Id + "> elapsed time:" + (DateTime.Now - now).TotalSeconds);
             return res;
         }
 
@@ -50,19 +51,20 @@ namespace ReleaseIt
         /// <summary>
         /// </summary>
         /// <param name="txt"></param>
-        public virtual void OnOutput(string txt)
+        /// <param name="setting"></param>
+        public virtual void OnOutput(string txt, ExecuteSetting setting)
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine(txt);
+
+
         }
 
         /// <summary>
         /// </summary>
         /// <param name="txt"></param>
-        public virtual void OnErrorOutput(string txt)
+        /// <param name="setting"></param>
+        public virtual void OnErrorOutput(string txt, ExecuteSetting setting)
         {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(txt);
+            setting.Setting.ProcessLogger.Info(txt);
         }
 
         /// <summary>
@@ -81,7 +83,7 @@ namespace ReleaseIt
 
         public override string ToString()
         {
-            return this.Setting.Id;
+            return Setting.Id;
         }
     }
 }

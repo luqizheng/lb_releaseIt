@@ -86,14 +86,12 @@ namespace ReleaseIt
                 (new DirectoryInfo(setting.WorkDirectory)).CreateEx();
             }
 
-            var settingChanged = false;
             var s = new CommandExecuteTree(this);
             IEnumerable<Task> allTask;
             var exeCmod = s.BuildExecutePlan(out allTask);
             exeCmod.Start();
 
             Task.WaitAll(allTask.ToArray());
-
         }
 
 
@@ -106,50 +104,8 @@ namespace ReleaseIt
         }
 
 
-        private Queue<ICommand> BuildExecutePlan()
-        {
-            var result = new List<ICommand>();
-            foreach (var cmd in _commands)
-            {
-                if (Skip.Count != 0 && Skip.Contains(cmd.Setting.Id))
-                {
-                    continue;
-                }
-                if ((Include.Count == 0 && IncludeTags.Count == 0)
-                    || Include.Contains(cmd.Setting.Id)
-                    || cmd.IsMatch(IncludeTags))
-                {
-                    result.Add(cmd);
-                    LoopPrepend(cmd, result);
-                }
-            }
-            return new Queue<ICommand>(result);
-        }
-
-        private void LoopPrepend(ICommand cmd, List<ICommand> result)
-        {
-            var backCount = 1;
-            while (cmd != null && cmd.Setting.Dependency != null &&
-                   cmd.Setting.Dependency != DefaultExecuteSetting)
-            {
-                if (result.All(s => s.Setting.Id != cmd.Setting.Dependency))
-                {
-                    var preCmd = _commands.FirstOrDefault(s => s.Setting.Id == cmd.Setting.Dependency);
-                    if (preCmd != null)
-                    {
-                        result.Insert(result.Count - backCount, preCmd);
-                        backCount++;
-                        cmd = preCmd;
-                        continue;
-                    }
-                }
-                break;
-            }
-        }
-
         public event EventHandler OnCommandSettingChanged;
 
-       
 
         public ICommand Insert(int index, ICommand command)
         {

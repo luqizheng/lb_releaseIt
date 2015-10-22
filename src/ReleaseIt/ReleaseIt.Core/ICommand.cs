@@ -13,9 +13,9 @@ namespace ReleaseIt
 
         ExecuteSetting Invoke(ExecuteSetting executeSetting);
 
-        void OnOutput(string txt);
+        void OnOutput(string txt, ExecuteSetting setting);
 
-        void OnErrorOutput(string txt);
+        void OnErrorOutput(string txt, ExecuteSetting setting);
 
         
         

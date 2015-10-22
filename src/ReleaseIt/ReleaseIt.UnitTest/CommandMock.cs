@@ -42,12 +42,12 @@ namespace ReleaseIt.UnitTest
             return result;
         }
 
-        public void OnOutput(string txt)
+        public void OnOutput(string txt, ExecuteSetting setting)
         {
             throw new NotImplementedException();
         }
 
-        public void OnErrorOutput(string txt)
+        public void OnErrorOutput(string txt, ExecuteSetting setting)
         {
             throw new NotImplementedException();
         }

@@ -12,8 +12,12 @@ namespace ReleaseIt
 
         public ConfigurationSetting()
         {
-            ProcessLogger = new LoggerConsoler();
-            CommandLogger = new LoggerConsoler();
+            ProcessLogger = new EmptyLogger();
+            CommandLogger = new LoggerConsoler()
+            {
+                InfoColor = ConsoleColor.DarkGray,
+                WarnColor = ConsoleColor.Red
+            };
         }
 
         public IExecutor Executor { get; set; }
