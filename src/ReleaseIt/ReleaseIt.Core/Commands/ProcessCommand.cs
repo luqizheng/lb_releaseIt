@@ -1,8 +1,7 @@
 ﻿using System;
-using Newtonsoft.Json;
 using ReleaseIt.WindowCommand.CommandFinders;
 
-namespace ReleaseIt
+namespace ReleaseIt.Commands
 {
     public abstract class ProcessCommand<T> : Command<T> where T : Setting
     {
@@ -12,7 +11,6 @@ namespace ReleaseIt
             if (finder == null) throw new ArgumentNullException("finder");
             Finder = finder;
         }
-
 
 
         public ICommandFinder Finder { get; set; }

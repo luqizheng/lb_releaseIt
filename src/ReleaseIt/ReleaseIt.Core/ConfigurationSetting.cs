@@ -2,16 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReleaseIt.Executors;
-using ReleaseIt.WindowCommand;
+using ReleaseIt.Log;
 
 namespace ReleaseIt
 {
-    public class ConfigurationSetting : Setting
+    public class ConfigurationSetting
     {
         private readonly Dictionary<Type, Func<object, ICommand>> _builder =
             new Dictionary<Type, Func<object, ICommand>>();
 
+        public ConfigurationSetting()
+        {
+            Logger = new LoggerConsoler();
+        }
+
         public IExecutor Executor { get; set; }
+
+
+        public ILog Logger { get; set; }
 
         public ICommand Create(object setting)
         {

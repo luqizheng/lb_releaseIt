@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using ReleaseIt.MultiExecute;
 
 namespace ReleaseIt
 {
@@ -85,19 +87,13 @@ namespace ReleaseIt
             }
 
             var settingChanged = false;
-            var exeCmod = BuildExecutePlan();
+            var s = new CommandExecuteTree(this);
+            IEnumerable<Task> allTask;
+            var exeCmod = s.BuildExecutePlan(out allTask);
+            exeCmod.Start();
 
-            while (exeCmod.Count != 0)
-            {
-                var cmd = exeCmod.Dequeue();
-                var resultSetting = cmd.Invoke(_executeSettings[cmd.Setting.Dependency ?? DefaultExecuteSetting]);
-                _executeSettings.Add(cmd.Setting.Id, resultSetting);
-                settingChanged = cmd.SettingChanged || settingChanged;
-            }
-            if (settingChanged)
-            {
-                OnSettingChanged();
-            }
+            Task.WaitAll(allTask.ToArray());
+
         }
 
 

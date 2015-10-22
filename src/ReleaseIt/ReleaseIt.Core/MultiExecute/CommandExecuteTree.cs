@@ -14,46 +14,60 @@ namespace ReleaseIt.MultiExecute
             _commands = commands;
         }
 
-        public List<Task> BuildExecutePlan()
+        public Task BuildExecutePlan(out IEnumerable<Task> tasks)
         {
-            var result = new List<Task>();
-            var makeSureList = new Dictionary<string, Task>();
-            var unHandle = new Dictionary<string, List<Action>>(); //Key is parent.
-
+            Task result = null;
+            var sureTasks = new Dictionary<string, Task>();
+            var lostParentTasks = new Dictionary<string, List<Action>>(); //Key is parent.
+            string startId = null;
             foreach (var cmd in _commands.Commands)
             {
                 if (IsMatch(cmd))
                 {
-                    if (cmd.Setting.Dependency == null)
+                    var action = CreateAction(cmd);
+                    var depencyId = cmd.Setting.Dependency ?? startId;
+                    if (depencyId == null)
                     {
-                        var commandTask = new Task(CreateAction(cmd));
-                        makeSureList.Add(cmd.Setting.Id, commandTask);
-                        result.Add(commandTask);
+                        if (result != null)
+                        {
+                            Console.WriteLine("Top continuteWith " + cmd.Setting.Id);
+
+                            var parentTask = sureTasks[startId];
+                            var currentTask = parentTask.ContinueWith(t => action());
+                            Console.WriteLine(depencyId + " continuteWith " + cmd.Setting.Id);
+                            sureTasks.Add(cmd.Setting.Id, currentTask); //make  index
+                        }
+                        else
+                        {
+                            result = new Task(action);
+                            startId = cmd.Setting.Id;
+                            sureTasks.Add(cmd.Setting.Id, result);
+                        }
                     }
 
-                    else if (makeSureList.ContainsKey(cmd.Setting.Dependency))
+                    else if (sureTasks.ContainsKey(depencyId))
                     {
-                        var action = CreateAction(cmd);
-                        var parentTask = makeSureList[cmd.Setting.Dependency];
+                        var parentTask = sureTasks[depencyId];
                         var currentTask = parentTask.ContinueWith(t => action());
-                        makeSureList.Add(cmd.Setting.Id, currentTask); //make  index
+                        Console.WriteLine(depencyId + " continuteWith " + cmd.Setting.Id);
+                        sureTasks.Add(cmd.Setting.Id, currentTask); //make  index
                     }
-                    else
+                    else if (depencyId != null)
                     {
-                        var action = CreateAction(cmd);
                         //没有发现父节点,因此放入待处理区
-                        if (!unHandle.ContainsKey(cmd.Setting.Dependency))
+                        if (!lostParentTasks.ContainsKey(depencyId))
                         {
-                            unHandle.Add(cmd.Setting.Dependency, new List<Action>());
+                            lostParentTasks.Add(depencyId, new List<Action>());
                         }
-                        unHandle[cmd.Setting.Dependency].Add(action);
+                        lostParentTasks[depencyId].Add(action);
+                        lostParentTasks.Remove(depencyId);
                     }
 
                     //reset 待处理区 //看看代理处理去有缺父节点的command
-                    if (unHandle.ContainsKey(cmd.Setting.Id)) //新生成的task，看看是不是有人依赖他
+                    if (lostParentTasks.ContainsKey(cmd.Setting.Id)) //新生成的task，看看是不是有人依赖他
                     {
-                        var parentTask = makeSureList[cmd.Setting.Id];
-                        foreach (var childTask in unHandle[cmd.Setting.Id])
+                        var parentTask = sureTasks[cmd.Setting.Id];
+                        foreach (var childTask in lostParentTasks[cmd.Setting.Id])
                         {
                             var task = childTask;
                             parentTask.ContinueWith(t => task);
@@ -61,10 +75,11 @@ namespace ReleaseIt.MultiExecute
                     }
                 }
             }
-            if (unHandle.Count != 0)
+            if (lostParentTasks.Count != 0)
             {
                 throw new ArgumentOutOfRangeException();
             }
+            tasks = sureTasks.Values;
             return result;
         }
 
@@ -83,9 +98,10 @@ namespace ReleaseIt.MultiExecute
         {
             return () =>
             {
-                var resultSetting =
-                    executeCommand.Invoke(
-                        _commands.ExecuteSettings[executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting]);
+                var cmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
+
+                var executeSetting = _commands.ExecuteSettings[cmdId];
+                var resultSetting = executeCommand.Invoke(executeSetting);
                 _commands.ExecuteSettings.Add(executeCommand.Setting.Id, resultSetting);
             };
         }

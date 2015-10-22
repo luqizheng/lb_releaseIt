@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Serialization;
 
 namespace ReleaseIt
@@ -10,7 +11,10 @@ namespace ReleaseIt
 
         public string Id
         {
-            get { return _id; }
+            get
+            {
+                return _id ?? (_id = Guid.NewGuid().ToString("N"));
+            }
             set
             {
                 _id = value != null ? value.ToLower() : null;
@@ -26,7 +30,8 @@ namespace ReleaseIt
         public string Dependency
         {
             get { return _dependency; }
-            set {
+            set
+            {
                 _dependency = value != null ? value.ToLower() : null;
             }
         }

@@ -36,8 +36,10 @@ namespace ReleaseIt
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
+            executeSetting.Setting.Logger.WriteLine("Executing id="+this.Setting.Id);
             var res = (ExecuteSetting) executeSetting.Clone();
             InvokeByNewSetting(res, Setting);
+            executeSetting.Setting.Logger.WriteLine("Executed id=" + this.Setting.Id);
             return res;
         }
 
@@ -50,6 +52,7 @@ namespace ReleaseIt
         /// <param name="txt"></param>
         public virtual void OnOutput(string txt)
         {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine(txt);
         }
 
@@ -74,5 +77,11 @@ namespace ReleaseIt
         /// <param name="executeSetting"></param>
         /// <param name="setting"></param>
         protected abstract void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting);
+
+
+        public override string ToString()
+        {
+            return this.Setting.Id;
+        }
     }
 }

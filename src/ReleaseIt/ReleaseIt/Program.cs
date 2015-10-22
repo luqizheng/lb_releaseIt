@@ -60,8 +60,6 @@ namespace ReleaseIt
             ExistFile = manager.ReadSetting(commandSet, fullName.FullName);
             commandSet.OnCommandSettingChanged += commandSet_OnCommandSettingChanged;
             commandSet.Invoke();
-
-
         }
 
         static void commandSet_OnCommandSettingChanged(object sender, EventArgs e)

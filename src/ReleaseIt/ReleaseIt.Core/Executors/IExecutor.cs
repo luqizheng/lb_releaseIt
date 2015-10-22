@@ -1,3 +1,5 @@
+using ReleaseIt.Commands;
+
 namespace ReleaseIt.Executors
 {
     public interface IExecutor

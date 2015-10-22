@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using ReleaseIt.Commands;
 
 namespace ReleaseIt.Executors.Executors
 {
@@ -21,7 +22,7 @@ namespace ReleaseIt.Executors.Executors
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
-            Console.WriteLine(commandPath + " " + argus);
+            setting.Setting.Logger.WriteLine(commandPath + " " + argus);
             using (var process = new Process())
             {
                 process.EnableRaisingEvents = true;

@@ -33,11 +33,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
@@ -47,13 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Log\ILog.cs" />
+    <Compile Include="Log\LoggerConsoler.cs" />
     <Compile Include="MultiExecute\CommandExecuteTree.cs" />
     <Compile Include="SettingBuilders\CompileSettingBuilder.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Commands\SmtpEmailSetting.cs" />
     <Compile Include="IniStore\Ini.cs" />
     <Compile Include="IniStore\SettingManager.cs" />
-    <Compile Include="ProcessCommand.cs" />
+    <Compile Include="Commands\ProcessCommand.cs" />
     <Compile Include="CommandSet.cs" />
     <Compile Include="Commands\EmailCommand.cs" />
     <Compile Include="ConfigurationExtender.cs" />
@@ -74,7 +73,7 @@
     <Compile Include="Commands\Windows\MsBuilds\MsBuildCommand.cs" />
     <Compile Include="SettingBuilders\CopySettingBuilder.cs" />
     <Compile Include="Commands\Windows\Publish\XCopyCommand.cs" />
-    <Compile Include="DefaultCommand.cs" />
+    <Compile Include="Commands\DefaultCommand.cs" />
     <Compile Include="IoExtender.cs" />
     <Compile Include="CompileSetting.cs" />
     <Compile Include="ParameterBuilder\ParameterWithValue.cs" />
@@ -87,9 +86,6 @@
     <Compile Include="Commands\Windows\VersionControls\Svn.cs" />
     <Compile Include="VersionControlSetting.cs" />
     <Compile Include="Commands\Windows\VersionControls\SvnVersion.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,8 +1,8 @@
 ﻿using ReleaseIt.WindowCommand.CommandFinders;
 
-namespace ReleaseIt
+namespace ReleaseIt.Commands
 {
-    public class DefaultCommand : ICommandFinder
+    internal class DefaultCommand : ICommandFinder
     {
         private readonly string _commandLine;
         private readonly string _name;
