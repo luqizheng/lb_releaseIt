@@ -4,7 +4,7 @@
     {
         public override string Key
         {
-            get { return "s"; }
+            get { return "skip"; }
         }
 
         public override bool Handle(CommandSet set, string fileName, string argument)

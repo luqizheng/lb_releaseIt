@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace ReleaseIt.Arguments
 {
@@ -29,7 +30,8 @@ namespace ReleaseIt.Arguments
         {
             foreach (var key in keies)
             {
-                var paramName = key.Substring(0, 1);
+
+                var paramName = Regex.Match(key, "[A-z0-9]*").Value;
                 if (_creator.ContainsKey(paramName))
                 {
                     var goOn = _creator[paramName].Handle(set, fileName, key);

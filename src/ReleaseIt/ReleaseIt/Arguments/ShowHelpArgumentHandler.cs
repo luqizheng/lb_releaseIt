@@ -11,14 +11,14 @@ namespace ReleaseIt.Arguments
 
         public override bool Handle(CommandSet set, string fileName, string argument)
         {
-            Console.WriteLine("releaseIt [fileName]  for run.");
-            Console.WriteLine("/t releaseIt setting.ini");
+            Console.WriteLine("releaseIt [fileName] for run.");
+            
             Console.WriteLine();
 
-            Console.WriteLine("/s:nameOfCommand;nameOfCommand for skip command");
-            Console.WriteLine("/r:nameOfCommand;nameOfCommand run following command.");
+            Console.WriteLine("/skip:commandName;commandName for skip command");
+            Console.WriteLine("/run:commandName;commandName run following command.");
 
-            Console.WriteLine("/t:tag1;tag2 for run");
+            Console.WriteLine("/tags:tag1;tag2 for run");
 
             Console.WriteLine("/c [fileName] to create a template setting file.");
             Console.WriteLine("e.g. releaseIt setting.ini /t");
