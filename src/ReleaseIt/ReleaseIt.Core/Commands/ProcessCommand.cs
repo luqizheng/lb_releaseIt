@@ -17,7 +17,16 @@ namespace ReleaseIt.Commands
 
         protected override void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting)
         {
-            executeSetting.Setting.Executor.Invoke(this, executeSetting);
+            try
+            {
+                var cmd = this as ICommand;
+                executeSetting.Setting.Executor.Invoke<T>(cmd, executeSetting);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
         }
 
 

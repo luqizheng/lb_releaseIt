@@ -54,13 +54,7 @@ namespace ReleaseIt.Commands.Windows.VersionControls
 
             return prefix + Setting.UserName + ":" + Setting.Password + "@" + Setting.Url.Substring(pos + 3);
         }
-
-#if DEBUG
-        public
-#else
-            private 
-#endif
-            string GetWorkingCopyName()
+        public string GetWorkingCopyName()
         {
             if (!string.IsNullOrEmpty(Setting.WorkingCopy) && Setting.WorkingCopy.Contains(FolderNameVariableName))
             {

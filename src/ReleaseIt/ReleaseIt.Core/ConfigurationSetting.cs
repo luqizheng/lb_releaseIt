@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using ReleaseIt.Executors;
 using ReleaseIt.Log;
 
@@ -8,12 +6,14 @@ namespace ReleaseIt
 {
     public class ConfigurationSetting
     {
-
-
         public ConfigurationSetting()
         {
-            ProcessLogger = new EmptyLogger();
-            CommandLogger = new LoggerConsoler()
+            ProcessLogger = new LoggerConsoler
+            {
+                InfoColor = ConsoleColor.Green,
+                WarnColor = ConsoleColor.Red
+            };
+             CommandLogger = new LoggerConsoler
             {
                 InfoColor = ConsoleColor.DarkGray,
                 WarnColor = ConsoleColor.Red
@@ -26,6 +26,5 @@ namespace ReleaseIt
         public ILog ProcessLogger { get; set; }
 
         public ILog CommandLogger { get; set; }
-
     }
 }

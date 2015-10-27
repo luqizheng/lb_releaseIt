@@ -80,13 +80,17 @@ namespace ReleaseIt.MultiExecute
 
         private bool IsMatch(ICommand cmd)
         {
-            if (_commands.Skip.Count != 0 && _commands.Skip.Contains(cmd.Setting.Id))
+            if ((_commands.Skip.Count != 0 && _commands.Skip.Contains(cmd.Setting.Id))
+                ||
+                (_commands.SkipTags.Count != 0 && cmd.HasTag(_commands.SkipTags))
+                )
             {
                 return false;
             }
+
             return (_commands.Include.Count == 0 && _commands.IncludeTags.Count == 0)
                    || _commands.Include.Contains(cmd.Setting.Id)
-                   || cmd.IsMatch(_commands.IncludeTags);
+                   || cmd.HasTag(_commands.IncludeTags);
         }
 
         private Action CreateAction(ICommand executeCommand)

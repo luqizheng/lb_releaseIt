@@ -14,8 +14,8 @@ namespace ReleaseIt.SettingBuilders
             _setting.Tags = tag;
             return this as T1;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="commandName"></param>
         /// <returns></returns>

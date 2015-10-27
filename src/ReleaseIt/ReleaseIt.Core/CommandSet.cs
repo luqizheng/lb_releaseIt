@@ -27,6 +27,10 @@ namespace ReleaseIt
         {
         }
 
+        public ConfigurationSetting Configruration
+        {
+            get { return _executeSettings[DefaultExecuteSetting].Setting; }
+        }
 
         /// <summary>
         /// </summary>
@@ -65,6 +69,11 @@ namespace ReleaseIt
             get { return _skip ?? (_skip = new List<string>()); }
         }
 
+        private List<string> _skipTags;
+        public List<string> SkipTags
+        {
+            get { return _skipTags ?? (_skipTags = new List<string>()); }
+        }
         /// <summary>
         ///     Include command name
         /// </summary>
@@ -107,16 +116,6 @@ namespace ReleaseIt
         public event EventHandler OnCommandSettingChanged;
 
 
-        public ICommand Insert(int index, ICommand command)
-        {
-            if (_commnadIds.Contains(command.Setting.Id))
-            {
-                throw new DuplicateIdException(command.Setting.Id);
-            }
-            Commands.Insert(index, command);
-            _commnadIds.Add(command.Setting.Id);
-            return command;
-        }
 
         public ICommand Add(ICommand command)
         {

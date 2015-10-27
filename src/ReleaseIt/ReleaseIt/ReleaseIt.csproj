@@ -48,7 +48,8 @@
   <ItemGroup>
     <Compile Include="Arguments\ArgumentFactory.cs" />
     <Compile Include="Arguments\ArgumentHandler.cs" />
-    <Compile Include="Arguments\InlucdeTags.cs" />
+    <Compile Include="Arguments\ProcessNoLog.cs" />
+    <Compile Include="Arguments\RunTags.cs" />
     <Compile Include="Arguments\RunHandler.cs" />
     <Compile Include="Arguments\SaveTemplateHandler.cs" />
     <Compile Include="Arguments\ShowHelpArgumentHandler.cs" />

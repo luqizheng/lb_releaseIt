@@ -6,27 +6,32 @@ namespace ReleaseIt
 {
     public abstract class Command<T> : ICommand where T : Setting
     {
+        private readonly T _setting;
+
         protected Command(T setting)
         {
-            Setting = setting;
+            _setting = setting;
         }
 
         /// <summary>
         /// </summary>
-        public T Setting { get; private set; }
+        public T Setting
+        {
+            get { return _setting; }
+        }
 
         /// <summary>
         /// </summary>
         /// <param name="tags"></param>
         /// <returns></returns>
-        public bool IsMatch(IEnumerable<string> tags)
+        public bool HasTag(IEnumerable<string> tags)
         {
             if (tags == null || Setting.Tags == null)
                 return false;
             return (from beCheckedTag in tags
-                    from tag in Setting.Tags
-                    where tag.ToLower() == beCheckedTag.ToLower()
-                    select beCheckedTag).Any();
+                from tag in Setting.Tags
+                where tag.ToLower() == beCheckedTag.ToLower()
+                select beCheckedTag).Any();
         }
 
         /// <summary>
@@ -38,9 +43,10 @@ namespace ReleaseIt
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
             var now = DateTime.Now;
             executeSetting.Setting.CommandLogger.Info("Start to run <" + Setting.Id + ">");
-            var res = (ExecuteSetting)executeSetting.Clone();
+            var res = (ExecuteSetting) executeSetting.Clone();
             InvokeByNewSetting(res, Setting);
-            executeSetting.Setting.CommandLogger.Info("Complete to run <" + Setting.Id + "> elapsed time:" + (DateTime.Now - now).TotalSeconds);
+            executeSetting.Setting.CommandLogger.Info("Complete to run <" + Setting.Id + "> elapsed time:" +
+                                                      (DateTime.Now - now).TotalSeconds);
             return res;
         }
 
@@ -54,8 +60,7 @@ namespace ReleaseIt
         /// <param name="setting"></param>
         public virtual void OnOutput(string txt, ExecuteSetting setting)
         {
-
-
+            setting.Setting.ProcessLogger.Info(txt);
         }
 
         /// <summary>
@@ -64,7 +69,7 @@ namespace ReleaseIt
         /// <param name="setting"></param>
         public virtual void OnErrorOutput(string txt, ExecuteSetting setting)
         {
-            setting.Setting.ProcessLogger.Info(txt);
+            setting.Setting.ProcessLogger.Error(txt);
         }
 
         /// <summary>

@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="IniStore\CommandSettingMap.cs" />
     <Compile Include="IniStore\SectionSettingMap.cs" />
+    <Compile Include="Log\EmptyLogger.cs" />
     <Compile Include="Log\ILog.cs" />
     <Compile Include="Log\LoggerConsoler.cs" />
     <Compile Include="MultiExecute\CommandExecuteTree.cs" />

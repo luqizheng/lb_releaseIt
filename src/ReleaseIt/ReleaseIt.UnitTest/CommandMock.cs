@@ -19,7 +19,7 @@ namespace ReleaseIt.UnitTest
 
         public Setting Setting { get; set; }
         public bool SettingChanged { get; set; }
-        public bool IsMatch(IEnumerable<string> tag)
+        public bool HasTag(IEnumerable<string> tag)
         {
             if (tag == null || this.Setting.Tags == null)
                 return false;

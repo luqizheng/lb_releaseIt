@@ -8,11 +8,12 @@ namespace ReleaseIt.Executors.Executors
 {
     internal class ProcessExecutor : IExecutor
     {
-        public void Invoke<T>(ProcessCommand<T> command, ExecuteSetting setting)
+        public void Invoke<T>(ICommand command, ExecuteSetting setting)
             where T : Setting
         {
-            var commandPath = command.GetCommand(setting);
-            var argus = command.BuildArguments(setting);
+            var cmd = command as ProcessCommand<T>;
+            var commandPath = cmd.GetCommand(setting);
+            var argus = cmd.BuildArguments(setting);
             var psi = new ProcessStartInfo(commandPath, argus)
             {
                 UseShellExecute = false,
@@ -45,6 +46,14 @@ namespace ReleaseIt.Executors.Executors
 
         private void p_Exited(object sender, EventArgs e)
         {
+        }
+    }
+
+    public class CommandExecuteException
+    {
+        public CommandExecuteException()
+        {
+
         }
     }
 }

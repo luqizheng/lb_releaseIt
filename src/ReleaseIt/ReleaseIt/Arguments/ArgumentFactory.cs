@@ -10,9 +10,11 @@ namespace ReleaseIt.Arguments
         public ArgumentFactory()
         {
             Add(new SkipHandler());
+            Add(new SkipTagHandler());
             Add(new ShowHelpArgumentHandler());
             Add(new SaveTemplateHandler());
-            Add(new InlucdeTags());
+            Add(new RunTags());
+            Add(new ProcessNoLog());
         }
 
         private void Add(ArgumentHandler handler)

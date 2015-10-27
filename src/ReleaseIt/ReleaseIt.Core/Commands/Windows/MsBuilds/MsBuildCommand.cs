@@ -102,12 +102,14 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
 
         private void MakeLog(IList<ICmdParameter> parameters)
         {
+            var logLevel =
+                 new ParameterWithValue<LogLevel>("verbosity",
+                     s => Convert.ToString(s).Substring(0, 1));
+            logLevel.Value = LogLevel.minimal;
+            parameters.Add(logLevel);
+
             if (Setting.BuildLogFile)
             {
-                var _logLevel =
-                    new ParameterWithValue<LogLevel>("verbosity",
-                        s => Convert.ToString(s).Substring(0, 1));
-                parameters.Add(_logLevel);
                 var logFile = new Parameter("filelogger");
                 parameters.Add(logFile);
             }

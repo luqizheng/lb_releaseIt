@@ -1,10 +1,10 @@
 namespace ReleaseIt.Arguments
 {
-    public class RunHandler : ArgumentHandler
+    public class RunTags : ArgumentHandler
     {
         public override string Key
         {
-            get { return "run"; }
+            get { return "tags"; }
         }
 
         public override bool Handle(CommandSet set, string fileName, string argument)
@@ -14,7 +14,7 @@ namespace ReleaseIt.Arguments
                 return true;
 
             var commandNames = f[1].Split(new[] { ';', ',' });
-            set.Include.AddRange(commandNames);
+            set.IncludeTags.AddRange(commandNames);
             return true;
         }
     }

@@ -53,7 +53,7 @@ namespace ReleaseIt
         {
             if (string.IsNullOrEmpty(searchPattern))
                 throw new ArgumentNullException("searchPattern");
-            var searchPatterns = searchPattern.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var searchPatterns = searchPattern.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
             var files = new List<FileInfo>();
             foreach (var sp in searchPatterns)
             {
@@ -76,28 +76,23 @@ namespace ReleaseIt
 
         public static string GetPath(string workingDirectory, string settingPath)
         {
-
             var settingDir = new Uri(settingPath, UriKind.RelativeOrAbsolute);
             if (settingDir.IsAbsoluteUri)
                 return settingPath;
 
             if (settingPath.StartsWith("."))
             {
-
                 return Path.GetFullPath(workingDirectory + Path.DirectorySeparatorChar + settingPath);
             }
 
             settingPath = settingPath.TrimStart('/', '\\');
 
             return Path.Combine(workingDirectory, settingPath);
-
         }
 
         public static string WrapperPath(string s)
         {
-
             return string.Format("\"{0}\"", s);
-
         }
     }
 }
