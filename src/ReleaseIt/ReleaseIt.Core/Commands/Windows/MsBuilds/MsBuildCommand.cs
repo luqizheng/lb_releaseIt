@@ -19,11 +19,14 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
         public override string BuildArguments(ExecuteSetting executoSetting)
         {
             BuildEnviVariable(executoSetting);
+
+
             var parameters = new List<ICmdParameter>
             {
                 MakeProjectPath(executoSetting),
                 MakeProperties(executoSetting)
             };
+
             MakeTargets(parameters);
             MakeLog(parameters);
 
@@ -32,14 +35,14 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
 
         private void BuildEnviVariable(ExecuteSetting executoSetting)
         {
-            executoSetting.AddVariable("%prjName%", Path.GetFileNameWithoutExtension(Setting.ProjectPath));
+            executoSetting.SetVariable("%prjName%", Path.GetFileNameWithoutExtension(Setting.ProjectPath));
 
             var projectFile =
                 executoSetting.BuildByVariable(IoExtender.GetPath(executoSetting.StartFolder, Setting.ProjectPath));
-            executoSetting.AddVariable("%prjPath%", projectFile);
+            executoSetting.SetVariable("%prjPath%", projectFile);
 
             executoSetting.ResultFolder = (new FileInfo(projectFile)).Directory.FullName;
-            executoSetting.AddVariable("%outDir%", executoSetting.ResultFolder);
+            executoSetting.SetVariable("%outDir%", executoSetting.ResultFolder);
         }
 
         private ParameterWithValue<string> CreateProperty(string key, string value)
@@ -67,6 +70,8 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
             {
                 Value = new List<ParameterWithValue<string>>()
             };
+
+
             properities.Value.Add(CreateProperty("Configuration", Setting.BuildConfiguration ?? "Debug"));
 
             if (Setting.OutputDirectory != null)
@@ -74,7 +79,7 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
                 var outputdir = executoSetting.BuildByVariable(Setting.OutputDirectory);
                 outputdir = IoExtender.GetPath(executoSetting.StartFolder, outputdir);
                 executoSetting.ResultFolder = outputdir;
-                executoSetting.AddVariable("%outDir%", outputdir);
+                executoSetting.SetVariable("%outDir%", outputdir);
                 outputdir = IoExtender.WrapperPath(outputdir);
                 var outputParam = CreateProperty(Setting.IsWeb ? "WebProjectOutputDir" : "outDir", outputdir);
                 properities.Value.Add(outputParam);
@@ -103,15 +108,29 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
         private void MakeLog(IList<ICmdParameter> parameters)
         {
             var logLevel =
-                 new ParameterWithValue<LogLevel>("verbosity",
-                     s => Convert.ToString(s).Substring(0, 1));
-            logLevel.Value = LogLevel.minimal;
-            parameters.Add(logLevel);
+                new ParameterWithValue<LogLevel>("verbosity",
+                    s => Convert.ToString(s).Substring(0, 1));
+            logLevel.Value = Setting.LogLevel;
 
+            parameters.Add(logLevel);
+            //不输出日志，改用dll输出。
+            //parameters.Add(new Parameter("/", "nologo"));
+            //parameters.Add(new Parameter("/", "noconsolelogger"));
+            var logger = new ParameterWithValue<List<string>>("logger", s => string.Join(";", s.ToArray()))
+            {
+                Value = new List<string>()
+            };
+            var a = AppDomain.CurrentDomain.BaseDirectory + "ReleaseIt.Core.dll";
+
+            logger.Value.Add("ReleaseIt.Log.MsBuildLog," + a);
+            parameters.Add(logger);
             if (Setting.BuildLogFile)
             {
-                var logFile = new Parameter("filelogger");
-                parameters.Add(logFile);
+                logger.Value.Add("OutFile");
+            }
+            else
+            {
+                logger.Value.Add("Console");
             }
         }
     }

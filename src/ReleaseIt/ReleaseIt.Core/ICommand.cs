@@ -16,4 +16,11 @@ namespace ReleaseIt
 
         void OnErrorOutput(string txt, ExecuteSetting setting);
     }
+
+    public class OutputArgus
+    {
+        public int Top { get; set; }
+
+        public string Title { get; set; }
+    }
 }

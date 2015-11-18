@@ -11,6 +11,7 @@ namespace ReleaseIt
         {
             //_properities.Value = new List<ParameterWithValue<string>>();
             BuildConfiguration = "Debug";
+            LogLevel = LogLevel.minimal;
         }
 
         [Description(@"Is Web Project. True/False")]

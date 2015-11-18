@@ -16,7 +16,7 @@ namespace ReleaseIt.Commands.Windows.VersionControls
             using (var reader = new StreamReader("version.txt"))
             {
                 var s = Regex.Replace(reader.ReadToEnd(), "\\S", "");
-                executeSetting.AddVariable("%version%", s);
+                executeSetting.SetVariable("%version%", s);
             }
         }
 

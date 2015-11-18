@@ -17,14 +17,13 @@ namespace ReleaseIt
             Console.Clear();
             Console.WriteLine("LB_Release 1.0");
             Console.WriteLine();
-            Console.WriteLine();
             string file = null;
             var list = new List<string>();
             foreach (var arg in args)
             {
-                if (arg.StartsWith("/"))
+                if (arg.StartsWith("/") || arg.StartsWith("-"))
                 {
-                    list.Add(arg.Substring(1));
+                    list.Add(arg.Substring(1).ToLower());
                     continue;
                 }
                 if (file == null)

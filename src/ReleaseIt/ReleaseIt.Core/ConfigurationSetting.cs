@@ -13,7 +13,7 @@ namespace ReleaseIt
                 InfoColor = ConsoleColor.Green,
                 WarnColor = ConsoleColor.Red
             };
-             CommandLogger = new LoggerConsoler
+            CommandLogger = new LoggerConsoler
             {
                 InfoColor = ConsoleColor.DarkGray,
                 WarnColor = ConsoleColor.Red

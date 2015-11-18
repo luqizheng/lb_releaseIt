@@ -33,6 +33,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -49,6 +51,7 @@
     <Compile Include="Log\EmptyLogger.cs" />
     <Compile Include="Log\ILog.cs" />
     <Compile Include="Log\LoggerConsoler.cs" />
+    <Compile Include="Log\MsBuildLog.cs" />
     <Compile Include="MultiExecute\CommandExecuteTree.cs" />
     <Compile Include="SettingBuilders\CompileSettingBuilder.cs" />
     <Compile Include="Command.cs" />

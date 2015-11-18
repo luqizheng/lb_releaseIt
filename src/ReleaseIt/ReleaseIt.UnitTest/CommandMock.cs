@@ -38,7 +38,7 @@ namespace ReleaseIt.UnitTest
         {
             var result = (ExecuteSetting)executeSetting.Clone();
             _invokeResult.Add(this.Setting.Id);
-            result.AddVariable("OrderId", this.Setting.Id);
+            result.SetVariable("OrderId", this.Setting.Id);
             return result;
         }
 

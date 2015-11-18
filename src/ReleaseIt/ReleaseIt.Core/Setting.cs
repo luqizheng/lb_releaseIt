@@ -8,6 +8,7 @@ namespace ReleaseIt
     {
         private string _dependency;
         private string _id;
+        private string _goTo;
 
         public string Id
         {
@@ -32,7 +33,13 @@ namespace ReleaseIt
                 _dependency = value != null ? value.ToLower() : null;
             }
         }
-
-       
+        /// <summary>
+        /// Goto command after finsih.
+        /// </summary>
+        public string GoTo
+        {
+            get { return _goTo; }
+            set { _goTo = value != null ? value.ToLower() : null; ; }
+        }
     }
 }

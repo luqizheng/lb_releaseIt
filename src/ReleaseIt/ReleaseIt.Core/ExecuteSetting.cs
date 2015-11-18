@@ -23,9 +23,9 @@ namespace ReleaseIt
         {
             if (startFolder == null) throw new ArgumentNullException("startFolder");
             _startFolder = startFolder;
-            AddVariable(VAR_RESULT, startFolder);
-            AddVariable(VAR_Date, DateTime.Now.ToString("yyyy-MM-dd"));
-            AddVariable(VAR_TIME, DateTime.Now.ToString("HH:mm:ss"));
+            SetVariable(VAR_RESULT, startFolder);
+            SetVariable(VAR_Date, DateTime.Now.ToString("yyyy-MM-dd"));
+            SetVariable(VAR_TIME, DateTime.Now.ToString("HH:mm:ss"));
         }
 
         internal ExecuteSetting Top { get; set; }
@@ -43,7 +43,7 @@ namespace ReleaseIt
                     return GetVaribale(VAR_RESULT);
                 return StartFolder;
             }
-            set { AddVariable(VAR_RESULT, value); }
+            set { SetVariable(VAR_RESULT, value); }
         }
 
         /// <summary>
@@ -86,12 +86,12 @@ namespace ReleaseIt
             };
             foreach (var item in _variable.Keys)
             {
-                result.AddVariable(item, _variable[item]);
+                result.SetVariable(item, _variable[item]);
             }
             return result;
         }
 
-        public void AddVariable(string name, string value)
+        public void SetVariable(string name, string value)
         {
             name = name.ToLower();
             if (_variable.ContainsKey(name))

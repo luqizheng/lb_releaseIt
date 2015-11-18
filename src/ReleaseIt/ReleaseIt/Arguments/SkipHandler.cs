@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace ReleaseIt.Arguments
+﻿namespace ReleaseIt.Arguments
 {
     public class SkipHandler : ArgumentHandler
     {
@@ -19,8 +17,6 @@ namespace ReleaseIt.Arguments
             set.Skip.AddRange(commandNames);
             return true;
         }
-
-
     }
 
     public class SkipTagHandler : ArgumentHandler
@@ -36,11 +32,9 @@ namespace ReleaseIt.Arguments
             if (f.Length == 1)
                 return true;
 
-            var commandNames = f[1].Split(new[] { ';', ',' });
+            var commandNames = f[1].Split(';', ',');
             set.SkipTags.AddRange(commandNames);
             return true;
         }
-
-
     }
 }

@@ -14,6 +14,7 @@ namespace ReleaseIt.Arguments
             Add(new ShowHelpArgumentHandler());
             Add(new SaveTemplateHandler());
             Add(new RunTags());
+            Add(new RunHandler());
             Add(new ProcessNoLog());
         }
 
@@ -32,7 +33,6 @@ namespace ReleaseIt.Arguments
         {
             foreach (var key in keies)
             {
-
                 var paramName = Regex.Match(key, "[A-z0-9]*").Value;
                 if (_creator.ContainsKey(paramName))
                 {

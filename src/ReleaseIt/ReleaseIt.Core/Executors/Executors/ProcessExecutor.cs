@@ -14,6 +14,7 @@ namespace ReleaseIt.Executors.Executors
             var cmd = command as ProcessCommand<T>;
             var commandPath = cmd.GetCommand(setting);
             var argus = cmd.BuildArguments(setting);
+            Console.WriteLine(argus);
             var psi = new ProcessStartInfo(commandPath, argus)
             {
                 UseShellExecute = false,
@@ -23,6 +24,7 @@ namespace ReleaseIt.Executors.Executors
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
+            
             setting.Setting.ProcessLogger.Info(commandPath + " " + argus);
             using (var process = new Process())
             {
