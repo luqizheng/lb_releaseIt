@@ -8,11 +8,12 @@ namespace ReleaseIt
     {
         public ConfigurationSetting()
         {
-            ProcessLogger = new LoggerConsoler
-            {
-                InfoColor = ConsoleColor.Green,
-                WarnColor = ConsoleColor.Red
-            };
+            //ProcessLogger = new LoggerConsoler
+            //{
+            //    InfoColor = ConsoleColor.Green,
+            //    WarnColor = ConsoleColor.Red
+            //};
+            ProcessLogger=new EmptyLogger();
             CommandLogger = new LoggerConsoler
             {
                 InfoColor = ConsoleColor.DarkGray,

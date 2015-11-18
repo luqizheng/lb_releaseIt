@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ReleaseIt
 {
-    public interface ICommand
+    public interface ICommand : ICloneable
     {
+        string Id { get; set; }
         Setting Setting { get; }
 
         bool SettingChanged { get; set; }
@@ -15,12 +18,7 @@ namespace ReleaseIt
         void OnOutput(string txt, ExecuteSetting setting);
 
         void OnErrorOutput(string txt, ExecuteSetting setting);
+   
     }
 
-    public class OutputArgus
-    {
-        public int Top { get; set; }
-
-        public string Title { get; set; }
-    }
 }

@@ -4,12 +4,13 @@ using System.Runtime.Serialization;
 namespace ReleaseIt
 {
 
-    public class Setting
+    public class Setting : ICloneable
     {
         private string _dependency;
         private string _id;
         private string _goTo;
-
+        private string[] _call;
+        
         public string Id
         {
             get { return _id; }
@@ -41,5 +42,36 @@ namespace ReleaseIt
             get { return _goTo; }
             set { _goTo = value != null ? value.ToLower() : null; ; }
         }
+        /// <summary>
+        /// call next command after command finish 
+        /// </summary>
+        public string[] Call
+        {
+            get { return _call; }
+            set
+            {
+
+                if (value != null)
+                {
+                    for (var i = 0; i < value.Length; i++)
+                    {
+                        value[i] = value[i].ToLower();
+                    }
+                }
+                _call = value;
+
+            }
+        }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+
+        public Setting Clone()
+        {
+            return (Setting)MemberwiseClone();
+        }
+
     }
 }

@@ -14,8 +14,10 @@ namespace ReleaseIt.Log
 
         public void Info(string str)
         {
+            
             Console.ForegroundColor = InfoColor;
             Console.WriteLine(str);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
         }
 
         public void Error(string str)

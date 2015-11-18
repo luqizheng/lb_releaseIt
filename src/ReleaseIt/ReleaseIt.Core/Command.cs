@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ReleaseIt
 {
@@ -8,16 +9,26 @@ namespace ReleaseIt
     {
         private readonly T _setting;
 
+        private string _id;
+
         protected Command(T setting)
         {
             _setting = setting;
         }
+
+
 
         /// <summary>
         /// </summary>
         public T Setting
         {
             get { return _setting; }
+        }
+
+        public string Id
+        {
+            get { return _id ?? _setting.Id; }
+            set { _id = value; }
         }
 
         /// <summary>
@@ -29,9 +40,9 @@ namespace ReleaseIt
             if (tags == null || Setting.Tags == null)
                 return false;
             return (from beCheckedTag in tags
-                from tag in Setting.Tags
-                where tag.ToLower() == beCheckedTag.ToLower()
-                select beCheckedTag).Any();
+                    from tag in Setting.Tags
+                    where tag.ToLower() == beCheckedTag.ToLower()
+                    select beCheckedTag).Any();
         }
 
         /// <summary>
@@ -42,10 +53,10 @@ namespace ReleaseIt
         {
             if (executeSetting == null) throw new ArgumentNullException("executeSetting");
             var now = DateTime.Now;
-            executeSetting.Setting.CommandLogger.Info("Start to run <" + Setting.Id + ">");
-            var res = (ExecuteSetting) executeSetting.Clone();
+            executeSetting.Setting.CommandLogger.Info("Start to run <" + Id + ">");
+            var res = (ExecuteSetting)executeSetting.Clone();
             InvokeByNewSetting(res, Setting);
-            executeSetting.Setting.CommandLogger.Info("Complete to run <" + Setting.Id + "> elapsed time:" +
+            executeSetting.Setting.CommandLogger.Info("Complete to run <" + Id + "> elapsed time:" +
                                                       (DateTime.Now - now).TotalSeconds);
             return res;
         }
@@ -88,7 +99,16 @@ namespace ReleaseIt
 
         public override string ToString()
         {
-            return Setting.Id;
+            return Id;
         }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+
+        public abstract ICommand Clone();
+
+
     }
 }

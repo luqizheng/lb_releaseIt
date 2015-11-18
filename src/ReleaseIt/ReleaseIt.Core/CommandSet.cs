@@ -10,7 +10,7 @@ namespace ReleaseIt
     public class CommandSet
     {
         internal const string DefaultExecuteSetting = "default";
-        private readonly IList<ICommand> _commands;
+        private readonly CommandCollection _commands;
 
         private readonly IList<string> _commnadIds;
 
@@ -41,12 +41,12 @@ namespace ReleaseIt
             if (setting == null) throw new ArgumentNullException("setting");
             if (commands == null) throw new ArgumentNullException("commands");
             _executeSettings.Add(DefaultExecuteSetting, setting);
-            _commands = commands;
+            _commands = new CommandCollection(commands); ;
             _commnadIds = new List<string>();
         }
 
 
-        internal IList<ICommand> Commands
+        internal CommandCollection Commands
         {
             get { return _commands; }
         }
@@ -119,12 +119,12 @@ namespace ReleaseIt
 
         public ICommand Add(ICommand command)
         {
-            if (_commnadIds.Contains(command.Setting.Id))
+            if (_commnadIds.Contains(command.Id))
             {
-                throw new DuplicateIdException(command.Setting.Id);
+                throw new DuplicateIdException(command.Id);
             }
             Commands.Add(command);
-            _commnadIds.Add(command.Setting.Id);
+            _commnadIds.Add(command.Id);
             return command;
         }
     }

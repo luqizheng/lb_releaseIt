@@ -56,10 +56,14 @@ namespace ReleaseIt
             {
                 Run(commandSet, _fileInfo);
             }
+
+            Console.Write("Press any key to exit");
+            Console.Read();
         }
 
         private static void Run(CommandSet commandSet, FileInfo fullName)
         {
+
             if (!fullName.Exists)
             {
                 Console.WriteLine(fullName.Name + " not found.");
@@ -69,12 +73,14 @@ namespace ReleaseIt
             ExistFile = manager.ReadSetting(commandSet, fullName.FullName);
             commandSet.OnCommandSettingChanged += commandSet_OnCommandSettingChanged;
             commandSet.Invoke();
+
+
         }
 
         private static void commandSet_OnCommandSettingChanged(object sender, EventArgs e)
         {
             var manager = new SettingManager();
-            manager.Save(ExistFile, (CommandSet) sender, _fileInfo.FullName);
+            manager.Save(ExistFile, (CommandSet)sender, _fileInfo.FullName);
         }
     }
 }

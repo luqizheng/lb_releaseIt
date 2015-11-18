@@ -95,5 +95,10 @@ namespace ReleaseIt.Commands.Windows.VersionControls
             var ary = paramsCmdParameters.Select(s => s.Build());
             return string.Join(" ", ary);
         }
+
+        public override ICommand Clone()
+        {
+            return new GitCommand(Setting.Clone() as VersionControlSetting);
+        }
     }
 }

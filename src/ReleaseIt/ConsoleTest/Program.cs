@@ -14,21 +14,21 @@ namespace ConsoleTest
         {
             Class1 d = new Class1(Path.GetFullPath(System.Environment.CurrentDirectory + "/../"));
             Console.Read();
-            //var run = new Task(() => Run111());
-            //run.ContinueWith(t => Contiute1_1())
-            //    .ContinueWith(t => Contiute1_2());
+            var Start = new Task(() => start());
+            Start.ContinueWith(t => Contiute1_1())
+                .ContinueWith(t => Contiute1_2());
 
 
-            //var task2_1 = run.ContinueWith(t => Contiute2_1());
-            //var task2_2 = task2_1.ContinueWith(t => Contiute2_2());
+            var task2_1 = Start.ContinueWith(t => Contiute2_1());
+            var task2_2 = task2_1.ContinueWith(t => Contiute2_2());
 
 
-            //run.RunSynchronously();
-            //Console.WriteLine("end");
-            //Console.ReadKey();
+            Start.RunSynchronously();
+            Console.WriteLine("end");
+            Console.ReadKey();
         }
 
-        static void Run111()
+        static void start()
         {
             Thread.Sleep(100);
             Console.WriteLine("run");
@@ -37,9 +37,9 @@ namespace ConsoleTest
 
         static void Contiute1_1()
         {
-
-            Console.WriteLine("run 1_1");
             Thread.Sleep(200);
+            Console.WriteLine("run 1_1");
+           
         }
 
 
@@ -54,7 +54,7 @@ namespace ConsoleTest
         {
 
             Console.WriteLine("run 2_1");
-            Thread.Sleep(200);
+            Thread.Sleep(100);
         }
 
 

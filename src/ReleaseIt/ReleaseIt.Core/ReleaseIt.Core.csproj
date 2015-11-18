@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandCollection.cs" />
     <Compile Include="IniStore\CommandSettingMap.cs" />
     <Compile Include="IniStore\SectionSettingMap.cs" />
     <Compile Include="Log\EmptyLogger.cs" />

@@ -10,15 +10,20 @@ namespace ReleaseIt.Commands.Windows.VersionControls
     public class SvnCommand : ProcessCommand<VersionControlSetting>
     {
         public SvnCommand(VersionControlSetting setting)
-            : base(new SvnFinder(),setting)
+            : base(new SvnFinder(), setting)
         {
-          
+
         }
 
         protected override void InvokeByNewSetting(ExecuteSetting executeSetting, Setting setting)
         {
             base.InvokeByNewSetting(executeSetting, setting);
             executeSetting.WorkDirectory = null; //reset workDirectory
+        }
+
+        public override ICommand Clone()
+        {
+            return new SvnCommand(Setting.Clone() as VersionControlSetting);
         }
 
         private ICmdParameter[] BuildParameters(ExecuteSetting executeResult)

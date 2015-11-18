@@ -6,38 +6,69 @@ namespace ReleaseIt.MultiExecute
 {
     internal class CommandExecuteTree
     {
-        private readonly CommandSet _commands;
 
-        public CommandExecuteTree(CommandSet commands)
+
+        private readonly CommandCollection _executeCommandList = new CommandCollection();
+
+        private readonly CommandSet _commandSet;
+
+        public CommandExecuteTree(CommandSet commandSet)
         {
-            _commands = commands;
+            _commandSet = commandSet;
         }
 
+        private void Fillter()
+        {
+            var _calledCommands = new List<string>();
+            foreach (var command in _commandSet.Commands)
+            {
+                if (_calledCommands.Contains(command.Id)) // 排除被Call的Command
+                    continue;
+                _executeCommandList.Add(command);
+
+                if (command.Setting.Call != null)
+                {
+                    _calledCommands.AddRange(command.Setting.Call);
+                    foreach (var callCmdId in command.Setting.Call)
+                    {
+
+                        var callCmd = _commandSet.Commands[callCmdId];
+                        var newCommand = (ICommand)callCmd.Clone();
+                        newCommand.Id = command.Id + "_" + newCommand.Id;
+                        newCommand.Setting.Dependency = command.Id;
+                        _executeCommandList.Add(newCommand);
+                    }
+                }
+
+            }
+        }
 
         public Task BuildExecutePlan(out IEnumerable<Task> tasks)
         {
+            Fillter();
             var sureTasks = new Dictionary<string, Task>();
             var lostParentTasks = new Dictionary<string, List<Action>>(); //Key is parent.
             TaskRecord startTask = null;
-            foreach (var cmd in _commands.Commands)
+            foreach (var cmd in _executeCommandList)
             {
                 if (!IsMatch(cmd)) continue;
                 var action = CreateAction(cmd);
 
                 if (cmd.Setting.Dependency == null && startTask == null)
                 {
-                    if (cmd.Setting.Id == null)
+                    if (cmd.Id == null)
                     {
-                        cmd.Setting.Id = "start";
+                        cmd.Id = "start";
                     }
                     startTask = new TaskRecord
                     {
-                        Id = cmd.Setting.Id,
+                        Id = cmd.Id,
                         Task = new Task(action)
                     };
 
                     sureTasks.Add(startTask.Id, startTask.Task);
                     CheckLostParentTasks(lostParentTasks, sureTasks, cmd);
+
                     continue;
                 }
                 var depencyId = cmd.Setting.Dependency ?? startTask.Id;
@@ -45,7 +76,7 @@ namespace ReleaseIt.MultiExecute
                 {
                     var parentTask = sureTasks[depencyId];
                     var currentTask = parentTask.ContinueWith(t => action());
-                    sureTasks.Add(cmd.Setting.Id, currentTask); //make  index
+                    sureTasks.Add(cmd.Id, currentTask); //make  index
                 }
                 else
                 {
@@ -55,7 +86,6 @@ namespace ReleaseIt.MultiExecute
                         lostParentTasks.Add(depencyId, new List<Action>());
                     }
                     lostParentTasks[depencyId].Add(action);
-                    lostParentTasks.Remove(depencyId);
                 }
 
                 CheckLostParentTasks(lostParentTasks, sureTasks, cmd);
@@ -64,13 +94,14 @@ namespace ReleaseIt.MultiExecute
             return startTask.Task;
         }
 
+
         private void CheckLostParentTasks(Dictionary<string, List<Action>> lostParentTasks,
             Dictionary<string, Task> sureTasks, ICommand cmd)
         {
-            if (lostParentTasks.ContainsKey(cmd.Setting.Id)) //新生成的task，看看是不是有人依赖他
+            if (lostParentTasks.ContainsKey(cmd.Id)) //新生成的task，看看是不是有人依赖他
             {
-                var parentTask = sureTasks[cmd.Setting.Id];
-                foreach (var childTask in lostParentTasks[cmd.Setting.Id])
+                var parentTask = sureTasks[cmd.Id];
+                foreach (var childTask in lostParentTasks[cmd.Id])
                 {
                     var task = childTask;
                     parentTask.ContinueWith(t => task);
@@ -78,30 +109,41 @@ namespace ReleaseIt.MultiExecute
             }
         }
 
+        /// <summary>
+        ///     comd是否包含在这次的运行计划内
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
         private bool IsMatch(ICommand cmd)
         {
-            if ((_commands.Skip.Count != 0 && _commands.Skip.Contains(cmd.Setting.Id))
+            if ((_commandSet.Skip.Count != 0 && _commandSet.Skip.Contains(cmd.Id))
                 ||
-                (_commands.SkipTags.Count != 0 && cmd.HasTag(_commands.SkipTags))
+                (_commandSet.SkipTags.Count != 0 && cmd.HasTag(_commandSet.SkipTags))
                 )
             {
                 return false;
             }
 
-            return (_commands.Include.Count == 0 && _commands.IncludeTags.Count == 0)
-                   || _commands.Include.Contains(cmd.Setting.Id)
-                   || cmd.HasTag(_commands.IncludeTags);
+            return (_commandSet.Include.Count == 0 && _commandSet.IncludeTags.Count == 0)
+                   || _commandSet.Include.Contains(cmd.Id)
+                   || cmd.HasTag(_commandSet.IncludeTags);
         }
 
         private Action CreateAction(ICommand executeCommand)
         {
             return () =>
             {
-                var cmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
-
-                var executeSetting = _commands.ExecuteSettings[cmdId];
-                var resultSetting = executeCommand.Invoke(executeSetting);
-                _commands.ExecuteSettings.Add(executeCommand.Setting.Id, resultSetting);
+                try
+                {
+                    string resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
+                    var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
+                    var resultSetting = executeCommand.Invoke(executeSetting);
+                    _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             };
         }
 

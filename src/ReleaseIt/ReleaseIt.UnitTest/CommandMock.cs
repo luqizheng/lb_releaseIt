@@ -17,6 +17,7 @@ namespace ReleaseIt.UnitTest
             _invokeResult = invokeResult;
         }
 
+        public string Id { get; set; }
         public Setting Setting { get; set; }
         public bool SettingChanged { get; set; }
         public bool HasTag(IEnumerable<string> tag)
@@ -37,8 +38,8 @@ namespace ReleaseIt.UnitTest
         public ExecuteSetting Invoke(ExecuteSetting executeSetting)
         {
             var result = (ExecuteSetting)executeSetting.Clone();
-            _invokeResult.Add(this.Setting.Id);
-            result.SetVariable("OrderId", this.Setting.Id);
+            _invokeResult.Add(this.Id);
+            result.SetVariable("OrderId", this.Id);
             return result;
         }
 
@@ -56,7 +57,12 @@ namespace ReleaseIt.UnitTest
 
         public override string ToString()
         {
-            return "Id=" + Setting.Id;
+            return "Id=" + this.Id;
+        }
+
+        public object Clone()
+        {
+            return this;
         }
     }
 }

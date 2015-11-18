@@ -20,6 +20,11 @@ namespace ReleaseIt.Commands.Windows.VersionControls
             }
         }
 
+        public override ICommand Clone()
+        {
+            return new SvnVersion(Setting.Clone() as VersionControlSetting);
+        }
+
 
         public override string BuildArguments(ExecuteSetting executoSetting)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using ReleaseIt.ParameterBuilder;
 
@@ -114,24 +115,30 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
 
             parameters.Add(logLevel);
             //不输出日志，改用dll输出。
-            //parameters.Add(new Parameter("/", "nologo"));
+            parameters.Add(new Parameter("/", "nologo"));
             //parameters.Add(new Parameter("/", "noconsolelogger"));
-            var logger = new ParameterWithValue<List<string>>("logger", s => string.Join(";", s.ToArray()))
-            {
-                Value = new List<string>()
-            };
-            var a = AppDomain.CurrentDomain.BaseDirectory + "ReleaseIt.Core.dll";
+            //var logger = new ParameterWithValue<List<string>>("logger", s => string.Join(";", s.ToArray()))
+            //{
+            //    Value = new List<string>()
+            //};
+            //var a = AppDomain.CurrentDomain.BaseDirectory + "ReleaseIt.Core.dll";
 
-            logger.Value.Add("ReleaseIt.Log.MsBuildLog," + a);
-            parameters.Add(logger);
-            if (Setting.BuildLogFile)
-            {
-                logger.Value.Add("OutFile");
-            }
-            else
-            {
-                logger.Value.Add("Console");
-            }
+            //logger.Value.Add("ReleaseIt.Log.MsBuildLog," + a);
+            //parameters.Add(logger);
+            //if (Setting.BuildLogFile)
+            //{
+            //    logger.Value.Add("OutFile");
+            //}
+            //else
+            //{
+            //    logger.Value.Add("Console");
+            //}
+        }
+
+        public override ICommand Clone()
+        {
+
+            return new MsBuildCommand((CompileSetting)Setting.Clone());
         }
     }
 }

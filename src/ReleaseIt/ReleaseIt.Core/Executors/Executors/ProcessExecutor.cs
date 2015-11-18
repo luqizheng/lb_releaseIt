@@ -24,7 +24,7 @@ namespace ReleaseIt.Executors.Executors
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
-            
+       
             setting.Setting.ProcessLogger.Info(commandPath + " " + argus);
             using (var process = new Process())
             {
