@@ -6,11 +6,10 @@ namespace ReleaseIt.MultiExecute
 {
     internal class CommandExecuteTree
     {
+        private readonly CommandSet _commandSet;
 
 
         private readonly CommandCollection _executeCommandList = new CommandCollection();
-
-        private readonly CommandSet _commandSet;
 
         public CommandExecuteTree(CommandSet commandSet)
         {
@@ -31,15 +30,13 @@ namespace ReleaseIt.MultiExecute
                     _calledCommands.AddRange(command.Setting.Call);
                     foreach (var callCmdId in command.Setting.Call)
                     {
-
                         var callCmd = _commandSet.Commands[callCmdId];
-                        var newCommand = (ICommand)callCmd.Clone();
+                        var newCommand = (ICommand) callCmd.Clone();
                         newCommand.Id = command.Id + "_" + newCommand.Id;
                         newCommand.Setting.Dependency = command.Id;
                         _executeCommandList.Add(newCommand);
                     }
                 }
-
             }
         }
 
@@ -131,32 +128,27 @@ namespace ReleaseIt.MultiExecute
 
         private Action<Task> CreateAction(ICommand executeCommand)
         {
-            return (task) =>
+            return task =>
             {
-
                 if (task.IsFaulted)
                     return;
 
-                string resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
+                var resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
                 var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
                 var resultSetting = executeCommand.Invoke(executeSetting);
                 _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
-
             };
         }
 
         private Action CreateFirstTask(ICommand executeCommand)
         {
             return () =>
-         {
-
-
-             string resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
-             var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
-             var resultSetting = executeCommand.Invoke(executeSetting);
-             _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
-
-         };
+            {
+                var resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
+                var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
+                var resultSetting = executeCommand.Invoke(executeSetting);
+                _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
+            };
         }
 
         private class TaskRecord

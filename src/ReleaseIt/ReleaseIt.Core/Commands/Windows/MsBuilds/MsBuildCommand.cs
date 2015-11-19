@@ -115,7 +115,9 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
 
             parameters.Add(logLevel);
             //不输出日志，改用dll输出。
-            parameters.Add(new Parameter("/", "fileLogger"));
+            //parameters.Add(new Parameter("/", "fileLogger"));
+            parameters.Add(new Parameter("/", "consoleloggerparameters:ErrorsOnly"));
+            
             //parameters.Add(new Parameter("/", "noconsolelogger"));
             //var logger = new ParameterWithValue<List<string>>("logger", s => string.Join(";", s.ToArray()))
             //{
