@@ -20,16 +20,13 @@ namespace ReleaseIt
         private List<string> _run;
         private List<string> _skip;
 
+        private List<string> _skipTags;
+
         private List<string> _tags;
 
         public CommandSet(ExecuteSetting setting)
             : this(setting, new List<ICommand>())
         {
-        }
-
-        public ConfigurationSetting Configruration
-        {
-            get { return _executeSettings[DefaultExecuteSetting].Setting; }
         }
 
         /// <summary>
@@ -41,8 +38,14 @@ namespace ReleaseIt
             if (setting == null) throw new ArgumentNullException("setting");
             if (commands == null) throw new ArgumentNullException("commands");
             _executeSettings.Add(DefaultExecuteSetting, setting);
-            _commands = new CommandCollection(commands); ;
+            _commands = new CommandCollection(commands);
+            ;
             _commnadIds = new List<string>();
+        }
+
+        public ConfigurationSetting Configruration
+        {
+            get { return _executeSettings[DefaultExecuteSetting].Setting; }
         }
 
 
@@ -69,11 +72,11 @@ namespace ReleaseIt
             get { return _skip ?? (_skip = new List<string>()); }
         }
 
-        private List<string> _skipTags;
         public List<string> SkipTags
         {
             get { return _skipTags ?? (_skipTags = new List<string>()); }
         }
+
         /// <summary>
         ///     Include command name
         /// </summary>
@@ -92,7 +95,7 @@ namespace ReleaseIt
             var setting = _executeSettings[DefaultExecuteSetting];
             if (!Directory.Exists(setting.WorkDirectory))
             {
-                (new DirectoryInfo(setting.WorkDirectory)).CreateEx();
+                new DirectoryInfo(setting.WorkDirectory).CreateEx();
             }
 
             var s = new CommandExecuteTree(this);
@@ -114,7 +117,6 @@ namespace ReleaseIt
 
 
         public event EventHandler OnCommandSettingChanged;
-
 
 
         public ICommand Add(ICommand command)

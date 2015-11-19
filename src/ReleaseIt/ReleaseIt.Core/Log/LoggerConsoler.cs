@@ -7,6 +7,7 @@ namespace ReleaseIt.Log
         public LoggerConsoler()
         {
             InfoColor = ConsoleColor.DarkGreen;
+            WarnColor = ConsoleColor.Red;
         }
 
         public ConsoleColor InfoColor { get; set; }
@@ -14,16 +15,17 @@ namespace ReleaseIt.Log
 
         public void Info(string str)
         {
-            
+            var defColor = Console.ForegroundColor;
             Console.ForegroundColor = InfoColor;
             Console.WriteLine(str);
-            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.ForegroundColor = defColor;
         }
 
         public void Error(string str)
         {
+            var defColor = Console.ForegroundColor;
             Console.ForegroundColor = WarnColor;
-            Console.Write(str);
+            Console.ForegroundColor = defColor;
         }
     }
 }

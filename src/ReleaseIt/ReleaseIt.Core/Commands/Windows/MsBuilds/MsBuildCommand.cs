@@ -111,11 +111,11 @@ namespace ReleaseIt.Commands.Windows.MsBuilds
             var logLevel =
                 new ParameterWithValue<LogLevel>("verbosity",
                     s => Convert.ToString(s).Substring(0, 1));
-            logLevel.Value = Setting.LogLevel;
+            logLevel.Value = LogLevel.minimal; // Setting.LogLevel;
 
             parameters.Add(logLevel);
             //不输出日志，改用dll输出。
-            parameters.Add(new Parameter("/", "nologo"));
+            parameters.Add(new Parameter("/", "fileLogger"));
             //parameters.Add(new Parameter("/", "noconsolelogger"));
             //var logger = new ParameterWithValue<List<string>>("logger", s => string.Join(";", s.ToArray()))
             //{

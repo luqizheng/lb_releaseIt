@@ -47,7 +47,7 @@ namespace ReleaseIt.MultiExecute
         {
             Fillter();
             var sureTasks = new Dictionary<string, Task>();
-            var lostParentTasks = new Dictionary<string, List<Action>>(); //Key is parent.
+            var lostParentTasks = new Dictionary<string, List<Action<Task>>>(); //Key is parent.
             TaskRecord startTask = null;
             foreach (var cmd in _executeCommandList)
             {
@@ -63,7 +63,7 @@ namespace ReleaseIt.MultiExecute
                     startTask = new TaskRecord
                     {
                         Id = cmd.Id,
-                        Task = new Task(action)
+                        Task = new Task(CreateFirstTask(cmd))
                     };
 
                     sureTasks.Add(startTask.Id, startTask.Task);
@@ -75,7 +75,7 @@ namespace ReleaseIt.MultiExecute
                 if (sureTasks.ContainsKey(depencyId))
                 {
                     var parentTask = sureTasks[depencyId];
-                    var currentTask = parentTask.ContinueWith(t => action());
+                    var currentTask = parentTask.ContinueWith(action);
                     sureTasks.Add(cmd.Id, currentTask); //make  index
                 }
                 else
@@ -83,7 +83,7 @@ namespace ReleaseIt.MultiExecute
                     //没有发现父节点,因此放入待处理区
                     if (!lostParentTasks.ContainsKey(depencyId))
                     {
-                        lostParentTasks.Add(depencyId, new List<Action>());
+                        lostParentTasks.Add(depencyId, new List<Action<Task>>());
                     }
                     lostParentTasks[depencyId].Add(action);
                 }
@@ -95,7 +95,7 @@ namespace ReleaseIt.MultiExecute
         }
 
 
-        private void CheckLostParentTasks(Dictionary<string, List<Action>> lostParentTasks,
+        private void CheckLostParentTasks(Dictionary<string, List<Action<Task>>> lostParentTasks,
             Dictionary<string, Task> sureTasks, ICommand cmd)
         {
             if (lostParentTasks.ContainsKey(cmd.Id)) //新生成的task，看看是不是有人依赖他
@@ -129,22 +129,34 @@ namespace ReleaseIt.MultiExecute
                    || cmd.HasTag(_commandSet.IncludeTags);
         }
 
-        private Action CreateAction(ICommand executeCommand)
+        private Action<Task> CreateAction(ICommand executeCommand)
+        {
+            return (task) =>
+            {
+
+                if (task.IsFaulted)
+                    return;
+
+                string resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
+                var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
+                var resultSetting = executeCommand.Invoke(executeSetting);
+                _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
+
+            };
+        }
+
+        private Action CreateFirstTask(ICommand executeCommand)
         {
             return () =>
-            {
-                try
-                {
-                    string resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
-                    var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
-                    var resultSetting = executeCommand.Invoke(executeSetting);
-                    _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-            };
+         {
+
+
+             string resultCmdId = executeCommand.Setting.Dependency ?? CommandSet.DefaultExecuteSetting;
+             var executeSetting = _commandSet.ExecuteSettings[resultCmdId];
+             var resultSetting = executeCommand.Invoke(executeSetting);
+             _commandSet.ExecuteSettings.Add(executeCommand.Id, resultSetting);
+
+         };
         }
 
         private class TaskRecord

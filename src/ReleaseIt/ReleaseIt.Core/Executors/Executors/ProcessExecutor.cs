@@ -14,7 +14,7 @@ namespace ReleaseIt.Executors.Executors
             var cmd = command as ProcessCommand<T>;
             var commandPath = cmd.GetCommand(setting);
             var argus = cmd.BuildArguments(setting);
-            Console.WriteLine(argus);
+
             var psi = new ProcessStartInfo(commandPath, argus)
             {
                 UseShellExecute = false,
@@ -24,8 +24,6 @@ namespace ReleaseIt.Executors.Executors
                 RedirectStandardOutput = true,
                 RedirectStandardError = false
             };
-       
-            setting.Setting.ProcessLogger.Info(commandPath + " " + argus);
             using (var process = new Process())
             {
                 process.EnableRaisingEvents = true;
@@ -38,10 +36,16 @@ namespace ReleaseIt.Executors.Executors
                 process.BeginOutputReadLine();
                 process.Exited += (a, b) => { setting.Done = true; };
                 process.WaitForExit();
+
                 if (process.ExitCode != 0)
-                    throw new Exception(string.Format(CultureInfo.InvariantCulture,
-                        "{0} returned a non-zero exit code",
-                        Path.GetFileName(psi.FileName)));
+                {
+                    var defau = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Run " + command.ToString() + " fail");
+                    Console.WriteLine(commandPath + " " + argus);
+                    Console.ForegroundColor = defau;
+                    throw new CommandRunningException(argus, commandPath, cmd.Id);
+                }
             }
         }
 
@@ -51,6 +55,25 @@ namespace ReleaseIt.Executors.Executors
         }
     }
 
+    public class CommandRunningException : Exception
+    {
+        public string ComandId { get; set; }
+        private readonly string _arg;
+        private readonly string _cmd;
+
+        public CommandRunningException(string arg, string cmd, string comandId)
+        {
+            this.ComandId = comandId;
+            _arg = arg;
+            _cmd = cmd;
+        }
+        public string Command { get { return _cmd; } }
+        public string Arguments { get { return _arg; } }
+        public override string Message
+        {
+            get { return "Invoke Command returned a non-zero exit code"; }
+        }
+    }
     public class CommandExecuteException
     {
         public CommandExecuteException()
